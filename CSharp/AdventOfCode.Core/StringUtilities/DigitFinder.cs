@@ -1,8 +1,8 @@
 ﻿namespace AdventOfCode.Core.StringUtilities;
 
-public static class DigitWordFinder
+public static class DigitFinder
 {
-    public static IEnumerable<int> FindWordDigits(string input)
+    public static IEnumerable<int> FindDigits(string input, bool allowWords)
     {
         for (int i = 0; i < input.Length; i++)
         {
@@ -11,7 +11,10 @@ public static class DigitWordFinder
                 yield return int.Parse(input.Substring(i, 1));
                 continue;
             }
-            
+
+            if (!allowWords)
+                continue;
+
             foreach (var word in DigitWords)
             {
                 if (i + word.Key.Length > input.Length)

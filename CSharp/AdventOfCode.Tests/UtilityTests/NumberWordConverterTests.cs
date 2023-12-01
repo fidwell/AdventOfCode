@@ -17,7 +17,7 @@ public class NumberWordConverterTests
     [DataRow("eightwo", 8, 2)]
     public void Puzzle02Sample(string input, int first, int last)
     {
-        var result = DigitWordFinder.FindWordDigits(input);
+        var result = DigitFinder.FindDigits(input, true);
         Assert.AreEqual(first, result.First());
         Assert.AreEqual(last, result.Last());
     }

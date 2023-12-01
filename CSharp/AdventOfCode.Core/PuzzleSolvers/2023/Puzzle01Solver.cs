@@ -10,27 +10,14 @@ public class Puzzle01Solver(int part) : IPuzzleSolver
             .GetData(1, part, useSample)
             .Split(Environment.NewLine)
             .Where(l => !string.IsNullOrWhiteSpace(l))
-            .Select(GetFirstAndLastDigits)
+            .Select(l => GetFirstAndLastDigits(l, part == 2))
             .Select(pair => int.Parse($"{pair.Item1}{pair.Item2}"))
             .Sum()
             .ToString();
 
-    private (int, int) GetFirstAndLastDigits(string input) => part switch
+    private static (int, int) GetFirstAndLastDigits(string input, bool allowWords)
     {
-        1 => GetFirstAndLastDigitsOne(input),
-        2 => GetFirstAndLastDigitsTwo(input),
-        _ => default,
-    };
-
-    private static (int, int) GetFirstAndLastDigitsOne(string input)
-    {
-        var digits = input.ToCharArray().Where(char.IsDigit);
-        return (digits.First() - '0', digits.Last() - '0');
-    }
-
-    private static (int, int) GetFirstAndLastDigitsTwo(string input)
-    {
-        var digits = DigitWordFinder.FindWordDigits(input);
+        var digits = DigitFinder.FindDigits(input, allowWords);
         return (digits.First(), digits.Last());
     }
 }
