@@ -1,4 +1,4 @@
-using AdventOfCode.Core;
+using AdventOfCode.Core.PuzzleSolvers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AdventOfCode.Tests;
@@ -7,10 +7,18 @@ namespace AdventOfCode.Tests;
 public class SolutionVerifiers
 {
     [TestMethod]
-    public void Puzzle01Sample()
-        => Assert.AreEqual("142", new Puzzle01Solver().Solve(useSample: true));
+    public void Puzzle01_Part1_Sample()
+        => Assert.AreEqual("142", new Puzzle01Solver(1).Solve(useSample: true));
 
     [TestMethod]
-    public void Puzzle01()
-        => Assert.AreEqual("54632", new Puzzle01Solver().Solve());
+    public void Puzzle01_Part1()
+        => Assert.AreEqual("54632", new Puzzle01Solver(1).Solve());
+
+    [TestMethod]
+    public void Puzzle01_Part2_Sample()
+        => Assert.AreEqual("281", new Puzzle01Solver(2).Solve(useSample: true));
+
+    [TestMethod]
+    public void Puzzle01_Part2()
+        => Assert.AreEqual("54019", new Puzzle01Solver(2).Solve());
 }

@@ -4,10 +4,10 @@ namespace AdventOfCode.Data;
 
 public static class DataReader
 {
-    public static string GetData(int puzzleId, bool useSample = false)
+    public static string GetData(int puzzleId, int partId, bool useSample = false)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var sampleString = useSample ? "Sample" : string.Empty;
+        var sampleString = useSample ? $"_Part{partId}_Sample" : string.Empty;
         var resource = $"AdventOfCode.Data.Inputs.Puzzle{puzzleId:00}{sampleString}.txt";
 
         using var stream = assembly.GetManifestResourceStream(resource);
@@ -15,7 +15,6 @@ public static class DataReader
             return string.Empty;
 
         using var reader = new StreamReader(stream);
-
-        return string.Join(Environment.NewLine, reader.ReadToEnd());
+        return reader.ReadToEnd();
     }
 }

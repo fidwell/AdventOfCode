@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode.Core;
+﻿namespace AdventOfCode.Core.PuzzleSolvers;
 
 public interface IPuzzleSolver
 {
