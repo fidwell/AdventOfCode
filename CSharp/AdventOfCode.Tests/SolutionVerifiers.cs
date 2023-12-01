@@ -1,4 +1,4 @@
-using AdventOfCode.Core.PuzzleSolvers;
+using AdventOfCode.Core.PuzzleSolvers._2023;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AdventOfCode.Tests;
