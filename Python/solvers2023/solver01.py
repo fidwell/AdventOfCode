@@ -1,15 +1,9 @@
+from utilities import datareader
 from utilities import digitfinder
 
 def solve(part: int, use_sample: bool):
-    filename = f"solvers2023\\input\\puzzle01{f"-part{part}-sample" if use_sample else ""}.txt"
-    with open(filename, "r", encoding="utf8") as file:
-        data = file.read()
-        file.close()
-
-    lines = data.splitlines()
-
     result = 0
-    for line in lines:
+    for line in datareader.read_lines(2023, 1, part, use_sample):
         digits = get_first_and_last_digits(line, part == 2)
         result += (10 * int(digits[0])) + int(digits[1])
 
