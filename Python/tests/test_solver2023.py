@@ -1,5 +1,5 @@
-from solvers2023 import solver01
 import unittest
+from solvers2023 import solver01
 
 class TestSolver2023(unittest.TestCase):
     def test_solver01_part1_sample(self):

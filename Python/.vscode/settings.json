@@ -8,5 +8,8 @@
         "**/.pytest_cache": true,
         "**/__pycache__": true,
         "debug.log": true
-    }
+    },
+    "pylint.args": [
+        "--disable=C0114,C0115,C0116"
+    ]
 }
