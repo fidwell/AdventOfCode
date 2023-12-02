@@ -11,7 +11,7 @@ public class Puzzle01Solver(int part) : IPuzzleSolver
             .Split(Environment.NewLine)
             .Where(l => !string.IsNullOrWhiteSpace(l))
             .Select(l => GetFirstAndLastDigits(l, part == 2))
-            .Select(pair => int.Parse($"{pair.Item1}{pair.Item2}"))
+            .Select(pair => pair.Item1 * 10 + pair.Item2)
             .Sum()
             .ToString();
 
