@@ -7,7 +7,8 @@ public static class DataReader
     public static string GetData(int puzzleId, int partId, bool useSample = false)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var sampleString = useSample ? $"_Part{partId}_Sample" : string.Empty;
+        var partString = partId <= 0 ? string.Empty : $"_Part{partId}";
+        var sampleString = useSample ? $"{partString}_Sample" : string.Empty;
         var resource = $"AdventOfCode.Data.Inputs.Puzzle{puzzleId:00}{sampleString}.txt";
 
         using var stream = assembly.GetManifestResourceStream(resource);
