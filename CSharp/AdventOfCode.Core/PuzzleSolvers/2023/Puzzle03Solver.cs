@@ -12,7 +12,7 @@ public class Puzzle03Solver : IPuzzleSolver
         return matrix
             .FindAllMatches(new Regex(@"\d+"))
             .Where(n => matrix.IndexesOfNeighbors(n).Any(index => IsSymbol(matrix.CharAt(index))))
-            .Select(n => int.Parse(matrix.WordAt(n.StartIndex, n.Length)))
+            .Select(n => int.Parse(matrix.StringAt(n.StartIndex, n.Length)))
             .Sum()
             .ToString();
     }

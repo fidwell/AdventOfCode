@@ -7,7 +7,6 @@ namespace AdventOfCode.Core.StringUtilities;
 /// </summary>
 public class CharacterMatrix
 {
-    private readonly string _rawWithNewLines;
     private readonly string _raw;
     private readonly string[] _asLines;
     private readonly int _lineLength;
@@ -19,8 +18,7 @@ public class CharacterMatrix
     /// <param name="input">A newline-separated string of input data.</param>
     public CharacterMatrix(string input)
     {
-        _rawWithNewLines = input;
-        _raw = _rawWithNewLines.Replace(Environment.NewLine, string.Empty);
+        _raw = input.Replace(Environment.NewLine, string.Empty);
         _asLines = input.Split(Environment.NewLine);
         _lineLength = _asLines[0].Length;
         _lineCount = _asLines.Length;
@@ -31,13 +29,20 @@ public class CharacterMatrix
         }
     }
 
-    public string CharAt(int index) => WordAt(index, 1);
+    /// <summary>
+    /// Returns the single character value at a given index.
+    /// </summary>
+    /// <param name="index">The index.</param>
+    /// <returns>The character at this position in the matrix.</returns>
+    public string CharAt(int index) => StringAt(index, 1);
 
-    public string WordAt(int index, int length) => _raw.Substring(index, length);
-
-
-    private int IndexAt(int x, int y) => y * _lineLength + x;
-    private (int, int) CoordinatesAt(int index) => (index % _lineLength, index / _lineLength);
+    /// <summary>
+    /// Returns a string starting at a given index, of a given length.
+    /// </summary>
+    /// <param name="index">The starting position of the desired string.</param>
+    /// <param name="length">The length of the desired string.</param>
+    /// <returns>A string starting at a given index, of a given length.</returns>
+    public string StringAt(int index, int length) => _raw.Substring(index, length);
 
     /// <summary>
     /// Finds "words" in the data that match the specified regular expression.
@@ -115,6 +120,13 @@ public class CharacterMatrix
 
         return new[] { nn, ne, ee, se, ss, sw, ww, nw }.Where(z => z >= 0);
     }
+
+    /// <summary>
+    /// Find the (x,y) coordinates in the matrix given a starting one-dimensional index.
+    /// </summary>
+    /// <param name="index">The index to convert</param>
+    /// <returns>The (x,y) coordinates in the matrix</returns>
+    private (int, int) CoordinatesAt(int index) => (index % _lineLength, index / _lineLength);
 
     public class Word(int startIndex, int length, string value)
     {
