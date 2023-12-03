@@ -2,5 +2,6 @@
 
 public interface IPuzzleSolver
 {
-    string Solve(bool useSample = false);
+    string SolvePartOne(bool useSample = false);
+    string SolvePartTwo(bool useSample = false);
 }
