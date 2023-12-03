@@ -40,8 +40,6 @@ public class Puzzle03Solver : IPuzzleSolver
     private static bool IsAdjacentToSymbol(Match n, string dataRaw, int lineLength, int lineCount)
         => AdjacentSymbolIndexes(n, dataRaw, lineLength, lineCount).Any();
 
-    private static int[] AdjacentNumbers(object? gear) => Array.Empty<int>();
-
     private static IEnumerable<int> AdjacentSymbolIndexes(Match n, string dataRaw, int lineLength, int lineCount)
     {
         var indexes = new List<int>();
