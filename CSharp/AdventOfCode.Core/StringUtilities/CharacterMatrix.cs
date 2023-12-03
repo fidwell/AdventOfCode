@@ -78,7 +78,10 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="indexes">All indexes of characters.</param>
     /// <returns>Indexes of all characters surrounding the input character indexes.</returns>
-    private IEnumerable<int> IndexesOfNeighbors(IEnumerable<int> indexes) => indexes.SelectMany(ix => IndexesOfNeighbors(ix)).Distinct();
+    private IEnumerable<int> IndexesOfNeighbors(IEnumerable<int> indexes) => indexes
+        .SelectMany(IndexesOfNeighbors)
+        .Where(ix => !indexes.Contains(ix))
+        .Distinct();
 
     /// <summary>
     /// Find the index values of the (up to) eight characters
