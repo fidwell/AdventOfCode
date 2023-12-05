@@ -53,4 +53,10 @@ public class SolutionVerifiers
     [DataRow(false, "9997537")]
     public void Puzzle04_Part2(bool useSample, string expected)
         => Assert.AreEqual(expected, new Puzzle04Solver().SolvePartTwo(useSample));
+
+    [DataTestMethod]
+    [DataRow(true, "35")]
+    [DataRow(false, "323142486")]
+    public void Puzzle05_Part1(bool useSample, string expected)
+        => Assert.AreEqual(expected, new Puzzle05Solver().SolvePartOne(useSample));
 }
