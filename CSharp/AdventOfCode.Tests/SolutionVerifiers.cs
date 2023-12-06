@@ -76,7 +76,7 @@ public class SolutionVerifiers
 
     [DataTestMethod, Timeout(Timeout)]
     [DataRow(true, "71503")]
-    [DataRow(false, "512295")]
+    [DataRow(false, "36530883")]
     public void Puzzle06_Part2(bool useSample, string expected)
         => Assert.AreEqual(expected, new Puzzle06Solver().SolvePartTwo(useSample));
 }

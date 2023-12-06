@@ -10,9 +10,10 @@ public class Puzzle06Solver : IPuzzleSolver
         var data = DataReader.GetData(6, 0, useSample).Split(Environment.NewLine);
         var times = data[0].Split(": ")[1].SplitAndTrim(" ");
         var records = data[1].Split(": ")[1].SplitAndTrim(" ");
-        var races = times.Select((t, i) => new Race(int.Parse(t), int.Parse(records[i])));
-        var waysToWin = races.Select(r => r.NumberOfWaysToBeatTheRecord());
-        return waysToWin.Aggregate((a, b) => a * b).ToString();
+        return times
+            .Select((t, i) => SolveRace(int.Parse(t), int.Parse(records[i])))
+            .Aggregate((a, b) => a * b)
+            .ToString();
     }
 
     public string SolvePartTwo(bool useSample = false)
@@ -20,18 +21,23 @@ public class Puzzle06Solver : IPuzzleSolver
         var data = DataReader.GetData(6, 0, useSample).Split(Environment.NewLine);
         var time = data[0].Split(": ")[1].Replace(" ", "");
         var record = data[1].Split(": ")[1].Replace(" ", "");
-        var race = new Race(long.Parse(time), long.Parse(record));
-        return race.NumberOfWaysToBeatTheRecord().ToString();
+        return SolveRace(long.Parse(time), long.Parse(record)).ToString();
     }
 
-    private class Race(long time, long record)
+    private static int SolveRace(long time, long record) =>
+        QuadraticSolutionDiff(1, -time, record) - 1;
+
+    private static int QuadraticSolutionDiff(long a, long b, long c)
     {
-        public long Time { get; private set; } = time;
-        public long Record { get; private set; } = record;
+        var pos = (-b + Math.Sqrt(b * b - 4 * a * c)) / (2 * a);
+        var neg = (-b - Math.Sqrt(b * b - 4 * a * c)) / (2 * a);
 
-        public int NumberOfWaysToBeatTheRecord() =>
-            EnumerableExtensions.Range(0, Time).Count(t => (Time - t) * t > Record);
+        var from = pos < neg ? Math.Floor(pos) : Math.Floor(neg);
+        var to = neg < pos ? Math.Ceiling(pos) : Math.Ceiling(neg);
 
-        public override string ToString() => $"{Time} ms, {Record} mm";
+        return CountIntegersInRange(from, to);
     }
+
+    private static int CountIntegersInRange(double from, double to)
+        => (int)Math.Abs(to - from);
 }
