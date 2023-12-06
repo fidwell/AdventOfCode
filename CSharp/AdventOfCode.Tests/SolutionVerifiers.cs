@@ -67,4 +67,16 @@ public class SolutionVerifiers
     [DataRow(false, "79874951")]
     public void Puzzle05_Part2(bool useSample, string expected)
         => Assert.AreEqual(expected, new Puzzle05Solver().SolvePartTwo(useSample));
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(true, "288")]
+    [DataRow(false, "512295")]
+    public void Puzzle06_Part1(bool useSample, string expected)
+        => Assert.AreEqual(expected, new Puzzle06Solver().SolvePartOne(useSample));
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(true, "71503")]
+    [DataRow(false, "512295")]
+    public void Puzzle06_Part2(bool useSample, string expected)
+        => Assert.AreEqual(expected, new Puzzle06Solver().SolvePartTwo(useSample));
 }
