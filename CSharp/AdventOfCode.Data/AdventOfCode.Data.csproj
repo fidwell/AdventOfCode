@@ -20,6 +20,8 @@
     <EmbeddedResource Include="Inputs\Puzzle05_Sample.txt" />
     <EmbeddedResource Include="Inputs\Puzzle06.txt" />
     <EmbeddedResource Include="Inputs\Puzzle06_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle07.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle07_Sample.txt" />
   </ItemGroup>
 
 </Project>
