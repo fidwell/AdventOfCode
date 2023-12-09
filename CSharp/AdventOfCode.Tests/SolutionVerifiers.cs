@@ -103,4 +103,16 @@ public class SolutionVerifiers
     [DataRow(false, "9064949303801")]
     public void Puzzle08_Part2(bool useSample, string expected)
         => Assert.AreEqual(expected, new Puzzle08Solver().SolvePartTwo(useSample));
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(true, "114")]
+    [DataRow(false, "1992273652")]
+    public void Puzzle09_Part1(bool useSample, string expected)
+        => Assert.AreEqual(expected, new Puzzle09Solver().SolvePartOne(useSample));
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(true, "2")]
+    [DataRow(false, "1012")]
+    public void Puzzle09_Part2(bool useSample, string expected)
+        => Assert.AreEqual(expected, new Puzzle09Solver().SolvePartTwo(useSample));
 }
