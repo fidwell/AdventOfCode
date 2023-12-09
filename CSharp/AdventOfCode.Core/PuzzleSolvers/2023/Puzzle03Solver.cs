@@ -8,7 +8,7 @@ public class Puzzle03Solver : IPuzzleSolver
 {
     public string SolvePartOne(bool useSample = false)
     {
-        var matrix = new CharacterMatrix(DataReader.GetData(3, 1, useSample));
+        var matrix = new CharacterMatrix(DataReader.GetData(3, 0, useSample));
         return matrix
             .FindAllMatches(new Regex(@"\d+"))
             .Where(n => matrix.IndexesOfNeighbors(n).Any(index => IsSymbol(matrix.CharAt(index))))
@@ -19,7 +19,7 @@ public class Puzzle03Solver : IPuzzleSolver
 
     public string SolvePartTwo(bool useSample = false)
     {
-        var matrix = new CharacterMatrix(DataReader.GetData(3, 1, useSample));
+        var matrix = new CharacterMatrix(DataReader.GetData(3, 0, useSample));
         var numbers = matrix.FindAllMatches(new Regex(@"\d+"));
         
         return matrix
