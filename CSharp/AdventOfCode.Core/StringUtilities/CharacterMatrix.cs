@@ -29,12 +29,29 @@ public class CharacterMatrix
         }
     }
 
+    public int TotalLength => _raw.Length;
+
+    /// <summary>
+    /// Find the (x,y) coordinates in the matrix given a starting one-dimensional index.
+    /// </summary>
+    /// <param name="index">The index to convert</param>
+    /// <returns>The (x,y) coordinates in the matrix</returns>
+    public (int, int) CoordinatesAt(int index) => (index % _lineLength, index / _lineLength);
+
+    /// <summary>
+    /// Returns the index of a character at a specific coordinate location.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns>The index of the coordinate.</returns>
+    public int IndexAt(int x, int y) => y * _lineLength + x;
+
     /// <summary>
     /// Returns the single character value at a given index.
     /// </summary>
     /// <param name="index">The index.</param>
     /// <returns>The character at this position in the matrix.</returns>
-    public string CharAt(int index) => StringAt(index, 1);
+    public string CharAt(int index) => $"{_raw[index]}";
 
     /// <summary>
     /// Returns a string starting at a given index, of a given length.
@@ -138,13 +155,6 @@ public class CharacterMatrix
 
         return new[] { nn, ne, ee, se, ss, sw, ww, nw }.Where(z => z >= 0);
     }
-
-    /// <summary>
-    /// Find the (x,y) coordinates in the matrix given a starting one-dimensional index.
-    /// </summary>
-    /// <param name="index">The index to convert</param>
-    /// <returns>The (x,y) coordinates in the matrix</returns>
-    private (int, int) CoordinatesAt(int index) => (index % _lineLength, index / _lineLength);
 
     public class Word(int startIndex, int length, string value)
     {

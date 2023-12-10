@@ -123,8 +123,8 @@ public class SolutionVerifiers
         => Assert.AreEqual(expected, new Puzzle10Solver().SolvePartOne(useSample));
 
     [DataTestMethod, Timeout(Timeout)]
-    [DataRow(true, "_")]
-    [DataRow(false, "_")]
+    [DataRow(true, "10")]
+    [DataRow(false, "493")]
     public void Puzzle10_Part2(bool useSample, string expected)
         => Assert.AreEqual(expected, new Puzzle10Solver().SolvePartTwo(useSample));
 }

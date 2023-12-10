@@ -8,27 +8,68 @@ public class Puzzle10Solver : IPuzzleSolver
 {
     public string SolvePartOne(bool useSample = false)
     {
-        var data = new CharacterMatrix(DataReader.GetData(10, 0, useSample));
-        var startingPosition = data.FindAllMatches(new Regex(@"S")).Single().StartIndex;
-
-        // works for my inputs :)
-        data.SetCharacter(startingPosition, useSample ? 'F' : '7');
-        int[] visitedIndexes = [startingPosition];
-        var currentDirection = Direction.Down;
-
-        do
-        {
-            var (nextPosition, nextDirection) = Travel(data, visitedIndexes[visitedIndexes.Length - 1], currentDirection);
-            visitedIndexes = [.. visitedIndexes, nextPosition];
-            currentDirection = nextDirection;
-        } while (visitedIndexes[visitedIndexes.Length - 1] != visitedIndexes[0]);
-
-        return ((visitedIndexes.Length - 1) / 2).ToString();
+        var (_, _, indexesOfLoop) = GetData(1, useSample);
+        return (indexesOfLoop.Count() / 2).ToString();
     }
 
     public string SolvePartTwo(bool useSample = false)
     {
-        throw new NotImplementedException();
+        var (matrix, _, indexesOfLoop) = GetData(2, useSample);
+
+        // Replace non-loop characters
+        for (var i = 0; i < matrix.TotalLength; i++)
+        {
+            if (!indexesOfLoop.Contains(i))
+            {
+                matrix.SetCharacter(i, '.');
+            }
+        }
+
+        return Enumerable.Range(0, matrix.TotalLength)
+            .Count(ix => !indexesOfLoop.Contains(ix) && IsInsideLoop(matrix, ix))
+            .ToString();
+    }
+
+    private static (CharacterMatrix, int, IEnumerable<int>) GetData(int part, bool useSample)
+    {
+        var matrix = new CharacterMatrix(DataReader.GetData(10, part, useSample));
+        var startingPosition = matrix.FindAllMatches(new Regex(@"S")).Single().StartIndex;
+
+        // works for my inputs :)
+        matrix.SetCharacter(startingPosition, useSample ? 'F' : '7');
+        var indexesOfLoop = IndexesOfLoop(matrix, startingPosition);
+        return (matrix, startingPosition, indexesOfLoop);
+    }
+
+    private static IEnumerable<int> IndexesOfLoop(CharacterMatrix matrix, int startingPosition)
+    {
+        IList<int> visitedIndexes = [startingPosition];
+        var currentDirection = Direction.Down;
+
+        do
+        {
+            var (nextPosition, nextDirection) = Travel(matrix, visitedIndexes.Last(), currentDirection);
+            visitedIndexes.Add(nextPosition);
+            currentDirection = nextDirection;
+        } while (visitedIndexes.Last() != visitedIndexes.First());
+
+        return visitedIndexes.Skip(1);
+    }
+
+    private static bool IsInsideLoop(CharacterMatrix matrix, int startingIndex)
+    {
+        var (x0, y0) = matrix.CoordinatesAt(startingIndex);
+        if (x0 <= 0)
+            return false;
+
+        return matrix.StringAt(matrix.IndexAt(0, y0), x0)
+            .Replace(".", "")
+            .Replace("-", "")
+            .Replace("L7", "|")
+            .Replace("LJ", "")
+            .Replace("F7", "")
+            .Replace("FJ", "|")
+            .Length % 2 == 1;
     }
 
     private static (int, Direction) Travel(CharacterMatrix data, int position, Direction currentDirection)
