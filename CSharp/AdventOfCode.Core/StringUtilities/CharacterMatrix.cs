@@ -7,8 +7,8 @@ namespace AdventOfCode.Core.StringUtilities;
 /// </summary>
 public class CharacterMatrix
 {
-    private readonly string _raw;
-    private readonly string[] _asLines;
+    private string _raw;
+    private string[] _asLines;
     private readonly int _lineLength;
     private readonly int _lineCount;
 
@@ -76,6 +76,24 @@ public class CharacterMatrix
     /// <param name="length">The length of the word.</param>
     /// <returns>Indexes of all characters surrounding the input word.</returns>
     public IEnumerable<int> IndexesOfNeighbors(Word word) => IndexesOfNeighbors(IndexesOfWord(word));
+
+    public int GoRightFrom(int index) => index + 1;
+    public int GoDownFrom(int index) => index + _lineLength;
+    public int GoLeftFrom(int index) => index - 1;
+    public int GoUpFrom(int index) => index - _lineLength;
+
+    /// <summary>
+    /// Replaces the character value at the given index.
+    /// </summary>
+    /// <param name="index">The index of the character to replace.</param>
+    /// <param name="value">The new value of the character.</param>
+    public void SetCharacter(int index, char value)
+    {
+        _raw = $"{_raw.Substring(0, index)}{value}{_raw.Substring(index + 1)}";
+        var (x, y) = CoordinatesAt(index);
+        var line = _asLines[y];
+        _asLines[y] = $"{line.Substring(0, x)}{value}{line.Substring(x + 1)}";
+    }
 
     /// <summary>
     /// Find the index values of characters surrounding a group
