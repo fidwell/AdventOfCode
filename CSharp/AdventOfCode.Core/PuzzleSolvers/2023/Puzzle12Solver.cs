@@ -5,7 +5,7 @@ namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle12Solver : IPuzzleSolver
 {
-    private readonly Dictionary<(string, int[]), long> _cache = [];
+    private readonly Dictionary<string, long> _cache = [];
 
     public string SolvePartOne(bool useSample = false) =>
         DataReader.GetData(12, 0, useSample)
@@ -31,11 +31,12 @@ public class Puzzle12Solver : IPuzzleSolver
 
     private long CachedResult(string input, int[] groupCounts)
     {
-        if (_cache.TryGetValue((input, groupCounts), out var existing))
+        var key = $"{input}|{string.Join(",", groupCounts)}";
+        if (_cache.TryGetValue(key, out var existing))
             return existing;
 
         var value = CalculateResult(input, groupCounts);
-        _cache[(input, groupCounts)] = value;
+        _cache[key] = value;
         return value;
     }
 
