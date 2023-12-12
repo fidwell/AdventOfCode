@@ -8,8 +8,7 @@ public class Puzzle12Solver : IPuzzleSolver
     public string SolvePartOne(bool useSample = false) =>
         DataReader.GetData(12, 0, useSample)
         .Split(Environment.NewLine)
-        .Select(l => new ConditionRecord(l))
-        .Select(r => r.PossibleArrangementCount)
+        .Select(PossibleArrangementCount)
         .Sum()
         .ToString();
 
@@ -18,43 +17,34 @@ public class Puzzle12Solver : IPuzzleSolver
         throw new NotImplementedException();
     }
 
-    private class ConditionRecord
+    private int PossibleArrangementCount(string input)
     {
-        private string _asString;
-        private int[] _groupCounts;
+        var data = input.Split(" ");
+        var asString = data[0];
+        var groupCounts = data[1].Split(",").Select(int.Parse).ToArray();
 
-        public int PossibleArrangementCount { get; private set; }
+        return FindPossibleArrangements(asString).Where(a => Verify(a, groupCounts)).Count();
+    }
 
-        public ConditionRecord(string input)
+    private static IEnumerable<string> FindPossibleArrangements(string input)
+    {
+        // Probably inefficient recursion...
+        if (!input.Contains('?'))
         {
-            var data = input.Split(" ");
-            _asString = data[0];
-            _groupCounts = data[1].Split(",").Select(int.Parse).ToArray();
-
-            var arrangements = FindPossibleArrangements(_asString).Where(Verify).ToList();
-            PossibleArrangementCount = arrangements.Count;
+            yield return input;
         }
-
-        private bool Verify(string input) =>
-            Enumerable.SequenceEqual(input.SplitAndTrim(".").Select(g => g.Length), _groupCounts);
-
-        private static IEnumerable<string> FindPossibleArrangements(string input)
+        else
         {
-            // Probably inefficient recursion...
-            if (!input.Contains('?'))
-            {
-                yield return input;
-            }
-            else
-            {
-                var firstQ = input.IndexOf('?');
+            var firstQ = input.IndexOf('?');
 
-                foreach (var result in FindPossibleArrangements($"{input.Substring(0, firstQ)}#{input.Substring(firstQ + 1)}"))
-                    yield return result;
+            foreach (var result in FindPossibleArrangements($"{input.Substring(0, firstQ)}#{input.Substring(firstQ + 1)}"))
+                yield return result;
 
-                foreach (var result in FindPossibleArrangements($"{input.Substring(0, firstQ)}.{input.Substring(firstQ + 1)}"))
-                    yield return result;
-            }
+            foreach (var result in FindPossibleArrangements($"{input.Substring(0, firstQ)}.{input.Substring(firstQ + 1)}"))
+                yield return result;
         }
     }
+
+    private static bool Verify(string input, int[] groupCounts) =>
+        Enumerable.SequenceEqual(input.SplitAndTrim(".").Select(g => g.Length), groupCounts);
 }
