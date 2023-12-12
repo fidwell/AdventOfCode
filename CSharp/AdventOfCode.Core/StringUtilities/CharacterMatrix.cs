@@ -62,15 +62,30 @@ public class CharacterMatrix
     public string StringAt(int index, int length) => _raw.Substring(index, length);
 
     /// <summary>
+    /// Returns the indexes of all instances of the specified characeter.
+    /// </summary>
+    /// <param name="matchingChar">The character to search for.</param>
+    /// <returns>All indexes that match that character.</returns>
+    public IEnumerable<int> FindAllCharacters(char matchingChar)
+    {
+        var minIndex = _raw.IndexOf(matchingChar);
+        while (minIndex != -1)
+        {
+            yield return minIndex;
+            minIndex = _raw.IndexOf(matchingChar, minIndex + 1);
+        }
+    }
+
+    /// <summary>
     /// Finds "words" in the data that match the specified regular expression.
     /// Does not allow matching across lines.
     /// </summary>
     /// <param name="matchingPattern">The pattern to search on.</param>
     /// <returns>A list of indexes which correspond to the beginning of each word match.</returns>
-    public IEnumerable<Word> FindAllMatches(Regex matchingPattern)
+    public IEnumerable<Word> FindAllWords(Regex matchingPattern)
     {
         var result = new List<Word>();
-        for (int i = 0; i < _lineCount; i++)
+        for (var i = 0; i < _lineCount; i++)
         {
             var matchesOnLine = matchingPattern.Matches(_asLines[i]);
             result.AddRange(matchesOnLine.Select(m => new Word(i * _lineLength + m.Index, m.Length, m.Value)));
@@ -110,6 +125,35 @@ public class CharacterMatrix
         var (x, y) = CoordinatesAt(index);
         var line = _asLines[y];
         _asLines[y] = $"{line.Substring(0, x)}{value}{line.Substring(x + 1)}";
+    }
+
+    /// <summary>
+    /// Finds the column indexes where the data matches a given expression.
+    /// </summary>
+    /// <param name="matcher">The function to match this column's data on.</param>
+    /// <returns>The column indexes of the matrix that match.</returns>
+    public IEnumerable<int> ColumnsWhere(Func<IEnumerable<char>, bool> matcher)
+    {
+        for (var x = 0; x < _lineLength; x++)
+        {
+            var indexesHere = Enumerable.Range(0, _lineCount).Select(y => IndexAt(x, y));
+            if (matcher(indexesHere.Select(i => _raw[i])))
+                yield return x;
+        }
+    }
+
+    /// <summary>
+    /// Finds the row indexes where the data matches a given expression.
+    /// </summary>
+    /// <param name="matcher">The function to match this row's data on.</param>
+    /// <returns>The row indexes of the matrix that match.</returns>
+    public IEnumerable<int> RowsWhere(Func<IEnumerable<char>, bool> matcher)
+    {
+        for (var y = 0; y < _asLines.Length; y++)
+        {
+            if (matcher(_asLines[y].ToCharArray()))
+                yield return y;
+        }
     }
 
     /// <summary>

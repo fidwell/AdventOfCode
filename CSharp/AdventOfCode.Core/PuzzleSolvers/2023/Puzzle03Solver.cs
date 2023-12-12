@@ -10,7 +10,7 @@ public class Puzzle03Solver : IPuzzleSolver
     {
         var matrix = new CharacterMatrix(DataReader.GetData(3, 0, useSample));
         return matrix
-            .FindAllMatches(new Regex(@"\d+"))
+            .FindAllWords(new Regex(@"\d+"))
             .Where(n => matrix.IndexesOfNeighbors(n).Any(index => IsSymbol(matrix.CharAt(index))))
             .Select(n => int.Parse(matrix.StringAt(n.StartIndex, n.Length)))
             .Sum()
@@ -20,10 +20,10 @@ public class Puzzle03Solver : IPuzzleSolver
     public string SolvePartTwo(bool useSample = false)
     {
         var matrix = new CharacterMatrix(DataReader.GetData(3, 0, useSample));
-        var numbers = matrix.FindAllMatches(new Regex(@"\d+"));
+        var numbers = matrix.FindAllWords(new Regex(@"\d+"));
         
         return matrix
-            .FindAllMatches(new Regex(@"\*"))
+            .FindAllWords(new Regex(@"\*"))
             .Select(g =>
             {
                 var neighboringWords = numbers.Where(n => matrix.IndexesOfNeighbors(n).Contains(g.StartIndex));

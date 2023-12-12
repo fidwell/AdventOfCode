@@ -4,7 +4,7 @@ public static class DigitFinder
 {
     public static IEnumerable<int> FindDigits(string input, bool allowWords)
     {
-        for (int i = 0; i < input.Length; i++)
+        for (var i = 0; i < input.Length; i++)
         {
             if (char.IsDigit(input[i]))
             {

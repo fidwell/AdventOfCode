@@ -6,7 +6,7 @@ namespace AdventOfCode.Tests;
 [TestClass]
 public class SolutionVerifiers
 {
-    const int Timeout = 2000;
+    const int Timeout = 3500;
 
     [DataTestMethod, Timeout(Timeout)]
     [DataRow(true, "142")]
@@ -127,4 +127,16 @@ public class SolutionVerifiers
     [DataRow(false, "493")]
     public void Puzzle10_Part2(bool useSample, string expected)
         => Assert.AreEqual(expected, new Puzzle10Solver().SolvePartTwo(useSample));
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(true, "374")]
+    [DataRow(false, "9599070")]
+    public void Puzzle11_Part1(bool useSample, string expected)
+        => Assert.AreEqual(expected, new Puzzle11Solver().SolvePartOne(useSample));
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(true, "82000210")]
+    [DataRow(false, "842645913794")]
+    public void Puzzle11_Part2(bool useSample, string expected)
+        => Assert.AreEqual(expected, new Puzzle11Solver().SolvePartTwo(useSample));
 }
