@@ -6,7 +6,7 @@ namespace AdventOfCode.Tests;
 [TestClass]
 public class SolutionVerifiers
 {
-    const int Timeout = 3500;
+    const int Timeout = 3000;
 
     [DataTestMethod, Timeout(Timeout)]
     [DataRow(true, "142")]

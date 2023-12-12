@@ -29,7 +29,7 @@ public class Puzzle05Solver : IPuzzleSolver
                 : seedData
                     .Where((x, i) => i % 2 == 0)
                     .Select((x, i) => new Range(seedData[i * 2], seedData[i * 2 + 1]));
-            _maps = ArrayChunker.Chunk(data.Skip(2).ToArray()).Select(d => new Map(d)).ToList();
+            _maps = data.Skip(2).ToArray().Chunk().Select(d => new Map(d)).ToList();
         }
 
         public long LowestLocationNumberThatCorrespondsToAnyOfTheInitialSeedNumbers()
