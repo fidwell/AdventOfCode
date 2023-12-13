@@ -10,10 +10,10 @@ public class CharacterMatrix
     private string _raw;
     private string[] _asRows;
     private string[] _asColumns;
-    private readonly int _lineLength;
-    private readonly int _lineCount;
-
     private bool _dataChanged;
+
+    public readonly int LineLength;
+    public readonly int LineCount;
 
     private string[] Columns
     {
@@ -51,10 +51,10 @@ public class CharacterMatrix
     {
         _raw = input.Replace(Environment.NewLine, string.Empty);
         _asRows = input.Split(Environment.NewLine);
-        _lineLength = _asRows[0].Length;
-        _lineCount = _asRows.Length;
+        LineLength = _asRows[0].Length;
+        LineCount = _asRows.Length;
 
-        if (Rows.Any(l => l.Length != _lineLength))
+        if (Rows.Any(l => l.Length != LineLength))
         {
             throw new ArgumentException("All lines must be the same length.", nameof(input));
         }
@@ -69,7 +69,7 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="index">The index to convert</param>
     /// <returns>The (x,y) coordinates in the matrix</returns>
-    public (int, int) CoordinatesAt(int index) => (index % _lineLength, index / _lineLength);
+    public (int, int) CoordinatesAt(int index) => (index % LineLength, index / LineLength);
 
     /// <summary>
     /// Returns the index of a character at a specific coordinate location.
@@ -77,7 +77,7 @@ public class CharacterMatrix
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <returns>The index of the coordinate.</returns>
-    public int IndexAt(int x, int y) => y * _lineLength + x;
+    public int IndexAt(int x, int y) => y * LineLength + x;
 
     /// <summary>
     /// Returns the single character value at a given index.
@@ -118,10 +118,10 @@ public class CharacterMatrix
     public IEnumerable<Word> FindAllWords(Regex matchingPattern)
     {
         var result = new List<Word>();
-        for (var i = 0; i < _lineCount; i++)
+        for (var i = 0; i < LineCount; i++)
         {
             var matchesOnLine = matchingPattern.Matches(Rows[i]);
-            result.AddRange(matchesOnLine.Select(m => new Word(i * _lineLength + m.Index, m.Length, m.Value)));
+            result.AddRange(matchesOnLine.Select(m => new Word(i * LineLength + m.Index, m.Length, m.Value)));
         }
         return result;
     }
@@ -142,10 +142,13 @@ public class CharacterMatrix
     /// <returns>Indexes of all characters surrounding the input word.</returns>
     public IEnumerable<int> IndexesOfNeighbors(Word word) => IndexesOfNeighbors(IndexesOfWord(word));
 
+    public string RowAt(int x) => _asRows[x];
+    public string ColumnAt(int y) => _asColumns[y];
+
     public int GoRightFrom(int index) => index + 1;
-    public int GoDownFrom(int index) => index + _lineLength;
+    public int GoDownFrom(int index) => index + LineLength;
     public int GoLeftFrom(int index) => index - 1;
-    public int GoUpFrom(int index) => index - _lineLength;
+    public int GoUpFrom(int index) => index - LineLength;
 
     /// <summary>
     /// Replaces the character value at the given index.
@@ -170,9 +173,9 @@ public class CharacterMatrix
     /// <returns>The column indexes of the matrix that match.</returns>
     public IEnumerable<int> ColumnsWhere(Func<IEnumerable<char>, bool> matcher)
     {
-        for (var x = 0; x < _lineLength; x++)
+        for (var x = 0; x < LineLength; x++)
         {
-            var indexesHere = Enumerable.Range(0, _lineCount).Select(y => IndexAt(x, y));
+            var indexesHere = Enumerable.Range(0, LineCount).Select(y => IndexAt(x, y));
             if (matcher(indexesHere.Select(i => _raw[i])))
                 yield return x;
         }
@@ -215,20 +218,20 @@ public class CharacterMatrix
         var (x, y) = CoordinatesAt(index);
 
         var nn = y > 0
-            ? index - _lineLength : -1;
-        var ne = y > 0 && x < _lineLength - 1
+            ? index - LineLength : -1;
+        var ne = y > 0 && x < LineLength - 1
             ? nn + 1 : -1;
         var nw = y > 0 && x > 0
             ? nn - 1 : -1;
 
-        var ss = y < _lineCount - 1
-            ? index + _lineLength : -1;
-        var se = y < _lineCount - 1 && x < _lineLength - 1
+        var ss = y < LineCount - 1
+            ? index + LineLength : -1;
+        var se = y < LineCount - 1 && x < LineLength - 1
             ? ss + 1 : -1;
-        var sw = y < _lineCount - 1 && x > 0
+        var sw = y < LineCount - 1 && x > 0
             ? ss - 1 : -1;
 
-        var ee = x < _lineLength - 1
+        var ee = x < LineLength - 1
             ? index + 1 : -1;
         var ww = x > 0
             ? index - 1 : -1;
@@ -239,9 +242,9 @@ public class CharacterMatrix
     private void CalculateRows()
     {
         var result = new List<string>();
-        for (int i = 0; i < _raw.Length; i += _lineLength)
+        for (int i = 0; i < _raw.Length; i += LineLength)
         {
-            result.Add(_raw.Substring(i, _lineLength));
+            result.Add(_raw.Substring(i, LineLength));
         }
         _asRows = result.ToArray();
     }
@@ -249,9 +252,9 @@ public class CharacterMatrix
     private void CalculateColumns()
     {
         var result = new List<string>();
-        for (var x = 0; x < _lineLength; x++)
+        for (var x = 0; x < LineLength; x++)
         {
-            var indexesHere = Enumerable.Range(0, _lineCount).Select(y => IndexAt(x, y));
+            var indexesHere = Enumerable.Range(0, LineCount).Select(y => IndexAt(x, y));
             result.Add(string.Join("", indexesHere.Select(i => _raw[i])));
         }
         _asColumns = result.ToArray();

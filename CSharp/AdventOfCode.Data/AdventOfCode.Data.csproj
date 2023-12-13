@@ -34,6 +34,8 @@
     <EmbeddedResource Include="Inputs\Puzzle11_Sample.txt" />
     <EmbeddedResource Include="Inputs\Puzzle12.txt" />
     <EmbeddedResource Include="Inputs\Puzzle12_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle13.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle13_Sample.txt" />
   </ItemGroup>
 
 </Project>
