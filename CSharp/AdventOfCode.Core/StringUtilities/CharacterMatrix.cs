@@ -8,9 +8,40 @@ namespace AdventOfCode.Core.StringUtilities;
 public class CharacterMatrix
 {
     private string _raw;
-    private string[] _asLines;
+    private string[] _asRows;
+    private string[] _asColumns;
     private readonly int _lineLength;
     private readonly int _lineCount;
+
+    private bool _dataChanged;
+
+    private string[] Columns
+    {
+        get
+        {
+            if (_dataChanged)
+            {
+                CalculateColumns();
+                CalculateRows();
+                _dataChanged = false;
+            }
+            return _asColumns;
+        }
+    }
+
+    private string[] Rows
+    {
+        get
+        {
+            if (_dataChanged)
+            {
+                CalculateColumns();
+                CalculateRows();
+                _dataChanged = false;
+            }
+            return _asRows;
+        }
+    }
 
     /// <summary>
     /// Creates a matrix of characters from a "rectanuglar-shaped" string.
@@ -19,14 +50,16 @@ public class CharacterMatrix
     public CharacterMatrix(string input)
     {
         _raw = input.Replace(Environment.NewLine, string.Empty);
-        _asLines = input.Split(Environment.NewLine);
-        _lineLength = _asLines[0].Length;
-        _lineCount = _asLines.Length;
+        _asRows = input.Split(Environment.NewLine);
+        _lineLength = _asRows[0].Length;
+        _lineCount = _asRows.Length;
 
-        if (_asLines.Any(l => l.Length != _lineLength))
+        if (Rows.Any(l => l.Length != _lineLength))
         {
             throw new ArgumentException("All lines must be the same length.", nameof(input));
         }
+
+        CalculateColumns();
     }
 
     public int TotalLength => _raw.Length;
@@ -87,7 +120,7 @@ public class CharacterMatrix
         var result = new List<Word>();
         for (var i = 0; i < _lineCount; i++)
         {
-            var matchesOnLine = matchingPattern.Matches(_asLines[i]);
+            var matchesOnLine = matchingPattern.Matches(Rows[i]);
             result.AddRange(matchesOnLine.Select(m => new Word(i * _lineLength + m.Index, m.Length, m.Value)));
         }
         return result;
@@ -123,8 +156,11 @@ public class CharacterMatrix
     {
         _raw = $"{_raw.Substring(0, index)}{value}{_raw.Substring(index + 1)}";
         var (x, y) = CoordinatesAt(index);
-        var line = _asLines[y];
-        _asLines[y] = $"{line.Substring(0, x)}{value}{line.Substring(x + 1)}";
+        var line = Rows[y];
+        Rows[y] = $"{line.Substring(0, x)}{value}{line.Substring(x + 1)}";
+
+        CalculateRows();
+        CalculateColumns();
     }
 
     /// <summary>
@@ -149,9 +185,9 @@ public class CharacterMatrix
     /// <returns>The row indexes of the matrix that match.</returns>
     public IEnumerable<int> RowsWhere(Func<IEnumerable<char>, bool> matcher)
     {
-        for (var y = 0; y < _asLines.Length; y++)
+        for (var y = 0; y < Rows.Length; y++)
         {
-            if (matcher(_asLines[y].ToCharArray()))
+            if (matcher(Rows[y].ToCharArray()))
                 yield return y;
         }
     }
@@ -198,6 +234,27 @@ public class CharacterMatrix
             ? index - 1 : -1;
 
         return new[] { nn, ne, ee, se, ss, sw, ww, nw }.Where(z => z >= 0);
+    }
+
+    private void CalculateRows()
+    {
+        var result = new List<string>();
+        for (int i = 0; i < _raw.Length; i += _lineLength)
+        {
+            result.Add(_raw.Substring(i, _lineLength));
+        }
+        _asRows = result.ToArray();
+    }
+
+    private void CalculateColumns()
+    {
+        var result = new List<string>();
+        for (var x = 0; x < _lineLength; x++)
+        {
+            var indexesHere = Enumerable.Range(0, _lineCount).Select(y => IndexAt(x, y));
+            result.Add(string.Join("", indexesHere.Select(i => _raw[i])));
+        }
+        _asColumns = result.ToArray();
     }
 
     public class Word(int startIndex, int length, string value)
