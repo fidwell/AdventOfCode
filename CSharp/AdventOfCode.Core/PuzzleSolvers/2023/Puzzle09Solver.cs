@@ -5,7 +5,7 @@ namespace AdventOfCode.Core.PuzzleSolvers._2023;
 public class Puzzle09Solver : IPuzzleSolver
 {
     public string SolvePartOne(bool useSample = false) =>
-        DataReader.GetData(9, 0, useSample)
+        DataReader.GetData(9, useSample)
         .Split(Environment.NewLine)
         .Select(l => new DataLine(l))
         .Select(l => l.GetNextPredicted())
@@ -13,7 +13,7 @@ public class Puzzle09Solver : IPuzzleSolver
         .ToString();
 
     public string SolvePartTwo(bool useSample = false) =>
-        DataReader.GetData(9, 0, useSample)
+        DataReader.GetData(9, useSample)
         .Split(Environment.NewLine)
         .Select(l => new DataLine(l))
         .Select(l => l.GetPreviousPredicted())

@@ -4,7 +4,7 @@ namespace AdventOfCode.Data;
 
 public static class DataReader
 {
-    public static string GetData(int puzzleId, int partId, bool useSample = false)
+    public static string GetData(int puzzleId, bool useSample, int partId = 0)
     {
         var assembly = Assembly.GetExecutingAssembly();
         var partString = partId <= 0 ? string.Empty : $"_Part{partId}";

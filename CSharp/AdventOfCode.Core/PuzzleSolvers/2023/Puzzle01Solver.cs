@@ -10,7 +10,7 @@ public class Puzzle01Solver() : IPuzzleSolver
 
     private string Solve(bool allowWords, int part, bool useSample = false)
         => DataReader
-            .GetData(1, part, useSample)
+            .GetData(1, useSample, part)
             .Split(Environment.NewLine)
             .Where(l => !string.IsNullOrWhiteSpace(l))
             .Select(l => GetFirstAndLastDigits(l, allowWords))

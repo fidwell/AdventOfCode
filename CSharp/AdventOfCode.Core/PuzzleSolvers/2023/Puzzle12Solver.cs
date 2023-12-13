@@ -8,14 +8,14 @@ public class Puzzle12Solver : IPuzzleSolver
     private readonly Dictionary<string, long> _cache = [];
 
     public string SolvePartOne(bool useSample = false) =>
-        DataReader.GetData(12, 0, useSample)
+        DataReader.GetData(12, useSample)
         .Split(Environment.NewLine)
         .Select(l => PossibleArrangementCount(l, 1))
         .Sum()
         .ToString();
 
     public string SolvePartTwo(bool useSample = false) =>
-        DataReader.GetData(12, 0, useSample)
+        DataReader.GetData(12, useSample)
         .Split(Environment.NewLine)
         .Select(l => PossibleArrangementCount(l, 5))
         .Sum()

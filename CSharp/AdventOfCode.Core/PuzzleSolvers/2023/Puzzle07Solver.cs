@@ -9,7 +9,7 @@ public class Puzzle07Solver : IPuzzleSolver
     public string SolvePartTwo(bool useSample = false) => Solve(false, useSample);
 
     private static string Solve(bool isPartOne, bool useSample = false)
-        => DataReader.GetData(7, 0, useSample)
+        => DataReader.GetData(7, useSample)
             .Split(Environment.NewLine)
             .Select(l => new InputLine(l, !isPartOne))
             .OrderBy(l => l.Hand)

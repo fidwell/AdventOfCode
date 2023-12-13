@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
 using AdventOfCode.Data;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
@@ -32,7 +31,7 @@ public class Puzzle10Solver : IPuzzleSolver
 
     private static (CharacterMatrix, int, IEnumerable<int>) GetData(int part, bool useSample)
     {
-        var matrix = new CharacterMatrix(DataReader.GetData(10, part, useSample));
+        var matrix = new CharacterMatrix(DataReader.GetData(10, useSample, part));
         var startingPosition = matrix.FindAllCharacters('S').Single();
 
         // works for my inputs :)

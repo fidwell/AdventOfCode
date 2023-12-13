@@ -7,7 +7,7 @@ public class Puzzle06Solver : IPuzzleSolver
 {
     public string SolvePartOne(bool useSample = false)
     {
-        var data = DataReader.GetData(6, 0, useSample).Split(Environment.NewLine);
+        var data = DataReader.GetData(6, useSample).Split(Environment.NewLine);
         var times = data[0].Split(": ")[1].SplitAndTrim(" ");
         var records = data[1].Split(": ")[1].SplitAndTrim(" ");
         return times
@@ -18,7 +18,7 @@ public class Puzzle06Solver : IPuzzleSolver
 
     public string SolvePartTwo(bool useSample = false)
     {
-        var data = DataReader.GetData(6, 0, useSample).Split(Environment.NewLine);
+        var data = DataReader.GetData(6, useSample).Split(Environment.NewLine);
         var time = data[0].Split(": ")[1].Replace(" ", "");
         var record = data[1].Split(": ")[1].Replace(" ", "");
         return SolveRace(long.Parse(time), long.Parse(record)).ToString();

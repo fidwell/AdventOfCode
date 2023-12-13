@@ -1,7 +1,7 @@
-﻿using System.Buffers;
-using AdventOfCode.Core.ArrayUtilities;
+﻿using AdventOfCode.Core.ArrayUtilities;
 using AdventOfCode.Core.StringUtilities;
 using AdventOfCode.Data;
+using System.Buffers;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
@@ -11,7 +11,7 @@ public class Puzzle05Solver : IPuzzleSolver
     public string SolvePartTwo(bool useSample = false) => Solve(false, useSample);
 
     private static string Solve(bool isPartOne, bool useSample) =>
-        new Almanac(DataReader.GetData(5, 0, useSample), isPartOne)
+        new Almanac(DataReader.GetData(5, useSample), isPartOne)
             .LowestLocationNumberThatCorrespondsToAnyOfTheInitialSeedNumbers()
             .ToString();
 

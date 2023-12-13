@@ -12,7 +12,7 @@ public class Puzzle02Solver() : IPuzzleSolver
     };
 
     public string SolvePartOne(bool useSample = false) =>
-        DataReader.GetData(2, 0, useSample)
+        DataReader.GetData(2, useSample)
             .Split(Environment.NewLine)
             .Select(g => g.Substring(g.IndexOf(":") + 2))
             .Select((g, ix) => WasGroupPossible(g) ? (ix + 1) : 0)
@@ -20,7 +20,7 @@ public class Puzzle02Solver() : IPuzzleSolver
             .ToString();
 
     public string SolvePartTwo(bool useSample = false) =>
-        DataReader.GetData(2, 0, useSample)
+        DataReader.GetData(2, useSample)
             .Split(Environment.NewLine)
             .Select(g => g.Substring(g.IndexOf(":") + 2))
             .Select(SetPower)

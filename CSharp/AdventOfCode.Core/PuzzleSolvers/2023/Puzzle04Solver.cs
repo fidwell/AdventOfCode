@@ -20,7 +20,7 @@ public class Puzzle04Solver : IPuzzleSolver
     }
 
     private static IEnumerable<Scratchcard> GetCards(bool useSample)
-        => DataReader.GetData(4, 0, useSample).Split(Environment.NewLine).Select(l => new Scratchcard(l));
+        => DataReader.GetData(4, useSample).Split(Environment.NewLine).Select(l => new Scratchcard(l));
 
     private class Scratchcard
     {

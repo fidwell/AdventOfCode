@@ -1,6 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
 using AdventOfCode.Data;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
@@ -8,7 +8,7 @@ public class Puzzle03Solver : IPuzzleSolver
 {
     public string SolvePartOne(bool useSample = false)
     {
-        var matrix = new CharacterMatrix(DataReader.GetData(3, 0, useSample));
+        var matrix = new CharacterMatrix(DataReader.GetData(3, useSample));
         return matrix
             .FindAllWords(new Regex(@"\d+"))
             .Where(n => matrix.IndexesOfNeighbors(n).Any(index => IsSymbol(matrix.CharAt(index))))
@@ -19,9 +19,9 @@ public class Puzzle03Solver : IPuzzleSolver
 
     public string SolvePartTwo(bool useSample = false)
     {
-        var matrix = new CharacterMatrix(DataReader.GetData(3, 0, useSample));
+        var matrix = new CharacterMatrix(DataReader.GetData(3, useSample));
         var numbers = matrix.FindAllWords(new Regex(@"\d+"));
-        
+
         return matrix
             .FindAllWords(new Regex(@"\*"))
             .Select(g =>

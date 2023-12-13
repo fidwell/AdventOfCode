@@ -24,7 +24,7 @@ public class Puzzle08Solver : IPuzzleSolver
 
     private void Init(int part, bool useSample)
     {
-        var data = DataReader.GetData(8, part, useSample).Split(Environment.NewLine);
+        var data = DataReader.GetData(8, useSample, part).Split(Environment.NewLine);
         _instructions = data[0].ToCharArray();
         _nodes = data.Skip(2).Select(l => new Node(l));
     }
