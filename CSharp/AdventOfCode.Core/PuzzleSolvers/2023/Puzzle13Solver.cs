@@ -7,24 +7,28 @@ namespace AdventOfCode.Core.PuzzleSolvers._2023;
 public class Puzzle13Solver : IPuzzleSolver
 {
     public string SolvePartOne(bool useSample = false) =>
-        DataReader.GetData(13, useSample).Split(Environment.NewLine)
-        .Chunk()
-        .Select(c => new CharacterMatrix(string.Join(Environment.NewLine, c)))
-        .Select(ValueOf)
+        GetMatrixes(useSample)
+        .Select(m => ValueOf(m, 0))
         .Sum()
         .ToString();
 
-    public string SolvePartTwo(bool useSample = false)
-    {
-        throw new NotImplementedException();
-    }
+    public string SolvePartTwo(bool useSample = false) =>
+        GetMatrixes(useSample)
+        .Select(m => ValueOf(m, 1))
+        .Sum()
+        .ToString();
 
-    private int ValueOf(CharacterMatrix matrix)
+    private IEnumerable<CharacterMatrix> GetMatrixes(bool useSample) =>
+        DataReader.GetData(13, useSample).Split(Environment.NewLine)
+        .Chunk()
+        .Select(c => new CharacterMatrix(string.Join(Environment.NewLine, c)));
+
+    private static int ValueOf(CharacterMatrix matrix, int differencesRequired)
     {
         // Find horizontal reflection, if it exists
         for (var y = 0; y < matrix.LineCount - 1; y++)
         {
-            if (IsRowReflectionAt(matrix, y))
+            if (IsRowReflectionAt(matrix, y, differencesRequired))
             {
                 return 100 * (y + 1);
             }
@@ -33,54 +37,41 @@ public class Puzzle13Solver : IPuzzleSolver
         // Find vertical reflection, if it exists
         for (var x = 0; x < matrix.LineLength - 1; x++)
         {
-            if (IsColumnReflectionAt(matrix, x))
+            if (IsColumnReflectionAt(matrix, x, differencesRequired))
             {
                 return x + 1;
             }
         }
 
-        return 0;
+        throw new Exception("Zero reflections found");
     }
 
-    private static bool IsColumnReflectionAt(CharacterMatrix matrix, int firstColumnIndex)
+    private static bool IsColumnReflectionAt(CharacterMatrix matrix, int firstIndex, int differencesRequired) =>
+        IsReflectionAt(matrix, firstIndex, differencesRequired, (m, x) => m.ColumnAt(x), matrix.LineLength);
+
+    private static bool IsRowReflectionAt(CharacterMatrix matrix, int firstIndex, int differencesRequired) =>
+        IsReflectionAt(matrix, firstIndex, differencesRequired, (m, x) => m.RowAt(x), matrix.LineCount);
+
+    private static bool IsReflectionAt(CharacterMatrix matrix, int startingIndex, int differencesRequired, Func<CharacterMatrix, int, string> func, int max)
     {
-        var leftColumnIndex = firstColumnIndex;
-        var rightColumnIndex = firstColumnIndex + 1;
+        var firstIndex = startingIndex;
+        var secondIndex = startingIndex + 1;
+        var differenceCount = 0;
 
         do
         {
-            var lineHere = matrix.ColumnAt(leftColumnIndex);
-            var lineNext = matrix.ColumnAt(rightColumnIndex);
+            var lineHere = func(matrix, firstIndex);
+            var lineNext = func(matrix, secondIndex);
+            differenceCount += lineHere.CharacterDifferenceCount(lineNext);
 
-            if (lineHere != lineNext)
+            if (differenceCount > differencesRequired)
                 return false;
 
-            leftColumnIndex--;
-            rightColumnIndex++;
+            firstIndex--;
+            secondIndex++;
 
-        } while (leftColumnIndex >= 0 && rightColumnIndex < matrix.LineLength);
+        } while (firstIndex >= 0 && secondIndex < max);
 
-        return true;
-    }
-
-    private static bool IsRowReflectionAt(CharacterMatrix matrix, int firstRowIndex)
-    {
-        var topRowIndex = firstRowIndex;
-        var bottomRowIndex = firstRowIndex + 1;
-
-        do
-        {
-            var lineHere = matrix.RowAt(topRowIndex);
-            var lineNext = matrix.RowAt(bottomRowIndex);
-
-            if (lineHere != lineNext)
-                return false;
-
-            topRowIndex--;
-            bottomRowIndex++;
-
-        } while (topRowIndex >= 0 && bottomRowIndex < matrix.LineCount);
-
-        return true;
+        return differenceCount == differencesRequired;
     }
 }

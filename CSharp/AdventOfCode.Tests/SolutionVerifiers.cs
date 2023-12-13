@@ -159,8 +159,8 @@ public class SolutionVerifiers
         => Assert.AreEqual(expected, new Puzzle13Solver().SolvePartOne(useSample));
 
     [DataTestMethod, Timeout(Timeout)]
-    //[DataRow(true, "400")]
-    //[DataRow(false, "_")]
+    [DataRow(true, "400")]
+    [DataRow(false, "42695")]
     public void Puzzle13_Part2(bool useSample, string expected)
         => Assert.AreEqual(expected, new Puzzle13Solver().SolvePartTwo(useSample));
 }
