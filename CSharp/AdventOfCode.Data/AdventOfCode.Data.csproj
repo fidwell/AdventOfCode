@@ -36,6 +36,30 @@
     <EmbeddedResource Include="Inputs\Puzzle12_Sample.txt" />
     <EmbeddedResource Include="Inputs\Puzzle13.txt" />
     <EmbeddedResource Include="Inputs\Puzzle13_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle14.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle14_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle15.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle15_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle16.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle16_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle17.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle17_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle18.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle18_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle19.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle19_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle20.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle20_Part1_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle21.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle21_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle22.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle22_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle23.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle23_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle24.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle24_Sample.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle25.txt" />
+    <EmbeddedResource Include="Inputs\Puzzle25_Sample.txt" />
   </ItemGroup>
 
 </Project>
