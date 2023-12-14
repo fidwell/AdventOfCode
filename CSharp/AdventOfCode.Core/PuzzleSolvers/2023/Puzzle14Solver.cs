@@ -26,9 +26,9 @@ public class Puzzle14Solver : IPuzzleSolver
         var anythingMoved = false;
 
         // to do: directions other than North
-        for (var x = 0; x < matrix.LineLength; x++)
+        for (var x = 0; x < matrix.Width; x++)
         {
-            for (var y = 1; y < matrix.LineCount; y++)
+            for (var y = 1; y < matrix.Height; y++)
             {
                 if (matrix.CharAt(x, y) == 'O' && matrix.CharAt(x, y - 1) == '.')
                 {
@@ -46,7 +46,7 @@ public class Puzzle14Solver : IPuzzleSolver
 
     private static int LoadNorth(CharacterMatrix matrix) =>
         matrix.FindAllCharacters('O')
-        .Select(rockIndex => matrix.LineCount - matrix.CoordinatesAt(rockIndex).Item2)
+        .Select(rockIndex => matrix.Height - matrix.CoordinatesAt(rockIndex).Item2)
         .Sum();
 
     private enum Direction

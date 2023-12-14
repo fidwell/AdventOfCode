@@ -25,7 +25,7 @@ public class Puzzle13Solver : IPuzzleSolver
     private static int ValueOf(CharacterMatrix matrix, int differencesRequired)
     {
         // Find horizontal reflection, if it exists
-        for (var y = 0; y < matrix.LineCount - 1; y++)
+        for (var y = 0; y < matrix.Height - 1; y++)
         {
             if (IsRowReflectionAt(matrix, y, differencesRequired))
             {
@@ -34,7 +34,7 @@ public class Puzzle13Solver : IPuzzleSolver
         }
 
         // Find vertical reflection, if it exists
-        for (var x = 0; x < matrix.LineLength - 1; x++)
+        for (var x = 0; x < matrix.Width - 1; x++)
         {
             if (IsColumnReflectionAt(matrix, x, differencesRequired))
             {
@@ -46,10 +46,10 @@ public class Puzzle13Solver : IPuzzleSolver
     }
 
     private static bool IsColumnReflectionAt(CharacterMatrix matrix, int firstIndex, int differencesRequired) =>
-        IsReflectionAt(matrix, firstIndex, differencesRequired, (m, x) => m.ColumnAt(x), matrix.LineLength);
+        IsReflectionAt(matrix, firstIndex, differencesRequired, (m, x) => m.ColumnAt(x), matrix.Width);
 
     private static bool IsRowReflectionAt(CharacterMatrix matrix, int firstIndex, int differencesRequired) =>
-        IsReflectionAt(matrix, firstIndex, differencesRequired, (m, x) => m.RowAt(x), matrix.LineCount);
+        IsReflectionAt(matrix, firstIndex, differencesRequired, (m, x) => m.RowAt(x), matrix.Height);
 
     private static bool IsReflectionAt(CharacterMatrix matrix, int startingIndex, int differencesRequired, Func<CharacterMatrix, int, string> func, int max)
     {

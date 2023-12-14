@@ -34,5 +34,5 @@ public class Puzzle03Solver : IPuzzleSolver
             .ToString();
     }
 
-    private static bool IsSymbol(string c) => Regex.IsMatch(c, @"[^\d\.\r\n]");
+    private static bool IsSymbol(char c) => Regex.IsMatch($"{c}", @"[^\d\.\r\n]");
 }

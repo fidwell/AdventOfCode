@@ -34,7 +34,7 @@ public class Puzzle10Solver : IPuzzleSolver
         var startingPosition = matrix.FindAllCharacters('S').Single();
 
         // works for my inputs :)
-        var useSample = matrix.LineLength < 30;
+        var useSample = matrix.Width < 30;
         matrix.SetCharacter(startingPosition, useSample ? 'F' : '7');
         var indexesOfLoop = IndexesOfLoop(matrix, startingPosition);
         return (matrix, startingPosition, indexesOfLoop);
@@ -75,27 +75,27 @@ public class Puzzle10Solver : IPuzzleSolver
     {
         switch (data.CharAt(position))
         {
-            case "|":
+            case '|':
                 return currentDirection == Direction.Up
                     ? (data.GoUpFrom(position), Direction.Up)
                     : (data.GoDownFrom(position), Direction.Down);
-            case "-":
+            case '-':
                 return currentDirection == Direction.Right
                     ? (data.GoRightFrom(position), Direction.Right)
                     : (data.GoLeftFrom(position), Direction.Left);
-            case "F":
+            case 'F':
                 return currentDirection == Direction.Up
                     ? (data.GoRightFrom(position), Direction.Right)
                     : (data.GoDownFrom(position), Direction.Down);
-            case "7":
+            case '7':
                 return currentDirection == Direction.Up
                     ? (data.GoLeftFrom(position), Direction.Left)
                     : (data.GoDownFrom(position), Direction.Down);
-            case "J":
+            case 'J':
                 return currentDirection == Direction.Down
                     ? (data.GoLeftFrom(position), Direction.Left)
                     : (data.GoUpFrom(position), Direction.Up);
-            case "L":
+            case 'L':
                 return currentDirection == Direction.Down
                     ? (data.GoRightFrom(position), Direction.Right)
                     : (data.GoUpFrom(position), Direction.Up);
