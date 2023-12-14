@@ -1,20 +1,19 @@
 ﻿using AdventOfCode.Core.ArrayUtilities;
 using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Data;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle11Solver : IPuzzleSolver
 {
-    public string SolvePartOne(bool useSample = false)
-        => Solve(useSample, 1);
+    public string SolvePartOne(string input)
+        => Solve(input, 1);
 
-    public string SolvePartTwo(bool useSample = false)
-        => Solve(useSample, 999999);
+    public string SolvePartTwo(string input)
+        => Solve(input, 999999);
 
-    private static string Solve(bool useSample, long gapSize)
+    private static string Solve(string input, long gapSize)
     {
-        var data = new CharacterMatrix(DataReader.GetData(11, useSample));
+        var data = new CharacterMatrix(input);
         var galaxyCoordinates = data.FindAllCharacters('#').Select(data.CoordinatesAt).ToArray();
         var columnsWithNoGalaxies = data.ColumnsWhere(col => col.All(c => c != '#')).ToList();
         var rowsWithNoGalaxies = data.RowsWhere(row => row.All(c => c != '#')).ToList();

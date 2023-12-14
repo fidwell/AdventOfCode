@@ -1,19 +1,18 @@
 ﻿using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Data;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle10Solver : IPuzzleSolver
 {
-    public string SolvePartOne(bool useSample = false)
+    public string SolvePartOne(string input)
     {
-        var (_, _, indexesOfLoop) = GetData(1, useSample);
+        var (_, _, indexesOfLoop) = GetData(input);
         return (indexesOfLoop.Count() / 2).ToString();
     }
 
-    public string SolvePartTwo(bool useSample = false)
+    public string SolvePartTwo(string input)
     {
-        var (matrix, _, indexesOfLoop) = GetData(2, useSample);
+        var (matrix, _, indexesOfLoop) = GetData(input);
 
         // Replace non-loop characters
         for (var i = 0; i < matrix.TotalLength; i++)
@@ -29,12 +28,13 @@ public class Puzzle10Solver : IPuzzleSolver
             .ToString();
     }
 
-    private static (CharacterMatrix, int, IEnumerable<int>) GetData(int part, bool useSample)
+    private static (CharacterMatrix, int, IEnumerable<int>) GetData(string input)
     {
-        var matrix = new CharacterMatrix(DataReader.GetData(10, useSample, part));
+        var matrix = new CharacterMatrix(input);
         var startingPosition = matrix.FindAllCharacters('S').Single();
 
         // works for my inputs :)
+        var useSample = matrix.LineLength < 30;
         matrix.SetCharacter(startingPosition, useSample ? 'F' : '7');
         var indexesOfLoop = IndexesOfLoop(matrix, startingPosition);
         return (matrix, startingPosition, indexesOfLoop);

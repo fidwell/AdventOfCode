@@ -1,13 +1,12 @@
 ﻿using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Data;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle06Solver : IPuzzleSolver
 {
-    public string SolvePartOne(bool useSample = false)
+    public string SolvePartOne(string input)
     {
-        var data = DataReader.GetData(6, useSample).Split(Environment.NewLine);
+        var data = input.Split(Environment.NewLine);
         var times = data[0].Split(": ")[1].SplitAndTrim(" ");
         var records = data[1].Split(": ")[1].SplitAndTrim(" ");
         return times
@@ -16,9 +15,9 @@ public class Puzzle06Solver : IPuzzleSolver
             .ToString();
     }
 
-    public string SolvePartTwo(bool useSample = false)
+    public string SolvePartTwo(string input)
     {
-        var data = DataReader.GetData(6, useSample).Split(Environment.NewLine);
+        var data = input.Split(Environment.NewLine);
         var time = data[0].Split(": ")[1].Replace(" ", "");
         var record = data[1].Split(": ")[1].Replace(" ", "");
         return SolveRace(long.Parse(time), long.Parse(record)).ToString();

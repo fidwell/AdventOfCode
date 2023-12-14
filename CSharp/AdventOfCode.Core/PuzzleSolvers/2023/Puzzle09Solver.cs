@@ -1,19 +1,17 @@
-﻿using AdventOfCode.Data;
-
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+﻿namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle09Solver : IPuzzleSolver
 {
-    public string SolvePartOne(bool useSample = false) =>
-        DataReader.GetData(9, useSample)
+    public string SolvePartOne(string input) =>
+        input
         .Split(Environment.NewLine)
         .Select(l => new DataLine(l))
         .Select(l => l.GetNextPredicted())
         .Sum()
         .ToString();
 
-    public string SolvePartTwo(bool useSample = false) =>
-        DataReader.GetData(9, useSample)
+    public string SolvePartTwo(string input) =>
+        input
         .Split(Environment.NewLine)
         .Select(l => new DataLine(l))
         .Select(l => l.GetPreviousPredicted())

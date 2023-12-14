@@ -1,5 +1,4 @@
 ﻿using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Data;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
@@ -7,15 +6,15 @@ public class Puzzle12Solver : IPuzzleSolver
 {
     private readonly Dictionary<string, long> _cache = [];
 
-    public string SolvePartOne(bool useSample = false) =>
-        DataReader.GetData(12, useSample)
+    public string SolvePartOne(string input) =>
+        input
         .Split(Environment.NewLine)
         .Select(l => PossibleArrangementCount(l, 1))
         .Sum()
         .ToString();
 
-    public string SolvePartTwo(bool useSample = false) =>
-        DataReader.GetData(12, useSample)
+    public string SolvePartTwo(string input) =>
+        input
         .Split(Environment.NewLine)
         .Select(l => PossibleArrangementCount(l, 5))
         .Sum()

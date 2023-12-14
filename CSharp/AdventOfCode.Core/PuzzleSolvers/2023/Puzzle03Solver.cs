@@ -1,14 +1,13 @@
-﻿using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Data;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle03Solver : IPuzzleSolver
 {
-    public string SolvePartOne(bool useSample = false)
+    public string SolvePartOne(string input)
     {
-        var matrix = new CharacterMatrix(DataReader.GetData(3, useSample));
+        var matrix = new CharacterMatrix(input);
         return matrix
             .FindAllWords(new Regex(@"\d+"))
             .Where(n => matrix.IndexesOfNeighbors(n).Any(index => IsSymbol(matrix.CharAt(index))))
@@ -17,9 +16,9 @@ public class Puzzle03Solver : IPuzzleSolver
             .ToString();
     }
 
-    public string SolvePartTwo(bool useSample = false)
+    public string SolvePartTwo(string input)
     {
-        var matrix = new CharacterMatrix(DataReader.GetData(3, useSample));
+        var matrix = new CharacterMatrix(input);
         var numbers = matrix.FindAllWords(new Regex(@"\d+"));
 
         return matrix

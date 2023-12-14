@@ -1,15 +1,14 @@
 ﻿using AdventOfCode.Core.Poker;
-using AdventOfCode.Data;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle07Solver : IPuzzleSolver
 {
-    public string SolvePartOne(bool useSample = false) => Solve(true, useSample);
-    public string SolvePartTwo(bool useSample = false) => Solve(false, useSample);
+    public string SolvePartOne(string input) => Solve(true, input);
+    public string SolvePartTwo(string input) => Solve(false, input);
 
-    private static string Solve(bool isPartOne, bool useSample = false)
-        => DataReader.GetData(7, useSample)
+    private static string Solve(bool isPartOne, string input)
+        => input
             .Split(Environment.NewLine)
             .Select(l => new InputLine(l, !isPartOne))
             .OrderBy(l => l.Hand)

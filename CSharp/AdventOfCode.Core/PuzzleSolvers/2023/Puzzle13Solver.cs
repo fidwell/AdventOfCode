@@ -1,25 +1,24 @@
 ﻿using AdventOfCode.Core.ArrayUtilities;
 using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Data;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle13Solver : IPuzzleSolver
 {
-    public string SolvePartOne(bool useSample = false) =>
-        GetMatrixes(useSample)
+    public string SolvePartOne(string input) =>
+        GetMatrixes(input)
         .Select(m => ValueOf(m, 0))
         .Sum()
         .ToString();
 
-    public string SolvePartTwo(bool useSample = false) =>
-        GetMatrixes(useSample)
+    public string SolvePartTwo(string input) =>
+        GetMatrixes(input)
         .Select(m => ValueOf(m, 1))
         .Sum()
         .ToString();
 
-    private IEnumerable<CharacterMatrix> GetMatrixes(bool useSample) =>
-        DataReader.GetData(13, useSample).Split(Environment.NewLine)
+    private IEnumerable<CharacterMatrix> GetMatrixes(string input) =>
+        input.Split(Environment.NewLine)
         .Chunk()
         .Select(c => new CharacterMatrix(string.Join(Environment.NewLine, c)));
 

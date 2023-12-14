@@ -2,13 +2,6 @@
 
 public class Puzzle21Solver : IPuzzleSolver
 {
-    public string SolvePartOne(bool useSample = false)
-    {
-        throw new NotImplementedException();
-    }
-
-    public string SolvePartTwo(bool useSample = false)
-    {
-        throw new NotImplementedException();
-    }
+    public string SolvePartOne(string input) => throw new NotImplementedException();
+    public string SolvePartTwo(string input) => throw new NotImplementedException();
 }

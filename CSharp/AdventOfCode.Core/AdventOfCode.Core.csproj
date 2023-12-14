@@ -6,31 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="PuzzleSolvers\2023\Puzzle02Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle03Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle04Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle05Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle06Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle07Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle08Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle09Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle10Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle11Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle12Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle13Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle14Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle15Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle16Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle17Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle18Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle19Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle20Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle21Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle22Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle23Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle24Solver.cs" />
-    <Compile Remove="PuzzleSolvers\2023\Puzzle25Solver.cs" />
-  </ItemGroup>
-
 </Project>

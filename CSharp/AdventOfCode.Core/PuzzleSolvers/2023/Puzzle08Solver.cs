@@ -1,30 +1,28 @@
-﻿using AdventOfCode.Data;
-
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+﻿namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle08Solver : IPuzzleSolver
 {
     private char[] _instructions = [];
     private IEnumerable<Node> _nodes = [];
 
-    public string SolvePartOne(bool useSample = false)
+    public string SolvePartOne(string input)
     {
-        Init(1, useSample);
+        Init(input);
         return Travel(_nodes.First(n => n.Name == "AAA"), n => n.Name == "ZZZ").ToString();
     }
 
-    public string SolvePartTwo(bool useSample = false)
+    public string SolvePartTwo(string input)
     {
-        Init(2, useSample);
+        Init(input);
         var startingNodes = _nodes.Where(n => n.Name[2] == 'A');
         var steps = startingNodes.Select(n => Travel(n, n => n.Name[2] == 'Z')).Select(s => (long)s);
         var total = steps.Aggregate(LCM);
         return total.ToString();
     }
 
-    private void Init(int part, bool useSample)
+    private void Init(string input)
     {
-        var data = DataReader.GetData(8, useSample, part).Split(Environment.NewLine);
+        var data = input.Split(Environment.NewLine);
         _instructions = data[0].ToCharArray();
         _nodes = data.Skip(2).Select(l => new Node(l));
     }

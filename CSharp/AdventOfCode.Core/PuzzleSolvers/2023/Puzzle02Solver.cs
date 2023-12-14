@@ -1,6 +1,4 @@
-﻿using AdventOfCode.Data;
-
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+﻿namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle02Solver() : IPuzzleSolver
 {
@@ -11,17 +9,15 @@ public class Puzzle02Solver() : IPuzzleSolver
         { "blue", 14 }
     };
 
-    public string SolvePartOne(bool useSample = false) =>
-        DataReader.GetData(2, useSample)
-            .Split(Environment.NewLine)
+    public string SolvePartOne(string input) =>
+        input.Split(Environment.NewLine)
             .Select(g => g.Substring(g.IndexOf(":") + 2))
             .Select((g, ix) => WasGroupPossible(g) ? (ix + 1) : 0)
             .Sum()
             .ToString();
 
-    public string SolvePartTwo(bool useSample = false) =>
-        DataReader.GetData(2, useSample)
-            .Split(Environment.NewLine)
+    public string SolvePartTwo(string input) =>
+        input.Split(Environment.NewLine)
             .Select(g => g.Substring(g.IndexOf(":") + 2))
             .Select(SetPower)
             .Sum()

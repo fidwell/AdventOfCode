@@ -1,26 +1,25 @@
 ﻿using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Data;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle04Solver : IPuzzleSolver
 {
-    public string SolvePartOne(bool useSample = false) =>
-        GetCards(useSample)
+    public string SolvePartOne(string input) =>
+        GetCards(input)
         .Sum(c => c.Score)
         .ToString();
 
-    public string SolvePartTwo(bool useSample = false)
+    public string SolvePartTwo(string input)
     {
-        var cards = GetCards(useSample).ToList();
+        var cards = GetCards(input).ToList();
         cards.ForEach(card =>
             Enumerable.Range(card.Id, card.MatchingCount).ToList()
                 .ForEach(index => cards[index].CopyCount += card.CopyCount));
         return cards.Sum(c => c.CopyCount).ToString();
     }
 
-    private static IEnumerable<Scratchcard> GetCards(bool useSample)
-        => DataReader.GetData(4, useSample).Split(Environment.NewLine).Select(l => new Scratchcard(l));
+    private static IEnumerable<Scratchcard> GetCards(string input)
+        => input.Split(Environment.NewLine).Select(l => new Scratchcard(l));
 
     private class Scratchcard
     {
