@@ -87,6 +87,14 @@ public class CharacterMatrix
     public string CharAt(int index) => $"{_raw[index]}";
 
     /// <summary>
+    /// Returns the single character value at a given coordinate.
+    /// </summary>
+    /// <param name="x">The x coordinate.</param>
+    /// <param name="y">The y coordinate.</param>
+    /// <returns>The character at this position in the matrix.</returns>
+    public char CharAt(int x, int y) => _raw[IndexAt(x, y)];
+
+    /// <summary>
     /// Returns a string starting at a given index, of a given length.
     /// </summary>
     /// <param name="index">The starting position of the desired string.</param>
