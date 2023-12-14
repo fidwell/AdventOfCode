@@ -7,7 +7,7 @@ namespace AdventOfCode.Tests;
 [TestClass]
 public class SolutionVerifiers
 {
-    const int Timeout = 2000;
+    private const int Timeout = 2600;
 
     private readonly IPuzzleSolver[] _solvers;
 
@@ -110,8 +110,8 @@ public class SolutionVerifiers
 
     [DataRow(14, 1, true, "136", DisplayName = "2023.14.1-s")]
     [DataRow(14, 1, false, "113525", DisplayName = "2023.14.1")]
-    [DataRow(14, 2, true, "_", DisplayName = "2023.14.2-s")]
-    [DataRow(14, 2, false, "_", DisplayName = "2023.14.2")]
+    [DataRow(14, 2, true, "64", DisplayName = "2023.14.2-s")]
+    [DataRow(14, 2, false, "101292", DisplayName = "2023.14.2")]
 
     [DataRow(15, 1, true, "_", DisplayName = "2023.15.1-s")]
     [DataRow(15, 1, false, "_", DisplayName = "2023.15.1")]

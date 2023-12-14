@@ -39,6 +39,12 @@ public class CharacterMatrix
 
     public int TotalLength => (int)_data.LongLength;
 
+    public string DisplayString =>
+        string.Join(
+            Environment.NewLine,
+            Enumerable.Range(0, Height).Select(y =>
+                new string(Enumerable.Range(0, Width).Select(x => _data[x, y]).ToArray())));
+
     /// <summary>
     /// Find the (x,y) coordinates in the matrix given a starting one-dimensional index.
     /// </summary>
