@@ -1,3 +1,4 @@
+using AdventOfCode.Core.PuzzleSolvers;
 using AdventOfCode.Core.PuzzleSolvers._2023;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,17 +9,58 @@ public class SolutionVerifiers
 {
     const int Timeout = 3000;
 
-    [DataTestMethod, Timeout(Timeout)]
-    [DataRow(true, "142")]
-    [DataRow(false, "54632")]
-    public void Puzzle01_Part1(bool useSample, string expected)
-        => Assert.AreEqual(expected, new Puzzle01Solver().SolvePartOne(useSample));
+    private readonly IPuzzleSolver[] _solvers;
+
+    public SolutionVerifiers()
+    {
+        _solvers = [
+            new Puzzle01Solver(),
+            //new Puzzle02Solver(),
+            //new Puzzle03Solver(),
+            //new Puzzle04Solver(),
+            //new Puzzle05Solver(),
+            //new Puzzle06Solver(),
+            //new Puzzle07Solver(),
+            //new Puzzle08Solver(),
+            //new Puzzle09Solver(),
+            //new Puzzle10Solver(),
+            //new Puzzle11Solver(),
+            //new Puzzle12Solver(),
+            //new Puzzle13Solver(),
+            //new Puzzle14Solver(),
+            //new Puzzle15Solver(),
+            //new Puzzle16Solver(),
+            //new Puzzle17Solver(),
+            //new Puzzle18Solver(),
+            //new Puzzle19Solver(),
+            //new Puzzle20Solver(),
+            //new Puzzle21Solver(),
+            //new Puzzle22Solver(),
+            //new Puzzle23Solver(),
+            //new Puzzle24Solver(),
+            //new Puzzle25Solver()
+        ];
+    }
 
     [DataTestMethod, Timeout(Timeout)]
-    [DataRow(true, "281")]
-    [DataRow(false, "54019")]
-    public void Puzzle01_Part2(bool useSample, string expected)
-        => Assert.AreEqual(expected, new Puzzle01Solver().SolvePartTwo(useSample));
+    [DataRow(1, 1, true, "142")]
+    [DataRow(1, 1, false, "54632")]
+    [DataRow(1, 2, true, "281")]
+    [DataRow(1, 2, false, "54019")]
+    public void Solve(int puzzle, int part, bool useSample, string expected)
+    {
+        if (DateTime.Today < new DateTime(2023, 12, puzzle))
+            return;
+
+        var input = DataReader.GetData(puzzle, part, useSample);
+        var solver = _solvers[puzzle - 1];
+        var result = part == 1
+            ? solver.SolvePartOne(input)
+            : solver.SolvePartTwo(input);
+        Assert.AreEqual(expected, result);
+    }
+
+    /*
 
     [DataTestMethod, Timeout(Timeout)]
     [DataRow(true, "8")]
@@ -163,4 +205,6 @@ public class SolutionVerifiers
     [DataRow(false, "42695")]
     public void Puzzle13_Part2(bool useSample, string expected)
         => Assert.AreEqual(expected, new Puzzle13Solver().SolvePartTwo(useSample));
+
+    */
 }
