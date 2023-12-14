@@ -14,7 +14,7 @@ public class Puzzle11Solver : IPuzzleSolver
     private static string Solve(string input, long gapSize)
     {
         var data = new CharacterMatrix(input);
-        var galaxyCoordinates = data.FindAllCharacters('#').Select(data.CoordinatesAt).ToArray();
+        var galaxyCoordinates = data.FindAllCharacters('#').ToArray();
         var columnsWithNoGalaxies = data.ColumnsWhere(col => col.All(c => c != '#')).ToList();
         var rowsWithNoGalaxies = data.RowsWhere(row => row.All(c => c != '#')).ToList();
         return galaxyCoordinates

@@ -6,29 +6,29 @@ public class Puzzle10Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
     {
-        var (_, _, indexesOfLoop) = GetData(input);
-        return (indexesOfLoop.Count() / 2).ToString();
+        var (_, _, coordinatesOfLoop) = GetData(input);
+        return (coordinatesOfLoop.Count() / 2).ToString();
     }
 
     public string SolvePartTwo(string input)
     {
-        var (matrix, _, indexesOfLoop) = GetData(input);
+        var (matrix, _, coordinatesOfLoop) = GetData(input);
 
         // Replace non-loop characters
-        for (var i = 0; i < matrix.TotalLength; i++)
+        foreach (var coordinate in matrix.AllCoordinates)
         {
-            if (!indexesOfLoop.Contains(i))
+            if (!coordinatesOfLoop.Contains(coordinate))
             {
-                matrix.SetCharacter(i, '.');
+                matrix.SetCharacter(coordinate, '.');
             }
         }
 
-        return Enumerable.Range(0, matrix.TotalLength)
-            .Count(ix => !indexesOfLoop.Contains(ix) && IsInsideLoop(matrix, ix))
+        return matrix.AllCoordinates
+            .Count(ix => !coordinatesOfLoop.Contains(ix) && IsInsideLoop(matrix, ix))
             .ToString();
     }
 
-    private static (CharacterMatrix, int, IEnumerable<int>) GetData(string input)
+    private static (CharacterMatrix, (int, int), IEnumerable<(int, int)>) GetData(string input)
     {
         var matrix = new CharacterMatrix(input);
         var startingPosition = matrix.FindAllCharacters('S').Single();
@@ -36,72 +36,60 @@ public class Puzzle10Solver : IPuzzleSolver
         // works for my inputs :)
         var useSample = matrix.Width < 30;
         matrix.SetCharacter(startingPosition, useSample ? 'F' : '7');
-        var indexesOfLoop = IndexesOfLoop(matrix, startingPosition);
-        return (matrix, startingPosition, indexesOfLoop);
+        var coordinatesOfLoop = CoordinatesOfLoop(matrix, startingPosition);
+        return (matrix, startingPosition, coordinatesOfLoop);
     }
 
-    private static IEnumerable<int> IndexesOfLoop(CharacterMatrix matrix, int startingPosition)
+    private static IEnumerable<(int, int)> CoordinatesOfLoop(CharacterMatrix matrix, (int, int) startingPosition)
     {
-        IList<int> visitedIndexes = [startingPosition];
+        IList<(int, int)> visitedCoordinates = [startingPosition];
         var currentDirection = Direction.Down;
 
         do
         {
-            var (nextPosition, nextDirection) = Travel(matrix, visitedIndexes.Last(), currentDirection);
-            visitedIndexes.Add(nextPosition);
+            var (nextPosition, nextDirection) = Travel(matrix, visitedCoordinates.Last(), currentDirection);
+            visitedCoordinates.Add(nextPosition);
             currentDirection = nextDirection;
-        } while (visitedIndexes.Last() != visitedIndexes.First());
+        } while (visitedCoordinates.Last() != visitedCoordinates.First());
 
-        return visitedIndexes.Skip(1);
+        return visitedCoordinates.Skip(1);
     }
 
-    private static bool IsInsideLoop(CharacterMatrix matrix, int startingIndex)
-    {
-        var (x0, y0) = matrix.CoordinatesAt(startingIndex);
-        if (x0 <= 0)
-            return false;
+    private static bool IsInsideLoop(CharacterMatrix matrix, (int, int) startingCoordinate) =>
+        startingCoordinate.Item1 > 0 &&
+            matrix.StringAt((0, startingCoordinate.Item2), startingCoordinate.Item1)
+                .Replace(".", "")
+                .Replace("-", "")
+                .Replace("L7", "|")
+                .Replace("LJ", "")
+                .Replace("F7", "")
+                .Replace("FJ", "|")
+                .Length % 2 == 1;
 
-        return matrix.StringAt(matrix.IndexAt(0, y0), x0)
-            .Replace(".", "")
-            .Replace("-", "")
-            .Replace("L7", "|")
-            .Replace("LJ", "")
-            .Replace("F7", "")
-            .Replace("FJ", "|")
-            .Length % 2 == 1;
-    }
-
-    private static (int, Direction) Travel(CharacterMatrix data, int position, Direction currentDirection)
+    private static ((int, int), Direction) Travel(CharacterMatrix data, (int, int) coordinate, Direction currentDirection)
     {
-        switch (data.CharAt(position))
+        return data.CharAt(coordinate) switch
         {
-            case '|':
-                return currentDirection == Direction.Up
-                    ? (data.GoUpFrom(position), Direction.Up)
-                    : (data.GoDownFrom(position), Direction.Down);
-            case '-':
-                return currentDirection == Direction.Right
-                    ? (data.GoRightFrom(position), Direction.Right)
-                    : (data.GoLeftFrom(position), Direction.Left);
-            case 'F':
-                return currentDirection == Direction.Up
-                    ? (data.GoRightFrom(position), Direction.Right)
-                    : (data.GoDownFrom(position), Direction.Down);
-            case '7':
-                return currentDirection == Direction.Up
-                    ? (data.GoLeftFrom(position), Direction.Left)
-                    : (data.GoDownFrom(position), Direction.Down);
-            case 'J':
-                return currentDirection == Direction.Down
-                    ? (data.GoLeftFrom(position), Direction.Left)
-                    : (data.GoUpFrom(position), Direction.Up);
-            case 'L':
-                return currentDirection == Direction.Down
-                    ? (data.GoRightFrom(position), Direction.Right)
-                    : (data.GoUpFrom(position), Direction.Up);
-        }
-
-        throw new Exception("Didn't consider some case");
+            '|' => currentDirection == Direction.Up
+                ? ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up)
+                : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
+            '-' => currentDirection == Direction.Right
+                ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
+                : ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left),
+            'F' => currentDirection == Direction.Up
+                ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
+                : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
+            '7' => currentDirection == Direction.Up
+                ? ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left)
+                : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
+            'J' => currentDirection == Direction.Down
+                ? ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left)
+                : ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up),
+            'L' => currentDirection == Direction.Down
+                ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
+                : ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up),
+            _ => throw new Exception("Didn't consider some case"),
+        };
     }
 
     private enum Direction

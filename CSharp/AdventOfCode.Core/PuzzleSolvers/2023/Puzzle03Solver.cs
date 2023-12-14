@@ -10,8 +10,8 @@ public class Puzzle03Solver : IPuzzleSolver
         var matrix = new CharacterMatrix(input);
         return matrix
             .FindAllWords(new Regex(@"\d+"))
-            .Where(n => matrix.IndexesOfNeighbors(n).Any(index => IsSymbol(matrix.CharAt(index))))
-            .Select(n => int.Parse(matrix.StringAt(n.StartIndex, n.Length)))
+            .Where(n => matrix.CoordinatesOfNeighbors(n).Any(coordinate => IsSymbol(matrix.CharAt(coordinate))))
+            .Select(n => int.Parse(matrix.StringAt(n.StartCoordinate, n.Length)))
             .Sum()
             .ToString();
     }
@@ -25,7 +25,7 @@ public class Puzzle03Solver : IPuzzleSolver
             .FindAllWords(new Regex(@"\*"))
             .Select(g =>
             {
-                var neighboringWords = numbers.Where(n => matrix.IndexesOfNeighbors(n).Contains(g.StartIndex));
+                var neighboringWords = numbers.Where(n => matrix.CoordinatesOfNeighbors(n).Contains(g.StartCoordinate));
                 return neighboringWords.Count() == 2
                     ? neighboringWords.Select(w => int.Parse(w.Value)).Aggregate((a, b) => a * b)
                     : 0;

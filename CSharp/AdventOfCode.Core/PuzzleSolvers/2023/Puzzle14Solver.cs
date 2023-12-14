@@ -69,10 +69,8 @@ public class Puzzle14Solver : IPuzzleSolver
                 {
                     if (matrix.CharAt(x, y) == 'O' && matrix.CharAt(x, y - 1) == '.')
                     {
-                        var indexHere = matrix.IndexAt(x, y);
-                        var indexNew = matrix.IndexAt(x, y - 1);
-                        matrix.SetCharacter(indexHere, '.');
-                        matrix.SetCharacter(indexNew, 'O');
+                        matrix.SetCharacter(x, y, '.');
+                        matrix.SetCharacter(x, y - 1, 'O');
                         anythingMoved = true;
                     }
                 }
@@ -86,10 +84,8 @@ public class Puzzle14Solver : IPuzzleSolver
                 {
                     if (matrix.CharAt(x, y) == 'O' && matrix.CharAt(x, y + 1) == '.')
                     {
-                        var indexHere = matrix.IndexAt(x, y);
-                        var indexNew = matrix.IndexAt(x, y + 1);
-                        matrix.SetCharacter(indexHere, '.');
-                        matrix.SetCharacter(indexNew, 'O');
+                        matrix.SetCharacter(x, y, '.');
+                        matrix.SetCharacter(x, y + 1, 'O');
                         anythingMoved = true;
                     }
                 }
@@ -103,10 +99,8 @@ public class Puzzle14Solver : IPuzzleSolver
                 {
                     if (matrix.CharAt(x, y) == 'O' && matrix.CharAt(x + 1, y) == '.')
                     {
-                        var indexHere = matrix.IndexAt(x, y);
-                        var indexNew = matrix.IndexAt(x + 1, y);
-                        matrix.SetCharacter(indexHere, '.');
-                        matrix.SetCharacter(indexNew, 'O');
+                        matrix.SetCharacter(x, y, '.');
+                        matrix.SetCharacter(x + 1, y, 'O');
                         anythingMoved = true;
                     }
                 }
@@ -120,10 +114,8 @@ public class Puzzle14Solver : IPuzzleSolver
                 {
                     if (matrix.CharAt(x, y) == 'O' && matrix.CharAt(x - 1, y) == '.')
                     {
-                        var indexHere = matrix.IndexAt(x, y);
-                        var indexNew = matrix.IndexAt(x - 1, y);
-                        matrix.SetCharacter(indexHere, '.');
-                        matrix.SetCharacter(indexNew, 'O');
+                        matrix.SetCharacter(x, y, '.');
+                        matrix.SetCharacter(x - 1, y, 'O');
                         anythingMoved = true;
                     }
                 }
@@ -135,7 +127,7 @@ public class Puzzle14Solver : IPuzzleSolver
 
     private static int LoadNorth(CharacterMatrix matrix) =>
         matrix.FindAllCharacters('O')
-        .Select(rockIndex => matrix.Height - matrix.CoordinatesAt(rockIndex).Item2)
+        .Select(coord => matrix.Height - coord.Item2)
         .Sum();
 
     private enum Direction

@@ -37,42 +37,11 @@ public class CharacterMatrix
         }
     }
 
-    public int TotalLength => (int)_data.LongLength;
-
     public string DisplayString =>
         string.Join(
             Environment.NewLine,
             Enumerable.Range(0, Height).Select(y =>
                 new string(Enumerable.Range(0, Width).Select(x => _data[x, y]).ToArray())));
-
-    /// <summary>
-    /// Find the (x,y) coordinates in the matrix given a starting one-dimensional index.
-    /// </summary>
-    /// <param name="index">The index to convert</param>
-    /// <returns>The (x,y) coordinates in the matrix</returns>
-    public (int, int) CoordinatesAt(int index) => (index % Width, index / Width);
-
-    /// <summary>
-    /// Returns the index of a character at a specific coordinate location.
-    /// </summary>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    /// <returns>The index of the coordinate.</returns>
-    public int IndexAt(int x, int y) => y * Width + x;
-
-    /// <summary>
-    /// Returns the index of a character at a specific coordinate location.
-    /// </summary>
-    /// <param name="coord">The coordinate.</param>
-    /// <returns>The index of the coordinate.</returns>
-    public int IndexAt((int, int) coord) => coord.Item2 * Width + coord.Item1;
-
-    /// <summary>
-    /// Returns the single character value at a given index.
-    /// </summary>
-    /// <param name="index">The index.</param>
-    /// <returns>The character at this position in the matrix.</returns>
-    public char CharAt(int index) => CharAt(CoordinatesAt(index));
 
     /// <summary>
     /// Returns the single character value at a given coordinate.
@@ -92,24 +61,22 @@ public class CharacterMatrix
     /// <summary>
     /// Returns a string starting at a given index, of a given length.
     /// </summary>
-    /// <param name="index">The starting position of the desired string.</param>
+    /// <param name="start">The starting coordinate of the desired string.</param>
     /// <param name="length">The length of the desired string.</param>
     /// <returns>A string starting at a given index, of a given length.</returns>
-    public string StringAt(int index, int length)
+    public string StringAt((int, int) start, int length)
     {
-        var coord = CoordinatesAt(index);
-        var row = RowAt(coord.Item2);
-        return new string(Enumerable.Range(coord.Item1, length).Select(i => row[i]).ToArray());
+        var row = RowAt(start.Item2);
+        return new string(Enumerable.Range(start.Item1, length).Select(i => row[i]).ToArray());
     }
 
     /// <summary>
-    /// Returns the indexes of all instances of the specified characeter.
+    /// Returns the coordinates of all instances of the specified characeter.
     /// </summary>
     /// <param name="matchingChar">The character to search for.</param>
-    /// <returns>All indexes that match that character.</returns>
-    public IEnumerable<int> FindAllCharacters(char matchingChar) =>
-        AllCoordinates.Where(c => _data[c.Item1, c.Item2] == matchingChar)
-        .Select(IndexAt);
+    /// <returns>All coordinates that match that character.</returns>
+    public IEnumerable<(int, int)> FindAllCharacters(char matchingChar) =>
+        AllCoordinates.Where(c => _data[c.Item1, c.Item2] == matchingChar);
 
     /// <summary>
     /// Finds "words" in the data that match the specified regular expression.
@@ -120,29 +87,22 @@ public class CharacterMatrix
     public IEnumerable<Word> FindAllWords(Regex matchingPattern)
     {
         var result = new List<Word>();
-        for (var i = 0; i < Height; i++)
+        for (var y = 0; y < Height; y++)
         {
-            var matchesOnLine = matchingPattern.Matches(RowAt(i));
-            result.AddRange(matchesOnLine.Select(m => new Word(i * Width + m.Index, m.Length, m.Value)));
+            var matchesOnLine = matchingPattern.Matches(RowAt(y));
+            result.AddRange(matchesOnLine.Select(m => new Word((m.Index, y), m.Length, m.Value)));
         }
         return result;
     }
 
     /// <summary>
-    /// Finds the index values of all characters in a word.
-    /// </summary>
-    /// <param name="word">The word in question.</param>
-    /// <returns>A list of the index values of each character in that word.</returns>
-    public static IEnumerable<int> IndexesOfWord(Word word) => Enumerable.Range(word.StartIndex, word.Length);
-
-    /// <summary>
-    /// Find the index values of characters surrounding a word,
+    /// Find the coordinate values of characters surrounding a word,
     /// given by its starting index and length.
     /// </summary>
     /// <param name="index">The index of the starting character.</param>
     /// <param name="length">The length of the word.</param>
-    /// <returns>Indexes of all characters surrounding the input word.</returns>
-    public IEnumerable<int> IndexesOfNeighbors(Word word) => IndexesOfNeighbors(IndexesOfWord(word));
+    /// <returns>Coordinate of all characters surrounding the input word.</returns>
+    public IEnumerable<(int, int)> CoordinatesOfNeighbors(Word word) => CoordinatesOfNeighbors(CoordinatesOfWord(word));
 
     /// <summary>
     /// Get a string representing the characters in the given row.
@@ -164,21 +124,20 @@ public class CharacterMatrix
             .Select(y => _data[x, y])
             .ToArray());
 
-    public int GoRightFrom(int index) => index + 1;
-    public int GoDownFrom(int index) => index + Width;
-    public int GoLeftFrom(int index) => index - 1;
-    public int GoUpFrom(int index) => index - Width;
+    /// <summary>
+    /// Replaces the character value at the given index.
+    /// </summary>
+    /// <param name="coordinates">The coordinates of the character to replace.</param>
+    /// <param name="value">The new value of the character.</param>
+    public void SetCharacter((int, int) coordinates, char value) => SetCharacter(coordinates.Item1, coordinates.Item2, value);
 
     /// <summary>
     /// Replaces the character value at the given index.
     /// </summary>
-    /// <param name="index">The index of the character to replace.</param>
+    /// <param name="x">The x coordinate of the character to replace.</param>
+    /// <param name="y">The y coordinate of the character to replace.</param>
     /// <param name="value">The new value of the character.</param>
-    public void SetCharacter(int index, char value)
-    {
-        var coords = CoordinatesAt(index);
-        _data[coords.Item1, coords.Item2] = value;
-    }
+    public void SetCharacter(int x, int y, char value) => _data[x, y] = value;
 
     /// <summary>
     /// Finds the column indexes where the data matches a given expression.
@@ -203,55 +162,57 @@ public class CharacterMatrix
             .Select(r => r.i);
 
     /// <summary>
-    /// Find the index values of characters surrounding a group
-    /// of other characters, given by their indexes.
+    /// Returns a collection of all x,y pairs that are valid for this matrix.
     /// </summary>
-    /// <param name="indexes">All indexes of characters.</param>
-    /// <returns>Indexes of all characters surrounding the input character indexes.</returns>
-    private IEnumerable<int> IndexesOfNeighbors(IEnumerable<int> indexes) => indexes
-        .SelectMany(IndexesOfNeighbors)
-        .Where(ix => !indexes.Contains(ix))
+    public IEnumerable<(int, int)> AllCoordinates
+        => Enumerable.Range(0, Height).SelectMany(y => Enumerable.Range(0, Width).Select(x => (x, y)));
+
+    /// <summary>
+    /// Finds the coordinate values of all characters in a word.
+    /// </summary>
+    /// <param name="word">The word in question.</param>
+    /// <returns>A list of the coordinate values of each character in that word.</returns>
+    private static IEnumerable<(int, int)> CoordinatesOfWord(Word word) =>
+        Enumerable.Range(0, word.Length).Select(x => (word.StartCoordinate.Item1 + x, word.StartCoordinate.Item2));
+
+    /// <summary>
+    /// Find the coordinates of characters surrounding a group
+    /// of other characters, given by their coordinates.
+    /// </summary>
+    /// <param name="coordinates">All coordinates of characters.</param>
+    /// <returns>Coordinates of all characters surrounding the input character coordinates.</returns>
+    private IEnumerable<(int, int)> CoordinatesOfNeighbors(IEnumerable<(int, int)> coordinates) => coordinates
+        .SelectMany(CoordinatesOfNeighbors)
+        .Where(c => !coordinates.Contains(c))
         .Distinct();
 
     /// <summary>
-    /// Find the index values of the (up to) eight characters
+    /// Find the coordinate values of the (up to) eight characters
     /// surrounding the character at the given index. Will
-    /// omit values if the index is at the edges of the matrix.
+    /// omit values if the coordinate is at the edges of the matrix.
     /// </summary>
-    /// <param name="index">The index to search around.</param>
-    /// <returns>Indexes of all characters surrounding the input character index.</returns>
-    private IEnumerable<int> IndexesOfNeighbors(int index)
+    /// <param name="coordinate">The index to search around.</param>
+    /// <returns>Coordinates of all characters surrounding the input character index.</returns>
+    private IEnumerable<(int, int)> CoordinatesOfNeighbors((int, int) coordinate)
     {
-        var (x, y) = CoordinatesAt(index);
+        var (x, y) = coordinate;
 
-        var nn = y > 0
-            ? index - Width : -1;
-        var ne = y > 0 && x < Width - 1
-            ? nn + 1 : -1;
-        var nw = y > 0 && x > 0
-            ? nn - 1 : -1;
+        if (x > 1) yield return (x - 1, y);
+        if (x < Width - 1) yield return (x + 1, y);
 
-        var ss = y < Height - 1
-            ? index + Width : -1;
-        var se = y < Height - 1 && x < Width - 1
-            ? ss + 1 : -1;
-        var sw = y < Height - 1 && x > 0
-            ? ss - 1 : -1;
+        if (y > 1) yield return (x, y - 1);
+        if (y < Height - 1) yield return (x, y + 1);
 
-        var ee = x < Width - 1
-            ? index + 1 : -1;
-        var ww = x > 0
-            ? index - 1 : -1;
+        if (x > 1 && y > 1) yield return (x - 1, y - 1);
+        if (x < Width - 1 && y < Height - 1) yield return (x + 1, y + 1);
 
-        return new[] { nn, ne, ee, se, ss, sw, ww, nw }.Where(z => z >= 0);
+        if (x > 1 && y < Height - 1) yield return (x - 1, y + 1);
+        if (x < Width - 1 && y > 1) yield return (x + 1, y - 1);
     }
 
-    private IEnumerable<(int, int)> AllCoordinates
-        => Enumerable.Range(0, Height).SelectMany(y => Enumerable.Range(0, Width).Select(x => (x, y)));
-
-    public class Word(int startIndex, int length, string value)
+    public class Word((int, int) startCoordinate, int length, string value)
     {
-        public int StartIndex { get; } = startIndex;
+        public (int, int) StartCoordinate { get; } = startCoordinate;
         public int Length { get; } = length;
         public string Value { get; } = value;
     }
