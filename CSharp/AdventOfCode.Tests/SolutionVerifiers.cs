@@ -7,7 +7,7 @@ namespace AdventOfCode.Tests;
 [TestClass]
 public class SolutionVerifiers
 {
-    private const int Timeout = 2600;
+    private const int Timeout = 2000;
 
     private readonly IPuzzleSolver[] _solvers;
 
