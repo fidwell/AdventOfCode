@@ -18,38 +18,31 @@ public partial class Puzzle15Solver : IPuzzleSolver
         var operationRegex = new Regex(@"[\-=]", RegexOptions.Compiled);
         var digitRegex = new Regex(@"\d", RegexOptions.Compiled);
 
-        var steps = input
-            .Split(',')
-            .Select(s =>
-            {
-                var label = labelRegex.Match(s).Value;
-                var operation = operationRegex.Match(s).Value[0];
-                var focalLengthStr = digitRegex.Match(s).Value;
-                _ = int.TryParse(focalLengthStr, out int focalLength);
-                return new Step(label, operation, focalLength);
-            });
-
-        foreach (var step in steps)
+        foreach (var step in input.Split(","))
         {
-            if (step.Operation == Operation.Add)
+            var label = labelRegex.Match(step).Value;
+
+            if (operationRegex.Match(step).Value[0] == '=')
             {
-                var box = boxes[step.BoxNumber];
-                var existingLens = box.FirstOrDefault(l => l.Label == step.Label);
+                var box = boxes[Hash(label)];
+                var existingLens = box.FirstOrDefault(l => l.Label == label);
+                var focalLengthStr = digitRegex.Match(step).Value;
+                _ = int.TryParse(focalLengthStr, out int focalLength);
                 if (existingLens != null)
                 {
-                    existingLens.FocalLength = step.FocalLength;
+                    existingLens.FocalLength = focalLength;
                 }
                 else
                 {
-                    box.Add(new Lens(step.Label, step.FocalLength));
+                    box.Add(new Lens(label, focalLength));
                 }
             }
             else
             {
-                var relevantBoxes = boxes.Where(b => b.Any(lens => lens.Label == step.Label));
+                var relevantBoxes = boxes.Where(b => b.Any(lens => lens.Label == label));
                 foreach (var box in relevantBoxes)
                 {
-                    box.RemoveAll(l => l.Label == step.Label);
+                    box.RemoveAll(l => l.Label == label);
                 }
             }
         }
@@ -60,36 +53,7 @@ public partial class Puzzle15Solver : IPuzzleSolver
             .ToString();
     }
 
-    private static int Hash(string input)
-    {
-        var value = 0;
-
-        for (var i = 0; i < input.Length; i++)
-        {
-            char thisChar = input[i];
-            value += thisChar;
-            value *= 17;
-            value %= 256;
-        }
-
-        return value;
-    }
-
-    private class Step(string label, char operation, int focalLength)
-    {
-        public string Label = label;
-        public Operation Operation = operation == '=' ? Operation.Add : Operation.Remove;
-        public int FocalLength = focalLength;
-        public int BoxNumber = Hash(label);
-
-        public override string ToString() => $"{Label}{Operation}{(FocalLength > 0 ? FocalLength.ToString() : string.Empty)}";
-    }
-
-    private enum Operation
-    {
-        Add,
-        Remove
-    }
+    private static int Hash(string input) => input.Aggregate(0, (a, b) => (char)((a + b) * 17 % 256));
 
     private class Lens(string label, int focalLength)
     {
