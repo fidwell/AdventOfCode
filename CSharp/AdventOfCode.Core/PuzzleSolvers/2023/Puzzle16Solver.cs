@@ -53,13 +53,11 @@ public class Puzzle16Solver : IPuzzleSolver
         public Direction Direction { get; set; } = direction;
         public bool ShouldDestroy { get; set; } = false;
 
-        public override int GetHashCode() => (X * 10000 + Y) * 4 + (int)Direction;
+        public override int GetHashCode() => (X * 110 + Y) * 4 + (int)Direction;
     }
 
     private static int EnergizedCellsStartingAt(CharacterMatrix matrix, int x0, int y0, Direction dir0)
     {
-        var isEnergized = new bool[matrix.Width, matrix.Height];
-        isEnergized.Initialize();
         var cache = new List<int>();
         var beams = new List<Beam>
         {
@@ -97,7 +95,6 @@ public class Puzzle16Solver : IPuzzleSolver
                 }
 
                 cache.Add(hash);
-                isEnergized[beam.X, beam.Y] = true;
 
                 switch (matrix.CharAt(beam.X, beam.Y))
                 {
@@ -140,17 +137,13 @@ public class Puzzle16Solver : IPuzzleSolver
             beams.AddRange(newBeams);
         }
 
-        var energizedCells = 0;
-        for (var y = 0; y < isEnergized.GetLength(0); y += 1)
+        // Reverse the hash codes to get the original coordinates back
+        return cache.Select(c =>
         {
-            for (var x = 0; x < isEnergized.GetLength(1); x += 1)
-            {
-                if (isEnergized[x, y])
-                {
-                    energizedCells++;
-                }
-            }
-        }
-        return energizedCells;
+            var xy = c / 4;
+            var y = xy % 110;
+            var x = xy / 110;
+            return (x, y);
+        }).Distinct().Count();
     }
 }
