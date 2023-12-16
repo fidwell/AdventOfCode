@@ -118,10 +118,10 @@ public class SolutionVerifiers
     [DataRow(15, 2, true, "145", DisplayName = "2023.15.2-s")]
     [DataRow(15, 2, false, "210906", DisplayName = "2023.15.2")]
 
-    [DataRow(16, 1, true, "_", DisplayName = "2023.16.1-s")]
-    [DataRow(16, 1, false, "_", DisplayName = "2023.16.1")]
-    [DataRow(16, 2, true, "_", DisplayName = "2023.16.2-s")]
-    [DataRow(16, 2, false, "_", DisplayName = "2023.16.2")]
+    [DataRow(16, 1, true, "46", DisplayName = "2023.16.1-s")]
+    [DataRow(16, 1, false, "7185", DisplayName = "2023.16.1")]
+    [DataRow(16, 2, true, "51", DisplayName = "2023.16.2-s")]
+    [DataRow(16, 2, false, "7616", DisplayName = "2023.16.2")]
 
     [DataRow(17, 1, true, "_", DisplayName = "2023.17.1-s")]
     [DataRow(17, 1, false, "_", DisplayName = "2023.17.1")]

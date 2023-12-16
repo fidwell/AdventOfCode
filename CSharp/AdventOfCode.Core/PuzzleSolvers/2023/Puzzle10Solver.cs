@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.ArrayUtilities;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
@@ -90,13 +91,5 @@ public class Puzzle10Solver : IPuzzleSolver
                 : ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up),
             _ => throw new Exception("Didn't consider some case"),
         };
-    }
-
-    private enum Direction
-    {
-        Right,
-        Down,
-        Left,
-        Up
     }
 }
