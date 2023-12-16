@@ -15,13 +15,13 @@ public class Puzzle16Solver : IPuzzleSolver
 
         for (var x = 0; x < matrix.Width; x++)
         {
-            var solutionFromTop = EnergizedCellsStartingAt(matrix, x, 0, Direction.Down);
+            var solutionFromTop = EnergizedCellsStartingAt(matrix, x, -1, Direction.Down);
             if (solutionFromTop > maxSolution)
             {
                 maxSolution = solutionFromTop;
             }
 
-            var solutionFromBottom = EnergizedCellsStartingAt(matrix, x, matrix.Height - 1, Direction.Up);
+            var solutionFromBottom = EnergizedCellsStartingAt(matrix, x, matrix.Height, Direction.Up);
             if (solutionFromBottom > maxSolution)
             {
                 maxSolution = solutionFromBottom;
@@ -30,13 +30,13 @@ public class Puzzle16Solver : IPuzzleSolver
 
         for (var y = 0; y < matrix.Height; y++)
         {
-            var solutionFromLeft = EnergizedCellsStartingAt(matrix, 0, y, Direction.Right);
+            var solutionFromLeft = EnergizedCellsStartingAt(matrix, -1, y, Direction.Right);
             if (solutionFromLeft > maxSolution)
             {
                 maxSolution = solutionFromLeft;
             }
 
-            var solutionFromRight = EnergizedCellsStartingAt(matrix, matrix.Width - 1, y, Direction.Left);
+            var solutionFromRight = EnergizedCellsStartingAt(matrix, matrix.Width, y, Direction.Left);
             if (solutionFromRight > maxSolution)
             {
                 maxSolution = solutionFromRight;
