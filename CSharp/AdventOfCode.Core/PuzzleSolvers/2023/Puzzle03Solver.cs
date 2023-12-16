@@ -22,10 +22,10 @@ public class Puzzle03Solver : IPuzzleSolver
         var numbers = matrix.FindAllWords(new Regex(@"\d+"));
 
         return matrix
-            .FindAllWords(new Regex(@"\*"))
+            .FindAllCharacters('*')
             .Select(g =>
             {
-                var neighboringWords = numbers.Where(n => matrix.CoordinatesOfNeighbors(n).Contains(g.StartCoordinate));
+                var neighboringWords = numbers.Where(n => matrix.CoordinatesOfNeighbors(n).Contains(g));
                 return neighboringWords.Count() == 2
                     ? neighboringWords.Select(w => int.Parse(w.Value)).Aggregate((a, b) => a * b)
                     : 0;
