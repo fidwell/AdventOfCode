@@ -168,6 +168,17 @@ public class CharacterMatrix
         => Enumerable.Range(0, Height).SelectMany(y => Enumerable.Range(0, Width).Select(x => (x, y)));
 
     /// <summary>
+    /// Determines whether a given coordinate is in-bounds for the matrix.
+    /// </summary>
+    /// <param name="coordinate">The coordinate to check.</param>
+    /// <returns>Whether the coordinate is in-bounds for the matrix.</returns>
+    public bool IsInBounds((int, int) coordinate) =>
+        coordinate.Item1 >= 0 &&
+        coordinate.Item2 >= 0 &&
+        coordinate.Item1 < Width &&
+        coordinate.Item2 < Height;
+
+    /// <summary>
     /// Finds the coordinate values of all characters in a word.
     /// </summary>
     /// <param name="word">The word in question.</param>
