@@ -11,7 +11,7 @@ public class Puzzle17Solver : IPuzzleSolver
     {
         var queue = new PriorityQueue<State, int>();
         queue.Enqueue(new State(0, (0, 0), (0, 0)), 0);
-        var cache = new List<CacheItem>();
+        var cache = new HashSet<State>();
         var destination = (matrix.Width - 1, matrix.Height - 1);
 
         while (queue.Count > 0)
@@ -21,12 +21,12 @@ public class Puzzle17Solver : IPuzzleSolver
             if (state.Location == destination)
                 return state.Heat;
 
-            if (cache.Any(c => c.Equals(state)))
+            if (cache.Contains(state))
                 continue;
 
-            cache.Add(new(state));
+            cache.Add(state);
 
-            var possibleNexts = new List<(int, int)>
+            var possibleNexts = new (int, int)[]
             {
                 (1, 0),
                 (0, 1),
@@ -65,13 +65,10 @@ public class Puzzle17Solver : IPuzzleSolver
         public int Heat = heat;
         public (int, int) Location = location;
         public (int, int) Direction = direction;
-    }
 
-    private class CacheItem(State state)
-    {
-        public (int, int) Location = state.Location;
-        public (int, int) Direction = state.Direction;
+        public override bool Equals(object? obj) =>
+            obj is State other && other.Location == Location && Direction == other.Direction;
 
-        public bool Equals(State state) => Location == state.Location && Direction == state.Direction;
+        public override int GetHashCode() => HashCode.Combine(Location, Direction);
     }
 }
