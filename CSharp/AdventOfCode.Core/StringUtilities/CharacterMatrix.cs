@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using AdventOfCode.Core.ArrayUtilities;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Core.StringUtilities;
 
@@ -164,8 +165,7 @@ public class CharacterMatrix
     /// <summary>
     /// Returns a collection of all x,y pairs that are valid for this matrix.
     /// </summary>
-    public IEnumerable<(int, int)> AllCoordinates
-        => Enumerable.Range(0, Height).SelectMany(y => Enumerable.Range(0, Width).Select(x => (x, y)));
+    public IEnumerable<(int, int)> AllCoordinates => ArrayExtensions.AllPoints(Width, Height);
 
     /// <summary>
     /// Determines whether a given coordinate is in-bounds for the matrix.

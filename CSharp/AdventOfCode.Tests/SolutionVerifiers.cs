@@ -129,7 +129,7 @@ public class SolutionVerifiers
     [DataRow(17, 2, false, "922", DisplayName = "2023.17.2")]
 
     [DataRow(18, 1, true, "62", DisplayName = "2023.18.1-s")]
-    [DataRow(18, 1, false, "_", DisplayName = "2023.18.1")]
+    [DataRow(18, 1, false, "58550", DisplayName = "2023.18.1")]
     [DataRow(18, 2, true, "_", DisplayName = "2023.18.2-s")]
     [DataRow(18, 2, false, "_", DisplayName = "2023.18.2")]
 
