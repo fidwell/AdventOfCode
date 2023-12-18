@@ -41,4 +41,14 @@ public static class DirectionExtensions
             yield return Direction.Up;
         }
     }
+
+    public static Direction ToDirection(this char input) =>
+        input switch
+        {
+            'R' or 'r' => Direction.Right,
+            'D' or 'd' => Direction.Down,
+            'L' or 'l' => Direction.Left,
+            'U' or 'u' => Direction.Up,
+            _ => Direction.Undefined,
+        };
 }
