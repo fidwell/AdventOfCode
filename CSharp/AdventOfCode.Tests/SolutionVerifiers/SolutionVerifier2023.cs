@@ -2,16 +2,14 @@ using AdventOfCode.Core.PuzzleSolvers;
 using AdventOfCode.Core.PuzzleSolvers._2023;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AdventOfCode.Tests;
+namespace AdventOfCode.Tests.SolutionVerifiers;
 
 [TestClass]
-public class SolutionVerifiers
+public class SolutionVerifier2023 : SolutionVerifier
 {
-    private const int Timeout = 2000000;
-
     private readonly IPuzzleSolver[] _solvers;
 
-    public SolutionVerifiers()
+    public SolutionVerifier2023()
     {
         _solvers = [
             new Puzzle01Solver(),
@@ -167,17 +165,6 @@ public class SolutionVerifiers
     [DataRow(25, 1, false, "_", DisplayName = "2023.25.1")]
     [DataRow(25, 2, true, "_", DisplayName = "2023.25.2-s")]
     [DataRow(25, 2, false, "_", DisplayName = "2023.25.2")]
-
-    public void Solve(int puzzle, int part, bool useSample, string expected)
-    {
-        if (DateTime.Today < new DateTime(2023, 12, puzzle))
-            return;
-
-        var input = DataReader.GetData(puzzle, part, useSample);
-        var solver = _solvers[puzzle - 1];
-        var result = part == 1
-            ? solver.SolvePartOne(input)
-            : solver.SolvePartTwo(input);
-        Assert.AreEqual(expected, result);
-    }
+    public void Solve(int puzzle, int part, bool useSample, string expected) =>
+        Solve(_solvers[puzzle - 1], 2023, puzzle, part, useSample, expected);
 }
