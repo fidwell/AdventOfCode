@@ -10,19 +10,13 @@ public class Puzzle18Solver : IPuzzleSolver
     public string SolvePartTwo(string input) =>
         Solve(input.Split(Environment.NewLine).Select(l => new Instruction(l, false)).ToList()).ToString();
 
-    private static long Solve(IEnumerable<Instruction> instructions)
-    {
-        var vertices = FindVertices(instructions);
-        var shoelace = Shoelace(vertices);
-        var boundaryCount = instructions.Sum(i => i.Amount);
-        return shoelace + boundaryCount / 2 + 1;
-    }
+    private static long Solve(IEnumerable<Instruction> instructions) =>
+        Shoelace(FindVertices(instructions)) + instructions.Sum(i => i.Amount) / 2 + 1;
 
     private static List<(long, long)> FindVertices(IEnumerable<Instruction> instructions)
     {
-        var start = (0, 0);
         var vertices = new List<(long, long)>();
-        _ = instructions.Aggregate(start, (a, b) =>
+        _ = instructions.Aggregate((0, 0), (a, b) =>
         {
             var newPoint = a.Go(b.Dir, b.Amount);
             vertices.Add(newPoint);
@@ -31,19 +25,11 @@ public class Puzzle18Solver : IPuzzleSolver
         return vertices;
     }
 
-    private static long Shoelace(IList<(long, long)> vertexes)
-    {
-        long result = 0;
-        for (var i = 0; i < vertexes.Count; i++)
-        {
-            var thisOne = vertexes[i];
-            var nextOne = vertexes[i == vertexes.Count - 1 ? 0 : i + 1];
-            result += Determinant(thisOne.Item1, thisOne.Item2, nextOne.Item1, nextOne.Item2);
-        }
-        return result / 2;
-    }
+    private static long Shoelace(IList<(long, long)> vertexes) =>
+        Enumerable.Range(0, vertexes.Count)
+            .Select(i => Determinant(vertexes[i], vertexes[i == vertexes.Count - 1 ? 0 : i + 1])).Sum() / 2;
 
-    private static long Determinant(long x1, long y1, long x2, long y2) => x1 * y2 - x2 * y1;
+    private static long Determinant((long, long) p1, (long, long) p2) => p1.Item1 * p2.Item2 - p2.Item1 * p1.Item2;
 
     private class Instruction
     {
