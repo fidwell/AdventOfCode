@@ -46,34 +46,4 @@ public static class ArrayExtensions
 
     public static IEnumerable<(int, int)> AllPoints(int xCount, int yCount) =>
         Enumerable.Range(0, yCount).SelectMany(y => Enumerable.Range(0, xCount).Select(x => (x, y)));
-
-    public static void FloodFill(
-        bool[,] shapeArray,
-        (int, int) start,
-        List<(int, int)> result)
-    {
-        var width = shapeArray.GetLength(0);
-        var height = shapeArray.GetLength(1);
-        var visited = new HashSet<(int, int)>();
-        var queue = new Queue<(int, int)>();
-        queue.Enqueue(start);
-
-        while (queue.Count > 0)
-        {
-            var point = queue.Dequeue();
-
-            if (point.Item1 < 0 || point.Item1 >= width ||
-                point.Item2 < 0 || point.Item2 >= height ||
-                visited.Contains(point) ||
-                shapeArray[point.Item1, point.Item2])
-                continue;
-
-            visited.Add(point);
-            result.Add(point);
-            queue.Enqueue((point.Item1 + 1, point.Item2));
-            queue.Enqueue((point.Item1 - 1, point.Item2));
-            queue.Enqueue((point.Item1, point.Item2 + 1));
-            queue.Enqueue((point.Item1, point.Item2 - 1));
-        }
-    }
 }

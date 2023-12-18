@@ -21,6 +21,16 @@ public static class DirectionExtensions
             _ => start
         };
 
+    public static (long, long) Go(this (long, long) start, Direction direction, long amount = 1) =>
+        direction switch
+        {
+            Direction.Right => (start.Item1 + amount, start.Item2),
+            Direction.Down => (start.Item1, start.Item2 + amount),
+            Direction.Left => (start.Item1 - amount, start.Item2),
+            Direction.Up => (start.Item1, start.Item2 - amount),
+            _ => start
+        };
+
     public static Direction Opposite(this Direction direction) =>
         direction switch
         {
