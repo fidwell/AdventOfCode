@@ -1,5 +1,5 @@
-﻿using System.Buffers;
-using AdventOfCode.Core.ArrayUtilities;
+﻿using AdventOfCode.Core.ArrayUtilities;
+using AdventOfCode.Core.Ranges;
 using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
@@ -16,7 +16,7 @@ public class Puzzle05Solver : IPuzzleSolver
 
     private class Almanac
     {
-        private readonly IEnumerable<Range> _seedRanges;
+        private readonly IEnumerable<RangeLong> _seedRanges;
         private readonly IList<Map> _maps;
 
         public Almanac(string input, bool isPartOne)
@@ -24,10 +24,10 @@ public class Puzzle05Solver : IPuzzleSolver
             var data = input.Split(Environment.NewLine);
             var seedData = data[0].Split(": ")[1].SplitAndTrim(" ").Select(long.Parse).ToArray();
             _seedRanges = isPartOne
-                ? seedData.Select(s => new Range(s, 1))
+                ? seedData.Select(s => new RangeLong(s, 1))
                 : seedData
                     .Where((x, i) => i % 2 == 0)
-                    .Select((x, i) => new Range(seedData[i * 2], seedData[i * 2 + 1]));
+                    .Select((x, i) => new RangeLong(seedData[i * 2], seedData[i * 2 + 1]));
             _maps = data.Skip(2).ToArray().Chunk().Select(d => new Map(d)).ToList();
         }
 
@@ -36,7 +36,7 @@ public class Puzzle05Solver : IPuzzleSolver
             var results = _seedRanges
                 .Select(range =>
                 {
-                    IEnumerable<Range> value = new[] { range };
+                    IEnumerable<RangeLong> value = new[] { range };
                     foreach (var map in _maps)
                     {
                         value = map.TransformRanges(value).ToList();
@@ -71,9 +71,9 @@ public class Puzzle05Solver : IPuzzleSolver
             _mapRanges = mapRanges.Union(nonTransformingRanges).OrderBy(r => r.SourceRangeStart);
         }
 
-        public IEnumerable<Range> TransformRanges(IEnumerable<Range> input)
+        public IEnumerable<RangeLong> TransformRanges(IEnumerable<RangeLong> input)
         {
-            var results = new List<Range>();
+            var results = new List<RangeLong>();
             foreach (var range in _mapRanges)
             {
                 foreach (var inputRange in input)
@@ -113,16 +113,16 @@ public class Puzzle05Solver : IPuzzleSolver
             SourceRangeEnd = SourceRangeStart + RangeLength;
         }
 
-        public IEnumerable<Range> Transform(Range input)
+        public IEnumerable<RangeLong> Transform(RangeLong input)
         {
             var intersection = AsRange.Intersection(input);
-            return new Range[]
+            return new RangeLong[]
                 {
                     new(intersection.Start + Transformation, intersection.Length)
                 }.Where(r => r.Length > 0);
         }
 
-        private Range AsRange => new Range(SourceRangeStart, RangeLength);
+        private RangeLong AsRange => new (SourceRangeStart, RangeLength);
 
         public override string ToString() => $"[{SourceRangeStart},{SourceRangeEnd}) > [{DestinationRangeStart},{DestinationRangeStart + RangeLength}) ({RangeLength}); {Transformation}";
     }

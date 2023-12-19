@@ -1,6 +1,6 @@
-﻿namespace AdventOfCode.Core.PuzzleSolvers._2023;
+﻿namespace AdventOfCode.Core.Ranges;
 
-public class Range(long start, long length)
+public class RangeLong(long start, long length)
 {
     public long Start { get; private set; } = start;
     public long Length { get; private set; } = length;
