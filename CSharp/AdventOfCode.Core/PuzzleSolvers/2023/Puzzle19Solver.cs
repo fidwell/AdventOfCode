@@ -62,12 +62,12 @@ public class Puzzle19Solver : IPuzzleSolver
             }
         }
 
-        var startingRange = new PartValueRange(new Dictionary<char, RangeLong>
+        var startingRange = new PartValueRange(new Dictionary<char, Range>
         {
-            { 'x', new RangeLong(1, 4000) },
-            { 'm', new RangeLong(1, 4000) },
-            { 'a', new RangeLong(1, 4000) },
-            { 's', new RangeLong(1, 4000) }
+            { 'x', new Range(1, 4001) },
+            { 'm', new Range(1, 4001) },
+            { 'a', new Range(1, 4001) },
+            { 's', new Range(1, 4001) }
         });
         var unfinishedRanges = new Queue<RangeResult>();
         unfinishedRanges.Enqueue(new RangeResult("in", startingRange));
@@ -197,8 +197,8 @@ public class Puzzle19Solver : IPuzzleSolver
 
             var lowerRangeRatings = unaffectedRatings.ToDictionary(e => e.Key, e => e.Value);
             var lowerRatingRange = IsLessThan
-                ? new RangeLong(rangeInQuestion.Start, Amount - rangeInQuestion.Start)
-                : new RangeLong(rangeInQuestion.Start, Amount - rangeInQuestion.Start + 1);
+                ? new Range(rangeInQuestion.Start, Amount)
+                : new Range(rangeInQuestion.Start, Amount + 1);
             lowerRangeRatings.Add(Parameter, lowerRatingRange);
             yield return new RangeResult(
                 IsLessThan ? Target : string.Empty,
@@ -206,8 +206,8 @@ public class Puzzle19Solver : IPuzzleSolver
 
             var higherRangeRatings = unaffectedRatings.ToDictionary(e => e.Key, e => e.Value);
             var higherRatingRange = IsLessThan
-                ? new RangeLong(Amount, rangeInQuestion.End - Amount)
-                : new RangeLong(Amount + 1, rangeInQuestion.End - Amount - 1);
+                ? new Range(Amount, rangeInQuestion.End)
+                : new Range(Amount + 1, rangeInQuestion.End);
             higherRangeRatings.Add(Parameter, higherRatingRange);
             yield return new RangeResult(
                 IsLessThan ? string.Empty : Target,
@@ -228,10 +228,10 @@ public class Puzzle19Solver : IPuzzleSolver
         public int Sum => Ratings.Sum(r => r.Value);
     }
 
-    private class PartValueRange(Dictionary<char, RangeLong> ratingRanges)
+    private class PartValueRange(Dictionary<char, Range> ratingRanges)
     {
-        public readonly Dictionary<char, RangeLong> RatingRanges = ratingRanges;
-        public long TotalValues => RatingRanges.Aggregate(1L, (a, b) => a * b.Value.Length);
+        public readonly Dictionary<char, Range> RatingRanges = ratingRanges;
+        public long TotalValues => RatingRanges.Aggregate(1L, (a, b) => a * b.Value.Length());
     }
 
     private class RangeResult(string resultingWorkflow, PartValueRange partValueRange)

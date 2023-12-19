@@ -2,6 +2,8 @@
 
 public static class RangeExtensions
 {
+    public static int Length(this Range range) => range.End.Value - range.Start.Value;
+
     public static RangeLong Intersection(this RangeLong left, RangeLong right)
     {
         var intersectionStart = Math.Max(left.Start, right.Start);
