@@ -4,7 +4,7 @@ public class Puzzle19Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
     {
-        var workflows = new List<Workflow>();
+        var workflows = new Dictionary<string, IEnumerable<WorkflowRule>>();
         var parts = new List<Part>();
 
         foreach (var line in input.Split(Environment.NewLine))
@@ -15,18 +15,19 @@ public class Puzzle19Solver : IPuzzleSolver
             }
             else if (line.Length > 0)
             {
-                workflows.Add(ParseWorkflow(line));
+                var w = ParseWorkflow(line);
+                workflows.Add(w.Item1, w.Item2);
             }
         }
 
         var acceptedPartSum = 0;
-        var startingWorkflow = workflows.First(w => w.Name == "in");
+        var startingWorkflow = workflows["in"];
         foreach (var part in parts)
         {
             var workflow = startingWorkflow;
             while (true)
             {
-                var result = workflow.Apply(part);
+                var result = ApplyWorkflow(part, workflow);
                 if (result == "A")
                 {
                     acceptedPartSum += part.Sum;
@@ -38,7 +39,7 @@ public class Puzzle19Solver : IPuzzleSolver
                 }
                 else
                 {
-                    workflow = workflows.First(w => w.Name == result);
+                    workflow = workflows[result];
                 }
             }
         }
@@ -48,7 +49,7 @@ public class Puzzle19Solver : IPuzzleSolver
 
     public string SolvePartTwo(string input) => throw new NotImplementedException();
 
-    private static Workflow ParseWorkflow(string line)
+    private static (string, IEnumerable<WorkflowRule>) ParseWorkflow(string line)
     {
         var portions = line.Replace("}", "").Split('{');
         var name = portions[0];
@@ -68,9 +69,9 @@ public class Puzzle19Solver : IPuzzleSolver
             {
                 return (WorkflowRule)new FinalRule(r);
             }
-        }).ToList();
+        });
 
-        return new Workflow(name, rules);
+        return (name, rules);
     }
 
     private static Part ParsePart(string line)
@@ -84,21 +85,15 @@ public class Puzzle19Solver : IPuzzleSolver
         return new Part(values);
     }
 
-    private class Workflow(string name, IEnumerable<WorkflowRule> rules)
+    private static string ApplyWorkflow(Part part, IEnumerable<WorkflowRule> rules)
     {
-        public string Name = name;
-        public IEnumerable<WorkflowRule> Rules = rules;
-
-        public string Apply(Part part)
+        foreach (var rule in rules)
         {
-            foreach (var rule in Rules)
-            {
-                var result = rule.Apply(part);
-                if (!string.IsNullOrEmpty(result))
-                    return result;
-            }
-            return string.Empty;
+            var result = rule.Apply(part);
+            if (!string.IsNullOrEmpty(result))
+                return result;
         }
+        return string.Empty;
     }
 
     private abstract class WorkflowRule(string target)
