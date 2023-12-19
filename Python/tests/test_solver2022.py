@@ -1,5 +1,5 @@
 import unittest
-from solvers2022 import solver01, solver02, solver03
+from solvers2022 import solver01, solver02, solver03, solver04
 
 class TestSolver2022(unittest.TestCase):
     def test_solver01_part1_sample(self):
@@ -39,3 +39,16 @@ class TestSolver2022(unittest.TestCase):
 
     def test_solver03_part2(self):
         self.assertEqual(solver03.solve_part2(False), "2758")
+
+
+    def test_solver04_part1_sample(self):
+        self.assertEqual(solver04.solve_part1(True), "2")
+
+    def test_solver04_part1(self):
+        self.assertEqual(solver04.solve_part1(False), "536")
+
+    def test_solver04_part2_sample(self):
+        self.assertEqual(solver04.solve_part2(True), "_")
+
+    def test_solver04_part2(self):
+        self.assertEqual(solver04.solve_part2(False), "_")
