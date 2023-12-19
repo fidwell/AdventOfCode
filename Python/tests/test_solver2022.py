@@ -48,7 +48,7 @@ class TestSolver2022(unittest.TestCase):
         self.assertEqual(solver04.solve_part1(False), "536")
 
     def test_solver04_part2_sample(self):
-        self.assertEqual(solver04.solve_part2(True), "_")
+        self.assertEqual(solver04.solve_part2(True), "4")
 
     def test_solver04_part2(self):
-        self.assertEqual(solver04.solve_part2(False), "_")
+        self.assertEqual(solver04.solve_part2(False), "845")
