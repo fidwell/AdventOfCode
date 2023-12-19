@@ -1,15 +1,20 @@
 import unittest
 from solvers2023 import solver01
+from utilities import datareader
 
 class TestSolver2023(unittest.TestCase):
     def test_solver01_part1_sample(self):
-        self.assertEqual(solver01.solve(1, True), "142")
+        data = datareader.read_lines(2023, 1, 1, True)
+        self.assertEqual(solver01.solve(data, 1), "142")
 
     def test_solver01_part1(self):
-        self.assertEqual(solver01.solve(1, False), "54632")
+        data = datareader.read_lines(2023, 1, 1, False)
+        self.assertEqual(solver01.solve(data, 1), "54632")
 
     def test_solver01_part2_sample(self):
-        self.assertEqual(solver01.solve(2, True), "281")
+        data = datareader.read_lines(2023, 1, 2, True)
+        self.assertEqual(solver01.solve(data, 2), "281")
 
     def test_solver01_part2(self):
-        self.assertEqual(solver01.solve(2, False), "54019")
+        data = datareader.read_lines(2023, 1, 2, False)
+        self.assertEqual(solver01.solve(data, 2), "54019")

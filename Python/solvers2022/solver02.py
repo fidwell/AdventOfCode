@@ -1,10 +1,6 @@
-from utilities import datareader
-
-def solve(part: int, use_sample: bool):
-    lines = datareader.read_lines(2022, 2, part, use_sample)
-
+def solve(data, part):
     score = 0
-    for line in lines:
+    for line in data:
         score += evaluate_part1(line[0], line[2]) if part == 1 else evaluate_part2(line[0], line[2]) 
 
     return str(score)
