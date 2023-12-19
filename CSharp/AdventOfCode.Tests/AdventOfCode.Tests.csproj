@@ -8,15 +8,12 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Inputs\_2022\Puzzle01.txt" />
-    <None Remove="Inputs\_2022\Puzzle01_Sample.txt" />
-  </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Inputs\_2022\Puzzle01.txt" />
     <EmbeddedResource Include="Inputs\_2022\Puzzle01_Sample.txt" />
+    <EmbeddedResource Include="Inputs\_2022\Puzzle02.txt" />
+    <EmbeddedResource Include="Inputs\_2022\Puzzle02_Sample.txt" />
+    
     <EmbeddedResource Include="Inputs\_2023\Puzzle01.txt" />
     <EmbeddedResource Include="Inputs\_2023\Puzzle01_Part1_Sample.txt" />
     <EmbeddedResource Include="Inputs\_2023\Puzzle01_Part2_Sample.txt" />
