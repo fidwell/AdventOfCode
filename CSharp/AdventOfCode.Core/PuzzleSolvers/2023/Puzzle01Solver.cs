@@ -1,4 +1,4 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
@@ -18,7 +18,28 @@ public class Puzzle01Solver() : IPuzzleSolver
 
     private static (int, int) GetFirstAndLastDigits(string input, bool allowWords)
     {
-        var digits = DigitFinder.FindDigits(input, allowWords);
-        return (digits.First(), digits.Last());
+        if (allowWords)
+        {
+            foreach (var word in Replacers)
+            {
+                input = input.Replace(word.Key, word.Value);
+            }
+        }
+
+        var matches = Regex.Matches(input, "(\\d)");
+        return (int.Parse(matches.First().Value), int.Parse(matches.Last().Value));
     }
+
+    private static readonly Dictionary<string, string> Replacers = new()
+    {
+        { "one", "o1e" },
+        { "two", "t2o" },
+        { "three", "t3e" },
+        { "four", "f4r" },
+        { "five", "f5" },
+        { "six", "s6x" },
+        { "seven", "s7n" },
+        { "eight", "e8t" },
+        { "nine", "n9e" }
+    };
 }
