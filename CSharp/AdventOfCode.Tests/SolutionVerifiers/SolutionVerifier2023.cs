@@ -133,8 +133,8 @@ public class SolutionVerifier2023 : SolutionVerifier
 
     [DataRow(19, 1, true, "19114", DisplayName = "2023.19.1-s")]
     [DataRow(19, 1, false, "432434", DisplayName = "2023.19.1")]
-    [DataRow(19, 2, true, "_", DisplayName = "2023.19.2-s")]
-    [DataRow(19, 2, false, "_", DisplayName = "2023.19.2")]
+    [DataRow(19, 2, true, "167409079868000", DisplayName = "2023.19.2-s")]
+    [DataRow(19, 2, false, "132557544578569", DisplayName = "2023.19.2")]
 
     [DataRow(20, 1, true, "_", DisplayName = "2023.20.1-s")]
     [DataRow(20, 1, false, "_", DisplayName = "2023.20.1")]
