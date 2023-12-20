@@ -25,9 +25,7 @@ public class Conjunction(string name, IEnumerable<string> outputs)
             LowPulses++;
             return SendPulse(false);
         }
-        else
-        {
-            return SendPulse(true);
-        }
+
+        return SendPulse(true);
     }
 }

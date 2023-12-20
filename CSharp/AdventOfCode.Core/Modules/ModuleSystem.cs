@@ -1,5 +1,4 @@
 ﻿using AdventOfCode.Core.MathUtilities;
-using System.Diagnostics;
 
 namespace AdventOfCode.Core.Modules;
 
@@ -18,7 +17,6 @@ public class ModuleSystem
     public ModuleSystem(string input)
     {
         Modules = input.Split(Environment.NewLine).Select(Module.Parse).ToList();
-
         foreach (var conjunction in Modules.OfType<Conjunction>())
         {
             conjunction.Initialize(Modules.Where(m => m.Outputs.Contains(conjunction.Name)).Select(m => m.Name));
@@ -45,7 +43,6 @@ public class ModuleSystem
             foreach (var input in _inputsToConjunctor
                 .Where(i => i.LowPulses == 1 && !conjunctorCounts.ContainsKey(i.Name)))
             {
-                Trace.WriteLine($"{input.Name} sent a high pulse at {_pushCount} pushes");
                 conjunctorCounts[input.Name] = _pushCount;
             }
 
@@ -66,8 +63,6 @@ public class ModuleSystem
         {
             var next = PulseQueue.Dequeue();
 
-            //Trace.WriteLine($"{next.Source} -{(next.IsHigh ? "high" : "low")}-> {next.Destination}");
-            
             if (next.IsHigh)
             {
                 HighPulseCount++;
@@ -78,7 +73,6 @@ public class ModuleSystem
             }
 
             var destination = Modules.SingleOrDefault(m => m.Name == next.Destination);
-            
             if (destination is null)
                 continue;
 
@@ -88,7 +82,5 @@ public class ModuleSystem
                 PulseQueue.Enqueue(result);
             }
         }
-
-        //Trace.WriteLine("");
     }
 }
