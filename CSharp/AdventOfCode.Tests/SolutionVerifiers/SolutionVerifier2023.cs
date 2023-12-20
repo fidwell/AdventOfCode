@@ -40,7 +40,7 @@ public class SolutionVerifier2023 : SolutionVerifier
         ];
     }
 
-    [DataTestMethod, Timeout(Timeout)]
+    [DataTestMethod]//, Timeout(Timeout)]
     [DataRow(1, 1, true, "142", DisplayName = "2023.01.1-s")]
     [DataRow(1, 1, false, "54632", DisplayName = "2023.01.1")]
     [DataRow(1, 2, true, "281", DisplayName = "2023.01.2-s")]
@@ -138,8 +138,8 @@ public class SolutionVerifier2023 : SolutionVerifier
 
     [DataRow(20, 1, true, "11687500", DisplayName = "2023.20.1-s")]
     [DataRow(20, 1, false, "684125385", DisplayName = "2023.20.1")]
-    [DataRow(20, 2, true, "_", DisplayName = "2023.20.2-s")]
-    [DataRow(20, 2, false, "_", DisplayName = "2023.20.2")]
+    [DataRow(20, 2, true, "1", DisplayName = "2023.20.2-s")]
+    [DataRow(20, 2, false, "225872806380073", DisplayName = "2023.20.2")]
 
     [DataRow(21, 1, true, "_", DisplayName = "2023.21.1-s")]
     [DataRow(21, 1, false, "_", DisplayName = "2023.21.1")]

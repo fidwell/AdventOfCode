@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using AdventOfCode.Core.MathUtilities;
+using System.Diagnostics;
 
 namespace AdventOfCode.Core.Modules;
 
@@ -7,8 +8,12 @@ public class ModuleSystem
     public int LowPulseCount { get; private set; } = 0;
     public int HighPulseCount { get; private set; } = 0;
 
-    private static List<Module> Modules = [];
-    private static readonly Queue<Pulse> PulseQueue = new();
+    private List<Module> Modules = [];
+    private readonly Queue<Pulse> PulseQueue = new();
+
+    private List<Conjunction> _inputsToConjunctor = [];
+
+    private int _pushCount = 0;
 
     public ModuleSystem(string input)
     {
@@ -20,15 +25,48 @@ public class ModuleSystem
         }
     }
 
+    public long FindRx()
+    {
+        var hb = Modules.Single(m => m.Outputs.All(o => o == "rx"));
+        var inputsToHb = Modules
+            .Where(m => m.Outputs.All(o => o == hb.Name))
+            .Select(m => m.Name);
+        // inputs to inputsToHb
+        _inputsToConjunctor = Modules
+            .OfType<Conjunction>()
+            .Where(m => m.Outputs.Any(o => inputsToHb.Contains(o)))
+            .ToList();
+        var conjunctorCounts = new Dictionary<string, int>();
+
+        while (true)
+        {
+            PushButton();
+
+            foreach (var input in _inputsToConjunctor
+                .Where(i => i.LowPulses == 1 && !conjunctorCounts.ContainsKey(i.Name)))
+            {
+                Trace.WriteLine($"{input.Name} sent a high pulse at {_pushCount} pushes");
+                conjunctorCounts[input.Name] = _pushCount;
+            }
+
+            if (conjunctorCounts.Count == _inputsToConjunctor.Count)
+                break;
+        }
+
+        return conjunctorCounts.Select(c => (long)c.Value).Aggregate(MathExtensions.LCM);
+    }
+
     public void PushButton()
     {
+        _pushCount++;
+        PulseQueue.Clear();
         PulseQueue.Enqueue(new Pulse("button", "broadcaster", false));
         
         while (PulseQueue.Count != 0)
         {
             var next = PulseQueue.Dequeue();
 
-            Trace.WriteLine($"{next.Source} -{(next.IsHigh ? "high" : "low")}-> {next.Destination}");
+            //Trace.WriteLine($"{next.Source} -{(next.IsHigh ? "high" : "low")}-> {next.Destination}");
             
             if (next.IsHigh)
             {
@@ -51,6 +89,6 @@ public class ModuleSystem
             }
         }
 
-        Trace.WriteLine("");
+        //Trace.WriteLine("");
     }
 }

@@ -3,23 +3,31 @@
 public class Conjunction(string name, IEnumerable<string> outputs)
     : Module(name, outputs)
 {
-    private readonly Dictionary<string, bool> _memory = [];
-    
+    public readonly Dictionary<string, bool> Memory = [];
+
+    public int LowPulses { get; private set; } = 0;
+
     public void Initialize(IEnumerable<string> inputNames)
     {
-        _memory.Clear();
+        Memory.Clear();
         foreach (var input in inputNames)
         {
-            _memory.Add(input, false);
+            Memory.Add(input, false);
         }
     }
 
     public override IEnumerable<Pulse> ReceivePulse(Pulse pulse)
     {
-        _memory[pulse.Source] = pulse.IsHigh;
+        Memory[pulse.Source] = pulse.IsHigh;
 
-        return _memory.All(m => m.Value)
-            ? SendPulse(false)
-            : SendPulse(true);
+        if (Memory.All(m => m.Value))
+        {
+            LowPulses++;
+            return SendPulse(false);
+        }
+        else
+        {
+            return SendPulse(true);
+        }
     }
 }

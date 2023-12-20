@@ -15,5 +15,6 @@ public class Puzzle20Solver : IPuzzleSolver
         return (system.HighPulseCount * system.LowPulseCount).ToString();
     }
 
-    public string SolvePartTwo(string input) => throw new NotImplementedException();
+    public string SolvePartTwo(string input) =>
+        new ModuleSystem(input).FindRx().ToString();
 }
