@@ -16,7 +16,8 @@ public class SolutionVerifier2022 : SolutionVerifier
             new Puzzle02Solver(),
             new Puzzle03Solver(),
             new Puzzle04Solver(),
-            new Puzzle05Solver()
+            new Puzzle05Solver(),
+            new Puzzle06Solver()
         ];
     }
 
@@ -45,6 +46,11 @@ public class SolutionVerifier2022 : SolutionVerifier
     [DataRow(5, 1, false, "CVCWCRTVQ", DisplayName = "2022.05.1")]
     [DataRow(5, 2, true, "MCD", DisplayName = "2022.05.2-s")]
     [DataRow(5, 2, false, "CNSCZWLVT", DisplayName = "2022.05.2")]
+
+    [DataRow(6, 1, true, "7", DisplayName = "2022.06.1-s")]
+    [DataRow(6, 1, false, "1623", DisplayName = "2022.06.1")]
+    [DataRow(6, 2, true, "19", DisplayName = "2022.06.2-s")]
+    [DataRow(6, 2, false, "3774", DisplayName = "2022.06.2")]
     public void Solve(int puzzle, int part, bool useSample, string expected) =>
         Solve(_solvers[puzzle - 1], 2022, puzzle, part, useSample, expected);
 }
