@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode.Core.PuzzleSolvers._2023;
+﻿using AdventOfCode.Core.MathUtilities;
+
+namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle08Solver : IPuzzleSolver
 {
@@ -16,7 +18,7 @@ public class Puzzle08Solver : IPuzzleSolver
         Init(input);
         var startingNodes = _nodes.Where(n => n.Name[2] == 'A');
         var steps = startingNodes.Select(n => Travel(n, n => n.Name[2] == 'Z')).Select(s => (long)s);
-        var total = steps.Aggregate(LCM);
+        var total = steps.Aggregate(MathExtensions.LCM);
         return total.ToString();
     }
 
@@ -46,18 +48,6 @@ public class Puzzle08Solver : IPuzzleSolver
         }
 
         return totalSteps;
-    }
-
-    private long LCM(long a, long b)
-    {
-        var larger = a > b ? a : b;
-        for (var i = larger; ; i += larger)
-        {
-            if (i % a == 0 && i % b == 0)
-            {
-                return i;
-            }
-        }
     }
 
     private class Node(string input)
