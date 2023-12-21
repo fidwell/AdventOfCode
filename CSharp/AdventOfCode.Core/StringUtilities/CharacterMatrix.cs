@@ -193,7 +193,7 @@ public class CharacterMatrix
     /// <param name="coordinates">All coordinates of characters.</param>
     /// <returns>Coordinates of all characters surrounding the input character coordinates.</returns>
     private IEnumerable<(int, int)> CoordinatesOfNeighbors(IEnumerable<(int, int)> coordinates) => coordinates
-        .SelectMany(CoordinatesOfNeighbors)
+        .SelectMany(c => CoordinatesOfNeighbors(c))
         .Where(c => !coordinates.Contains(c))
         .Distinct();
 
@@ -204,21 +204,24 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="coordinate">The index to search around.</param>
     /// <returns>Coordinates of all characters surrounding the input character index.</returns>
-    private IEnumerable<(int, int)> CoordinatesOfNeighbors((int, int) coordinate)
+    public IEnumerable<(int, int)> CoordinatesOfNeighbors((int, int) coordinate, bool allEight = true)
     {
         var (x, y) = coordinate;
 
-        if (x > 1) yield return (x - 1, y);
+        if (x > 0) yield return (x - 1, y);
         if (x < Width - 1) yield return (x + 1, y);
 
-        if (y > 1) yield return (x, y - 1);
+        if (y > 0) yield return (x, y - 1);
         if (y < Height - 1) yield return (x, y + 1);
 
-        if (x > 1 && y > 1) yield return (x - 1, y - 1);
-        if (x < Width - 1 && y < Height - 1) yield return (x + 1, y + 1);
+        if (allEight)
+        {
+            if (x > 0 && y > 0) yield return (x - 1, y - 1);
+            if (x < Width - 1 && y < Height - 1) yield return (x + 1, y + 1);
 
-        if (x > 1 && y < Height - 1) yield return (x - 1, y + 1);
-        if (x < Width - 1 && y > 1) yield return (x + 1, y - 1);
+            if (x > 0 && y < Height - 1) yield return (x - 1, y + 1);
+            if (x < Width - 1 && y > 0) yield return (x + 1, y - 1);
+        }
     }
 
     public class Word((int, int) startCoordinate, int length, string value)
