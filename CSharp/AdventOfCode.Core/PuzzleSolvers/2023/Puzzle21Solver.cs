@@ -8,33 +8,17 @@ public class Puzzle21Solver : IPuzzleSolver
     {
         var matrix = new CharacterMatrix(input);
         var start = matrix.FindAllCharacters('S').Single();
-        var queue = new Queue<((int, int), int)>();
-        var seen = new HashSet<((int, int), int)>();
-        queue.Enqueue((start, 0));
-        var target = matrix.Width < 20 ? 6 : 64; // 6 for sample, 64 for real
+        var answers = new HashSet<(int, int)> { start };
+        var target = matrix.Width < 20 ? 6 : 64;
 
-        while (queue.Count > 0)
+        for (int i = 0; i < target; i++)
         {
-            var thisStep = queue.Dequeue();
-
-            if (thisStep.Item2 > target)
-                continue;
-
-            seen.Add(thisStep);
-
-            var neighbors = matrix.CoordinatesOfNeighbors(thisStep.Item1, false);
-            foreach (var neighbor in neighbors)
-            {
-                var nextStep = (neighbor, thisStep.Item2 + 1);
-                if (!seen.Contains(nextStep) &&
-                    matrix.CharAt(neighbor) != '#')
-                {
-                    queue.Enqueue(nextStep);
-                }
-            }
+            answers = new HashSet<(int, int)>(answers
+                .SelectMany(a => matrix.CoordinatesOfNeighbors(a, allEight: false)
+                    .Where(c => matrix.CharAt(c) != '#')));
         }
 
-        return seen.Where(s => s.Item2 == target).Count().ToString();
+        return answers.Count.ToString();
     }
 
     public string SolvePartTwo(string input) => throw new NotImplementedException();

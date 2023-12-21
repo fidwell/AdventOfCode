@@ -142,7 +142,7 @@ public class SolutionVerifier2023 : SolutionVerifier
     [DataRow(20, 2, false, "225872806380073", DisplayName = "2023.20.2")]
 
     [DataRow(21, 1, true, "16", DisplayName = "2023.21.1-s")]
-    [DataRow(21, 1, false, "_", DisplayName = "2023.21.1")]
+    [DataRow(21, 1, false, "3740", DisplayName = "2023.21.1")]
     [DataRow(21, 2, true, "_", DisplayName = "2023.21.2-s")]
     [DataRow(21, 2, false, "_", DisplayName = "2023.21.2")]
 
