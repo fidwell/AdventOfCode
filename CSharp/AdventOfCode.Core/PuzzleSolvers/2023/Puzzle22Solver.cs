@@ -9,10 +9,35 @@ public class Puzzle22Solver : IPuzzleSolver
     {
         var bricks = input.Split(Environment.NewLine)
             .Select((l, i) => new Brick(l, i))
+            .OrderBy(b => b.Point1.Z)
             .ToList();
-        bricks = bricks.OrderBy(b => Math.Min(b.Point1.Z, b.Point2.Z)).ToList();
 
-        Fall(bricks);
+        var stableBrickIds = new HashSet<int>();
+        while (stableBrickIds.Count < bricks.Count)
+        {
+            foreach (var brick in bricks)
+            {
+                if (stableBrickIds.Contains(brick.Id))
+                    continue;
+
+                if (brick.Point1.Z == 1 || brick.Point2.Z == 1)
+                {
+                    stableBrickIds.Add(brick.Id);
+                    continue;
+                }
+
+                while (!IsSupported(brick, bricks))
+                {
+                    brick.Fall();
+                }
+
+                var supporters = Supporters(brick, bricks);
+                if (supporters.Any(s => stableBrickIds.Contains(s.Id)))
+                {
+                    stableBrickIds.Add(brick.Id);
+                }
+            }
+        }
 
         return bricks.Count(brick =>
         {
@@ -23,26 +48,12 @@ public class Puzzle22Solver : IPuzzleSolver
 
     public string SolvePartTwo(string input) => throw new NotImplementedException();
 
-    private static void Fall(List<Brick> bricks)
-    {
-        var limit = 100000; // just a guess
-        do
-        {
-            foreach (var brick in bricks)
-            {
-                if (!IsSupported(brick, bricks))
-                {
-                    brick.Fall();
-                    Trace.WriteLine($"Brick {brick.IdChar} is at z = {brick.Point1.Z}");
-                }
-            }
-
-            limit--;
-        } while (limit > 0);
-    }
-
     private static bool IsSupported(Brick brick, List<Brick> bricks) =>
         brick.Point1.Z == 1 || brick.Point2.Z == 1 || bricks.Any(a => a != brick && Supports(a, brick));
+
+    private static IEnumerable<Brick> Supporters(Brick brick, List<Brick> bricks) =>
+        bricks.Where(a => a != brick && Supports(a, brick));
+
 
     private static bool Supports(Brick lower, Brick higher) =>
         lower.AllCubes.Any(lc => higher.AllCubes.Any(hc => 
