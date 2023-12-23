@@ -14,7 +14,6 @@ def solve_part2(data):
         popped = []
         for _ in range(0, instruction[0]):
             popped.insert(0, stacks[instruction[1] - 1].pop())
-        #popped.reverse()
         stacks[instruction[2] - 1] += popped
 
     return stacks_final(stacks)
