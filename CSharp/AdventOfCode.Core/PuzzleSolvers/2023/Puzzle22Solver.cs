@@ -7,28 +7,13 @@ public class Puzzle22Solver : IPuzzleSolver
     public string SolvePartOne(string input)
     {
         var (bricks, graph) = Initialize(input);
-
-        return bricks.Count(b =>
-        {
-            var bricksLeft = graph.IfRemoveNode(b.Id);
-            var missingBricks = string.Join(",", bricks.Where(b => !bricksLeft.Contains(b.Id)).Select(b => b.Id));
-            var bricksThatFell = bricks.Count - bricksLeft.Count(b => b != -1);
-            //Trace.WriteLine($"Disintegrating brick {b.Id:0000} would cause {bricksThatFell - 1} other bricks to fall.");
-            return bricksThatFell - 1 == 0;
-        }).ToString();
+        return bricks.Count(b => bricks.Count - graph.IfRemoveNode(b.Id).Count(b => b != -1) - 1 == 0).ToString();
     }
 
     public string SolvePartTwo(string input)
     {
         var (bricks, graph) = Initialize(input);
-
-        return bricks.Sum(b =>
-        {
-            var bricksLeft = graph.IfRemoveNode(b.Id).Count(b => b != -1);
-            var bricksThatFell = bricks.Count - bricksLeft;
-            //Trace.WriteLine($"Disintegrating brick {b.IdChar} would cause {bricksThatFell - 1} other bricks to fall.");
-            return bricksThatFell - 1;
-        }).ToString();
+        return bricks.Sum(b => bricks.Count - graph.IfRemoveNode(b.Id).Count(b => b != -1) - 1).ToString();
     }
 
     private (List<Brick>, Graph) Initialize(string input)
@@ -57,7 +42,7 @@ public class Puzzle22Solver : IPuzzleSolver
                 brick.AllCubes.Select(c => c.X).Contains(oz.x) &&
                 brick.AllCubes.Select(c => c.Y).Contains(oz.y));
             var maxZ = spacesUnder.Max(oz => oz.Item3);
-            var minZOfThis = brick.Point1.Z; // should be enforced by brick constructor
+            var minZOfThis = brick.Point1.Z; // Should be enforced by brick constructor
             var fallAmount = minZOfThis - maxZ - 1;
             brick.Fall(fallAmount);
 
@@ -98,7 +83,6 @@ public class Puzzle22Solver : IPuzzleSolver
         }
         edgeDictionary.Add(-1, bottomBricks);
         var graph = new Graph(edgeDictionary);
-
         return (bricks, graph);
     }
 
