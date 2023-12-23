@@ -12,78 +12,50 @@ public class Puzzle23Solver : IPuzzleSolver
         var start = periodChars.First();
         var finish = periodChars.Last();
 
-        // Algorithm idea...
-        // Depth-first search through paths.
-        // Log visited spaces in a hash. (maybe not necessary)
-        // Whenever you reach a junction, recur?
-        // Final tree is a list of edges from c0 to c1
-        // and keeping track of the length (like a
-        // weighted graph).
-        // Then do Dijkstra but whatever the inverse
-        // of Dijkstra is, to find the longest
-        // instead of the shortest.
-        // Note that there can (probably will)
-        // be multiple paths between the same two nodes.
+        var graph = new List<Edge>();
+        FindPaths(matrix, start, Direction.Down, finish, [], graph);
 
-        // ---
+        var allPaths = FindAllPaths(graph, start, finish);
+        var sums = allPaths.Select(path =>
+        {
+            var total = 0;
+            for (var i = 0; i < path.Count - 1; i++)
+            {
+                var thisEdge = graph.Single(e =>
+                    e.Start.Item1 == path[i].Item1 &&
+                    e.Start.Item2 == path[i].Item2 &&
+                    e.End.Item1 == path[i + 1].Item1 &&
+                    e.End.Item2 == path[i + 1].Item2);
+                total += thisEdge.Length + 1;
+            }
+            return total;
+        });
 
-        // First we have to actually make the
-        // graph by finding all the edges.
-
-        // Given a starting node, walk through
-        // the graph while there are no junctions
-        // (that is, there are only 2 visitable
-        // neighbors of the current coordinate.
-        // Then we have a start, end, and length.
-        // Add that to our graph.
-        // (If we ever encountered an arrow
-        // going the other way, give up on that
-        // path.)
-        // Now, just do that again, except recursively.
-        // If we reach the desired end, stop recurring.
-        // If we reach a node and all its exits are
-        // already accounted for, stop recurring.
-        // (So we'll have to keep track of how
-        // we leave a starting node.)
-
-        var allPaths = FindPaths(matrix, start, Direction.Down, finish, []).ToList();
-
-        // The above should work!!! Now, just to run some graph searching on it.
-
-        throw new NotImplementedException();
+        return sums.Max().ToString();
     }
 
     public string SolvePartTwo(string input) => throw new NotImplementedException();
 
-    private static HashSet<Edge> FindPaths(CharacterMatrix matrix, (int, int) start, Direction initialDirection, (int, int) finish, HashSet<(int, int)> visited)
+    private static void FindPaths(CharacterMatrix matrix, (int, int) start, Direction initialDirection, (int, int) finish, HashSet<(int, int)> visited, List<Edge> edges)
     {
         var thisPath = WalkToNextJunction(matrix, start, initialDirection, finish, visited);
         if (thisPath.Item1 == finish)
-            return
-            [
-                new Edge(start, initialDirection, finish, thisPath.Item3, thisPath.Item2)
-            ];
+        {
+            edges.Add(new Edge(start, initialDirection, finish, thisPath.Item3, thisPath.Item2));
+            return;
+        }
 
         if (thisPath.Item3 == Direction.Undefined)
+            return;
+
+        var nextNeighbors = WalkableNeighbors(matrix, thisPath.Item1)
+            .Where(n => DirectionFrom(n, thisPath.Item1) != thisPath.Item3)
+            .ToList();
+        edges.Add(new Edge(start, initialDirection, thisPath.Item1, thisPath.Item3, thisPath.Item2));
+
+        foreach (var n in nextNeighbors.Where(n => !visited.Contains(n)))
         {
-            return [];
-        }
-        else
-        {
-            var nextNeighbors = WalkableNeighbors(matrix, thisPath.Item1)
-                .Where(n => DirectionFrom(n, thisPath.Item1) != thisPath.Item3)
-                .ToList();
-            var result = new HashSet<Edge>()
-            {
-                new Edge(start, initialDirection, thisPath.Item1, thisPath.Item3, thisPath.Item2)
-            };
-            var childResults = nextNeighbors
-                .SelectMany(n => FindPaths(matrix, thisPath.Item1, DirectionFrom(thisPath.Item1, n), finish, visited));
-            foreach (var childResult in childResults)
-            {
-                result.Add(childResult);
-            }
-            return result;
+            FindPaths(matrix, thisPath.Item1, DirectionFrom(thisPath.Item1, n), finish, visited, edges);
         }
     }
 
@@ -99,8 +71,12 @@ public class Puzzle23Solver : IPuzzleSolver
             var previousPosition = currentPosition;
             currentPosition = currentPosition.Go(direction);
 
-            if (visited.Contains(currentPosition))
-                return ((-1, -1), -1, Direction.Undefined); // We have already been this way
+            var nextNeighbors = WalkableNeighbors(matrix, currentPosition);
+
+            // Junction reached
+            if (currentPosition == finish || nextNeighbors.Count() > 2)
+                return (currentPosition, length, direction);
+
             visited.Add(currentPosition);
 
             var charHere = matrix.CharAt(currentPosition);
@@ -108,12 +84,6 @@ public class Puzzle23Solver : IPuzzleSolver
                 return ((-1, -1), -1, Direction.Undefined); // We hit a one-way going the wrong way
 
             length++;
-            var nextNeighbors = WalkableNeighbors(matrix, currentPosition);
-
-            if (currentPosition == finish || nextNeighbors.Count() > 2)
-            {   // Junction reached
-                return (currentPosition, length, direction);
-            }
 
             var nextTarget = nextNeighbors.Single(n => n != previousPosition);
             direction = DirectionFrom(currentPosition, nextTarget);
@@ -124,6 +94,33 @@ public class Puzzle23Solver : IPuzzleSolver
 
     private static IEnumerable<(int, int)> WalkableNeighbors(CharacterMatrix matrix, (int, int) coordinate) =>
         matrix.CoordinatesOfNeighbors(coordinate, allEight: false).Where(c => matrix.CharAt(c) != '#');
+
+    private static List<List<(int, int)>> FindAllPaths(List<Edge> graph, (int, int) start, (int, int) end)
+    {
+        var paths = new List<List<(int, int)>>();
+        DepthFirstSearch(graph, start, end, [], paths);
+        return paths;
+    }
+
+    private static void DepthFirstSearch(List<Edge> graph,
+        (int, int) current, (int, int) end,
+        List<(int, int)> path, List<List<(int, int)>> paths)
+    {
+        path.Add(current);
+
+        if (current == end)
+        {
+            paths.Add(new List<(int, int)>(path));
+        }
+        else
+        {
+            foreach (var edge in graph.Where(g => g.Start == current))
+            {
+                DepthFirstSearch(graph, edge.End, end, path, paths);
+            }
+        }
+        path.RemoveAt(path.Count - 1);
+    }
 
     private static Direction DirectionFrom((int, int) a, (int, int) b)
     {
