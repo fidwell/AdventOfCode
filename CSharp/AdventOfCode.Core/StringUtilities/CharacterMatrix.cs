@@ -57,7 +57,16 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="coord">The coordinate.</param>
     /// <returns>The character at this position in the matrix.</returns>
-    public char CharAt((int, int) coord) => _data[coord.Item1, coord.Item2];
+    public char CharAt((int, int) coord)
+    {
+        // Allow wrapping
+        while (coord.Item1 < 0) coord.Item1 += Width;
+        while (coord.Item2 < 0) coord.Item2 += Height;
+        while (coord.Item1 >= Width) coord.Item1 -= Width;
+        while (coord.Item2 >= Height) coord.Item2 -= Height;
+
+        return _data[coord.Item1, coord.Item2];
+    }
 
     /// <summary>
     /// Returns a string starting at a given index, of a given length.
@@ -204,15 +213,15 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="coordinate">The index to search around.</param>
     /// <returns>Coordinates of all characters surrounding the input character index.</returns>
-    public IEnumerable<(int, int)> CoordinatesOfNeighbors((int, int) coordinate, bool allEight = true)
+    public IEnumerable<(int, int)> CoordinatesOfNeighbors((int, int) coordinate, bool allEight = true, bool allowWrapping = false)
     {
         var (x, y) = coordinate;
 
-        if (x > 0) yield return (x - 1, y);
-        if (x < Width - 1) yield return (x + 1, y);
+        if (allowWrapping || x > 0) yield return (x - 1, y);
+        if (allowWrapping || x < Width - 1) yield return (x + 1, y);
 
-        if (y > 0) yield return (x, y - 1);
-        if (y < Height - 1) yield return (x, y + 1);
+        if (allowWrapping || y > 0) yield return (x, y - 1);
+        if (allowWrapping || y < Height - 1) yield return (x, y + 1);
 
         if (allEight)
         {
