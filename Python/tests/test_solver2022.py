@@ -78,3 +78,11 @@ class TestSolver2022(unittest.TestCase):
     def test_solver05_part1(self):
         data = datareader.read_lines(2022, 5, 1, False)
         self.assertEqual(solver05.solve_part1(data), "CVCWCRTVQ")
+
+    def test_solver05_part2_sample(self):
+        data = datareader.read_lines(2022, 5, 1, True)
+        self.assertEqual(solver05.solve_part2(data), "MCD")
+
+    def test_solver05_part2(self):
+        data = datareader.read_lines(2022, 5, 1, False)
+        self.assertEqual(solver05.solve_part2(data), "CNSCZWLVT")
