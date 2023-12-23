@@ -5,7 +5,7 @@ namespace AdventOfCode.Tests.SolutionVerifiers;
 
 public abstract class SolutionVerifier
 {
-    protected const int Timeout = 3000;
+    protected const int Timeout = 2000;
 
     protected static void Solve(IPuzzleSolver solver, int year, int puzzle, int part, bool useExample, string expected)
     {
