@@ -11,32 +11,40 @@ public class Puzzle23Solver : IPuzzleSolver
         var periodChars = matrix.FindAllCharacters('.');
         var start = periodChars.First();
         var finish = periodChars.Last();
-
         var graph = new List<Edge>();
-        FindPaths(matrix, start, Direction.Down, finish, [], graph);
-
+        FindGraphEdges(matrix, start, Direction.Down, finish, [], graph);
         var allPaths = FindAllPaths(graph, start, finish);
-        var sums = allPaths.Select(path =>
-        {
-            var total = 0;
-            for (var i = 0; i < path.Count - 1; i++)
-            {
-                var thisEdge = graph.Single(e =>
-                    e.Start.Item1 == path[i].Item1 &&
-                    e.Start.Item2 == path[i].Item2 &&
-                    e.End.Item1 == path[i + 1].Item1 &&
-                    e.End.Item2 == path[i + 1].Item2);
-                total += thisEdge.Length + 1;
-            }
-            return total;
-        });
-
-        return sums.Max().ToString();
+        return PathTotalLengths(graph, allPaths).Max().ToString();
     }
 
-    public string SolvePartTwo(string input) => throw new NotImplementedException();
+    public string SolvePartTwo(string input)
+    {
+        var matrix = new CharacterMatrix(input);
+        var periodChars = matrix.FindAllCharacters('.');
+        var start = periodChars.First();
+        var finish = periodChars.Last();
+        var graph = new List<Edge>();
+        FindGraphEdges(matrix, start, Direction.Down, finish, [], graph);
 
-    private static void FindPaths(CharacterMatrix matrix, (int, int) start, Direction initialDirection, (int, int) finish, HashSet<(int, int)> visited, List<Edge> edges)
+        var extraEdges = new List<Edge>();
+        foreach (var edge in graph.Where(e => e.Start != start && e.End != finish))
+        {
+            extraEdges.Add(new Edge(edge.End, edge.Start, edge.Length));
+        }
+        graph.AddRange(extraEdges);
+
+        var allPaths = FindAllPaths(graph, start, finish);
+        return PathTotalLengths(graph, allPaths).Max().ToString();
+    }
+
+    private static IEnumerable<int> PathTotalLengths(List<Edge> graph, List<List<(int, int)>> allPaths) =>
+        allPaths.Select(path =>
+            Enumerable.Range(0, path.Count - 1)
+            .Sum(i => graph
+                .Single(e => e.Start.Equals(path[i]) && e.End.Equals(path[i + 1]))
+                .Length));
+
+    private static void FindGraphEdges(CharacterMatrix matrix, (int, int) start, Direction initialDirection, (int, int) finish, HashSet<(int, int)> visited, List<Edge> edges)
     {
         var thisPath = WalkToNextJunction(matrix, start, initialDirection, finish, visited);
         if (thisPath.Item1 == finish)
@@ -55,7 +63,7 @@ public class Puzzle23Solver : IPuzzleSolver
 
         foreach (var n in nextNeighbors.Where(n => !visited.Contains(n)))
         {
-            FindPaths(matrix, thisPath.Item1, DirectionFrom(thisPath.Item1, n), finish, visited, edges);
+            FindGraphEdges(matrix, thisPath.Item1, DirectionFrom(thisPath.Item1, n), finish, visited, edges);
         }
     }
 
@@ -75,7 +83,7 @@ public class Puzzle23Solver : IPuzzleSolver
 
             // Junction reached
             if (currentPosition == finish || nextNeighbors.Count() > 2)
-                return (currentPosition, length, direction);
+                return (currentPosition, length + 1, direction);
 
             visited.Add(currentPosition);
 
@@ -114,11 +122,15 @@ public class Puzzle23Solver : IPuzzleSolver
         }
         else
         {
-            foreach (var edge in graph.Where(g => g.Start == current))
+            foreach (var edge in graph.Where(e => e.Start == current))
             {
-                DepthFirstSearch(graph, edge.End, end, path, paths);
+                if (!path.Contains(edge.End))
+                {
+                    DepthFirstSearch(graph, edge.End, end, path, paths);
+                }
             }
         }
+
         path.RemoveAt(path.Count - 1);
     }
 
@@ -162,6 +174,15 @@ public class Puzzle23Solver : IPuzzleSolver
             InitialDirection = initialDirection;
             End = end;
             FinalDirection = finalDirection;
+            Length = length;
+        }
+
+        public Edge((int, int) start, (int, int) end, int length)
+        {
+            Start = start;
+            InitialDirection = Direction.Undefined;
+            End = end;
+            FinalDirection = Direction.Undefined;
             Length = length;
         }
     }
