@@ -1,5 +1,4 @@
-﻿using AdventOfCode.Core.PuzzleSolvers;
-using AdventOfCode.Core.PuzzleSolvers._2022;
+﻿using AdventOfCode.Core.PuzzleSolvers._2022;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AdventOfCode.Tests.SolutionVerifiers;
@@ -7,50 +6,51 @@ namespace AdventOfCode.Tests.SolutionVerifiers;
 [TestClass]
 public class SolutionVerifier2022 : SolutionVerifier
 {
-    private readonly IPuzzleSolver[] _solvers;
-
-    public SolutionVerifier2022()
-    {
-        _solvers = [
-            new Puzzle01Solver(),
-            new Puzzle02Solver(),
-            new Puzzle03Solver(),
-            new Puzzle04Solver(),
-            new Puzzle05Solver(),
-            new Puzzle06Solver()
-        ];
-    }
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, true, "24000", DisplayName = "part 1 sample")]
+    [DataRow(1, false, "71471", DisplayName = "part 1 real")]
+    [DataRow(2, true, "45000", DisplayName = "part 2 sample")]
+    [DataRow(2, false, "211189", DisplayName = "part 2 real")]
+    public void Solve_2022_01(int part, bool useSample, string expected) =>
+        Solve(new Puzzle01Solver(), 2022, 1, part, useSample, expected);
 
     [DataTestMethod, Timeout(Timeout)]
-    [DataRow(1, 1, true, "24000", DisplayName = "2022.01.1-s")]
-    [DataRow(1, 1, false, "71471", DisplayName = "2022.01.1")]
-    [DataRow(1, 2, true, "45000", DisplayName = "2022.01.2-s")]
-    [DataRow(1, 2, false, "211189", DisplayName = "2022.01.2")]
+    [DataRow(1, true, "15", DisplayName = "part 1 sample")]
+    [DataRow(1, false, "11841", DisplayName = "part 1 real")]
+    [DataRow(2, true, "12", DisplayName = "part 2 sample")]
+    [DataRow(2, false, "13022", DisplayName = "part 2 real")]
+    public void Solve_2022_02(int part, bool useSample, string expected) =>
+        Solve(new Puzzle02Solver(), 2022, 2, part, useSample, expected);
 
-    [DataRow(2, 1, true, "15", DisplayName = "2022.02.1-s")]
-    [DataRow(2, 1, false, "11841", DisplayName = "2022.02.1")]
-    [DataRow(2, 2, true, "12", DisplayName = "2022.02.2-s")]
-    [DataRow(2, 2, false, "13022", DisplayName = "2022.02.2")]
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, true, "157", DisplayName = "part 1 sample")]
+    [DataRow(1, false, "7553", DisplayName = "part 1 real")]
+    [DataRow(2, true, "70", DisplayName = "part 2 sample")]
+    [DataRow(2, false, "2758", DisplayName = "part 2 real")]
+    public void Solve_2022_03(int part, bool useSample, string expected) =>
+        Solve(new Puzzle03Solver(), 2022, 3, part, useSample, expected);
 
-    [DataRow(3, 1, true, "157", DisplayName = "2022.03.1-s")]
-    [DataRow(3, 1, false, "7553", DisplayName = "2022.03.1")]
-    [DataRow(3, 2, true, "70", DisplayName = "2022.03.2-s")]
-    [DataRow(3, 2, false, "2758", DisplayName = "2022.03.2")]
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, true, "2", DisplayName = "part 1 sample")]
+    [DataRow(1, false, "536", DisplayName = "part 1 real")]
+    [DataRow(2, true, "4", DisplayName = "part 2 sample")]
+    [DataRow(2, false, "845", DisplayName = "part 2 real")]
+    public void Solve_2022_04(int part, bool useSample, string expected) =>
+        Solve(new Puzzle04Solver(), 2022, 4, part, useSample, expected);
 
-    [DataRow(4, 1, true, "2", DisplayName = "2022.04.1-s")]
-    [DataRow(4, 1, false, "536", DisplayName = "2022.04.1")]
-    [DataRow(4, 2, true, "4", DisplayName = "2022.04.2-s")]
-    [DataRow(4, 2, false, "845", DisplayName = "2022.04.2")]
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, true, "CMZ", DisplayName = "part 1 sample")]
+    [DataRow(1, false, "CVCWCRTVQ", DisplayName = "part 1 real")]
+    [DataRow(2, true, "MCD", DisplayName = "part 2 sample")]
+    [DataRow(2, false, "CNSCZWLVT", DisplayName = "part 2 real")]
+    public void Solve_2022_05(int part, bool useSample, string expected) =>
+        Solve(new Puzzle05Solver(), 2022, 5, part, useSample, expected);
 
-    [DataRow(5, 1, true, "CMZ", DisplayName = "2022.05.1-s")]
-    [DataRow(5, 1, false, "CVCWCRTVQ", DisplayName = "2022.05.1")]
-    [DataRow(5, 2, true, "MCD", DisplayName = "2022.05.2-s")]
-    [DataRow(5, 2, false, "CNSCZWLVT", DisplayName = "2022.05.2")]
-
-    [DataRow(6, 1, true, "7", DisplayName = "2022.06.1-s")]
-    [DataRow(6, 1, false, "1623", DisplayName = "2022.06.1")]
-    [DataRow(6, 2, true, "19", DisplayName = "2022.06.2-s")]
-    [DataRow(6, 2, false, "3774", DisplayName = "2022.06.2")]
-    public void Solve(int puzzle, int part, bool useSample, string expected) =>
-        Solve(_solvers[puzzle - 1], 2022, puzzle, part, useSample, expected);
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, true, "7", DisplayName = "part 1 sample")]
+    [DataRow(1, false, "1623", DisplayName = "part 1 real")]
+    [DataRow(2, true, "19", DisplayName = "part 2 sample")]
+    [DataRow(2, false, "3774", DisplayName = "part 2 real")]
+    public void Solve_2022_06(int part, bool useSample, string expected) =>
+        Solve(new Puzzle06Solver(), 2022, 6, part, useSample, expected);
 }
