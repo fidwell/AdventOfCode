@@ -4,11 +4,11 @@ namespace AdventOfCode.Tests;
 
 public static class DataReader
 {
-    public static string GetData(int year, int puzzleId, int partId, bool useSample)
+    public static string GetData(int year, int puzzleId, int partId, bool useExample)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var sampleStringWithPart = useSample ? $"_Part{partId}_Sample" : string.Empty;
-        var sampleStringWithputPart = useSample ? $"_Sample" : string.Empty;
+        var sampleStringWithPart = useExample ? $"_Part{partId}_Sample" : string.Empty;
+        var sampleStringWithputPart = useExample ? $"_Sample" : string.Empty;
         var pathWithSamplePart = $"AdventOfCode.Tests.Inputs._{year}.Puzzle{puzzleId:00}{sampleStringWithPart}.txt";
         var pathWithoutSamplePart = $"AdventOfCode.Tests.Inputs._{year}.Puzzle{puzzleId:00}{sampleStringWithputPart}.txt";
 

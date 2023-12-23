@@ -7,12 +7,12 @@ public abstract class SolutionVerifier
 {
     protected const int Timeout = 3000;
 
-    protected static void Solve(IPuzzleSolver solver, int year, int puzzle, int part, bool useSample, string expected)
+    protected static void Solve(IPuzzleSolver solver, int year, int puzzle, int part, bool useExample, string expected)
     {
         if (DateTime.Today < new DateTime(2023, 12, puzzle))
             return;
 
-        var input = DataReader.GetData(year, puzzle, part, useSample);
+        var input = DataReader.GetData(year, puzzle, part, useExample);
         var result = part == 1
             ? solver.SolvePartOne(input)
             : solver.SolvePartTwo(input);
