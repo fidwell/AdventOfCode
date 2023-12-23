@@ -1,13 +1,37 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Threading.Tasks.Sources;
+﻿using System.Diagnostics;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
 public class Puzzle22Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
+    {
+        var (bricks, graph) = Initialize(input);
+
+        return bricks.Count(b =>
+        {
+            var bricksLeft = graph.IfRemoveNode(b.Id);
+            var missingBricks = string.Join(",", bricks.Where(b => !bricksLeft.Contains(b.Id)).Select(b => b.Id));
+            var bricksThatFell = bricks.Count - bricksLeft.Count(b => b != -1);
+            //Trace.WriteLine($"Disintegrating brick {b.Id:0000} would cause {bricksThatFell - 1} other bricks to fall.");
+            return bricksThatFell - 1 == 0;
+        }).ToString();
+    }
+
+    public string SolvePartTwo(string input)
+    {
+        var (bricks, graph) = Initialize(input);
+
+        return bricks.Sum(b =>
+        {
+            var bricksLeft = graph.IfRemoveNode(b.Id).Count(b => b != -1);
+            var bricksThatFell = bricks.Count - bricksLeft;
+            //Trace.WriteLine($"Disintegrating brick {b.IdChar} would cause {bricksThatFell - 1} other bricks to fall.");
+            return bricksThatFell - 1;
+        }).ToString();
+    }
+
+    private (List<Brick>, Graph) Initialize(string input)
     {
         var bricks = input.Split(Environment.NewLine)
             .Select((l, i) => new Brick(l, i))
@@ -18,8 +42,8 @@ public class Puzzle22Solver : IPuzzleSolver
         const int maxX = 9;
         const int maxY = 9;
         var occupiedZs =
-            Enumerable.Range(0, maxX).SelectMany(x =>
-            Enumerable.Range(0, maxY).Select(y =>
+            Enumerable.Range(0, maxX + 1).SelectMany(x =>
+            Enumerable.Range(0, maxY + 1).Select(y =>
                 (x, y, 0)))
             .ToList();
 
@@ -37,6 +61,9 @@ public class Puzzle22Solver : IPuzzleSolver
             var fallAmount = minZOfThis - maxZ - 1;
             brick.Fall(fallAmount);
 
+            if (brick.Point1.Z < 1)
+                throw new Exception("Fell too far");
+
             foreach (var p in brick.AllCubes)
             {
                 var occupiedZHere = occupiedZs.Single(oz => oz.x == p.X && oz.y == p.Y);
@@ -46,51 +73,55 @@ public class Puzzle22Solver : IPuzzleSolver
         }
 
         // 2. Create dependency graph
-        var dependencyGraph = new Dictionary<int, List<int>>();
+        var edgeDictionary = new Dictionary<int, List<int>>();
+        var bottomBricks = new List<int>();
         for (var i = 0; i < bricks.Count; i++)
         {
             var thisBrick = bricks[i];
+            if (thisBrick.Point1.Z == 1)
+            {
+                bottomBricks.Add(thisBrick.Id);
+            }
+
             for (var j = i + 1; j < bricks.Count; j++)
             {
                 var thatBrick = bricks[j];
                 if (Supports(thisBrick, thatBrick))
                 {
-                    if (!dependencyGraph.ContainsKey(thisBrick.Id))
+                    if (!edgeDictionary.ContainsKey(thisBrick.Id))
                     {
-                        dependencyGraph.Add(thisBrick.Id, []);
+                        edgeDictionary.Add(thisBrick.Id, []);
                     }
-                    dependencyGraph[thisBrick.Id].Add(thatBrick.Id);
+                    edgeDictionary[thisBrick.Id].Add(thatBrick.Id);
                 }
             }
         }
+        edgeDictionary.Add(-1, bottomBricks);
+        var graph = new Graph(edgeDictionary);
 
-        return "";
+        return (bricks, graph);
     }
 
-    public string SolvePartTwo(string input) => throw new NotImplementedException();
-
     private static bool Supports(Brick lower, Brick higher) =>
-        lower.AllCubes.Any(lc => higher.AllCubes.Any(hc => 
+        lower.AllCubes.Any(lc => higher.AllCubes.Any(hc =>
             hc.X == lc.X &&
             hc.Y == lc.Y &&
             hc.Z == lc.Z + 1));
 
-    private record Brick
+    private class Brick
     {
         public readonly int Id;
         public readonly Point3d Point1;
         public readonly Point3d Point2;
-        public readonly Point3d[] AllCubes;
+        public List<Point3d> AllCubes;
 
         public Brick(string input, int id)
         {
             Id = id;
-            var portions = input.Split('~');
-            var p1 = new Point3d(portions.First());
-            var p2 = new Point3d(portions.Last());
-            Point1 = p1.Z < p2.Z ? p1 : p2;
-            Point2 = Point1 == p1 ? p2 : p1;
-            AllCubes = GetAllPoints().ToArray();
+            var portions = input.Split('~').Select(p => new Point3d(p)).OrderBy(p => p.Z).ToList();
+            Point1 = portions[0];
+            Point2 = portions[1];
+            AllCubes = GetAllPoints().ToList();
         }
 
         public char IdChar => (char)('A' + Id);
@@ -99,10 +130,7 @@ public class Puzzle22Solver : IPuzzleSolver
         {
             Point1.Z -= amount;
             Point2.Z -= amount;
-            foreach (var point in AllCubes)
-            {
-                point.Z -= amount;
-            }
+            AllCubes = GetAllPoints().ToList();
         }
 
         private IEnumerable<Point3d> GetAllPoints()
@@ -128,11 +156,12 @@ public class Puzzle22Solver : IPuzzleSolver
                 var count = end - start + 1;
                 return Enumerable.Range(start, count).Select(z => new Point3d(Point1.X, Point1.Y, z));
             }
-            throw new NotImplementedException();
+            else
+                return [Point1];
         }
     }
 
-    private record Point3d
+    private class Point3d
     {
         public readonly int X;
         public readonly int Y;
@@ -152,5 +181,59 @@ public class Puzzle22Solver : IPuzzleSolver
             Y = portions[1];
             Z = portions[2];
         }
+    }
+
+    private class Graph
+    {
+        private readonly Dictionary<int, List<int>> _edges;
+
+        private HashSet<int> _nodesStillVisible;
+
+        public Graph(Dictionary<int, List<int>> edges)
+        {
+            _edges = edges;
+            _nodesStillVisible = [];
+
+            foreach (var parent in _edges)
+            {
+                foreach (var child in parent.Value)
+                {
+                    Trace.WriteLine($"{parent.Key} -> {child};");
+                }
+            }
+        }
+
+        public HashSet<int> IfRemoveNode(int removedId)
+        {
+            _nodesStillVisible = [];
+            var remainingEdges = CopyEdges();
+
+            foreach (var edge in remainingEdges)
+            {
+                edge.Value.RemoveAll(child => child == removedId);
+            }
+
+            DepthFirstSearch(remainingEdges, -1);
+            return _nodesStillVisible;
+        }
+
+        public void DepthFirstSearch(Dictionary<int, List<int>> g, int v)
+        {
+            _nodesStillVisible.Add(v);
+
+            if (!g.ContainsKey(v))
+                return;
+
+            foreach (var w in g[v])
+            {
+                if (!_nodesStillVisible.Contains(w))
+                {
+                    DepthFirstSearch(g, w);
+                }
+            }
+        }
+
+        private Dictionary<int, List<int>> CopyEdges() =>
+            _edges.ToDictionary(entry => entry.Key, entry => new List<int>(entry.Value));
     }
 }
