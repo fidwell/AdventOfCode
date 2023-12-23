@@ -16,9 +16,9 @@ def does_fully_overlap(ranges):
 def does_partially_overlap(ranges):
     r1_start, r1_end = parse_range(ranges[0])
     r2_start, r2_end = parse_range(ranges[1])
-    
-    r1_before_r2 = r1_start <= r2_start and r1_end >= r2_start
-    r2_before_r1 = r2_start <= r1_start and r2_end >= r1_start
+
+    r1_before_r2 = r1_start <= r2_start <= r1_end
+    r2_before_r1 = r2_start <= r1_start <= r2_end
 
     return r1_before_r2 or r2_before_r1
 
