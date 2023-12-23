@@ -182,11 +182,11 @@ public class SolutionVerifier2023 : SolutionVerifier
     public void Solve_2023_22(int part, bool useExample, string expected) =>
         Solve(new Puzzle22Solver(), 2023, 22, part, useExample, expected);
 
-    [DataTestMethod, Timeout(Timeout)]
-    [DataRow(1, true, "_", DisplayName = "part 1 example")]
-    [DataRow(1, false, "_", DisplayName = "part 1 real")]
-    [DataRow(2, true, "_", DisplayName = "part 2 example")]
-    [DataRow(2, false, "_", DisplayName = "part 2 real")]
+    [DataTestMethod]
+    [DataRow(1, true, "94", DisplayName = "2023.23.1-e")]
+    [DataRow(1, false, "2134", DisplayName = "2023.23.1-r")]
+    [DataRow(2, true, "154", DisplayName = "2023.23.2-e")]
+    [DataRow(2, false, "6298", DisplayName = "2023.23.2-r")]
     public void Solve_2023_23(int part, bool useExample, string expected) =>
         Solve(new Puzzle23Solver(), 2023, 23, part, useExample, expected);
 
