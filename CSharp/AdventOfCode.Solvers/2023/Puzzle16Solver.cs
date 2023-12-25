@@ -1,0 +1,134 @@
+﻿using AdventOfCode.Core.ArrayUtilities;
+using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers;
+
+namespace AdventOfCode.Core.PuzzleSolvers._2023;
+
+public class Puzzle16Solver : IPuzzleSolver
+{
+    public string SolvePartOne(string input) =>
+        EnergizedCellsStartingAt(new CharacterMatrix(input), (-1, 0), Direction.Right).ToString();
+
+    public string SolvePartTwo(string input)
+    {
+        var matrix = new CharacterMatrix(input);
+        var maxSolution = 0;
+
+        for (var x = 0; x < matrix.Width; x++)
+        {
+            var solutionFromTop = EnergizedCellsStartingAt(matrix, (x, -1), Direction.Down);
+            if (solutionFromTop > maxSolution)
+            {
+                maxSolution = solutionFromTop;
+            }
+
+            var solutionFromBottom = EnergizedCellsStartingAt(matrix, (x, matrix.Height), Direction.Up);
+            if (solutionFromBottom > maxSolution)
+            {
+                maxSolution = solutionFromBottom;
+            }
+        }
+
+        for (var y = 0; y < matrix.Height; y++)
+        {
+            var solutionFromLeft = EnergizedCellsStartingAt(matrix, (-1, y), Direction.Right);
+            if (solutionFromLeft > maxSolution)
+            {
+                maxSolution = solutionFromLeft;
+            }
+
+            var solutionFromRight = EnergizedCellsStartingAt(matrix, (matrix.Width, y), Direction.Left);
+            if (solutionFromRight > maxSolution)
+            {
+                maxSolution = solutionFromRight;
+            }
+        }
+
+        return maxSolution.ToString();
+    }
+
+    private class Beam((int, int) location, Direction direction)
+    {
+        public (int, int) Location { get; set; } = location;
+        public Direction Direction { get; set; } = direction;
+        public bool ShouldDestroy { get; set; } = false;
+
+        public override int GetHashCode() => (Location.Item1 * 110 + Location.Item2) * 5 + (int)Direction;
+    }
+
+    private static int EnergizedCellsStartingAt(CharacterMatrix matrix, (int, int) start, Direction dir0)
+    {
+        var cache = new List<int>();
+        var beams = new List<Beam>
+        {
+            new(start, dir0)
+        };
+
+        while (beams.Count != 0)
+        {
+            var newBeams = new List<Beam>();
+            foreach (var beam in beams)
+            {
+                beam.Location = beam.Location.Go(beam.Direction);
+
+                var hash = beam.GetHashCode();
+                if (!matrix.IsInBounds(beam.Location) ||
+                    cache.Contains(hash))
+                {
+                    beam.ShouldDestroy = true;
+                    continue;
+                }
+
+                cache.Add(hash);
+
+                switch (matrix.CharAt(beam.Location))
+                {
+                    case '-':
+                        if (beam.Direction == Direction.Down || beam.Direction == Direction.Up)
+                        {
+                            beam.Direction = Direction.Right;
+                            newBeams.Add(new Beam(beam.Location, Direction.Left));
+                        }
+                        break;
+                    case '|':
+                        if (beam.Direction == Direction.Right || beam.Direction == Direction.Left)
+                        {
+                            beam.Direction = Direction.Up;
+                            newBeams.Add(new Beam(beam.Location, Direction.Down));
+                        }
+                        break;
+                    case '\\':
+                        switch (beam.Direction)
+                        {
+                            case Direction.Left: beam.Direction = Direction.Up; break;
+                            case Direction.Down: beam.Direction = Direction.Right; break;
+                            case Direction.Right: beam.Direction = Direction.Down; break;
+                            case Direction.Up: beam.Direction = Direction.Left; break;
+                        }
+                        break;
+                    case '/':
+                        switch (beam.Direction)
+                        {
+                            case Direction.Left: beam.Direction = Direction.Down; break;
+                            case Direction.Down: beam.Direction = Direction.Left; break;
+                            case Direction.Right: beam.Direction = Direction.Up; break;
+                            case Direction.Up: beam.Direction = Direction.Right; break;
+                        }
+                        break;
+                }
+            }
+
+            beams.RemoveAll(b => b.ShouldDestroy);
+            beams.AddRange(newBeams);
+        }
+
+        // Reverse the hash codes to get the original coordinates back
+        return cache.Select(c =>
+        {
+            var xy = c / 5;
+            var y = xy % 110;
+            var x = xy / 110;
+            return (x, y);
+        }).Distinct().Count();
+    }
+}
