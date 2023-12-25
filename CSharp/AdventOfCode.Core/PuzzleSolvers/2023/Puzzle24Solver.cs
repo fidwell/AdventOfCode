@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
+﻿using AdventOfCode.Core.MathUtilities;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
-public class Puzzle24Solver : IPuzzleSolver
+public partial class Puzzle24Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
     {
@@ -11,81 +11,67 @@ public class Puzzle24Solver : IPuzzleSolver
         var testAreaFrom = testArea.First();
         var testAreaTo = testArea.Last();
 
-        var hailstones = lines.Skip(1).Select(l => new Hailstone(l)).ToList();
+        var hailstones = lines.Skip(1).Select(l =>
+        {
+            var portions = l.Split('@', StringSplitOptions.TrimEntries);
+            return new Ray3d(new Point3d(portions[0]), new Point3d(portions[1]));
+        }).ToList();
 
-        var count = 0L;
+        var count = 0;
         for (var i = 0; i < hailstones.Count - 1; i++)
         {
             for (var j = i + 1; j < hailstones.Count; j++)
             {
-                count += hailstones[i].MightCollideWith2d(hailstones[j], testAreaFrom, testAreaTo) ? 1 : 0;
+                count += hailstones[i].CollidesWithInXy(hailstones[j], testAreaFrom, testAreaTo) ? 1 : 0;
             }
         }
 
         return count.ToString();
     }
 
-    public string SolvePartTwo(string input) => throw new NotImplementedException();
-
-    private class Hailstone
+    public string SolvePartTwo(string input)
     {
-        public Point3d Position0;
-        public Point3d Velocity;
+        var lines = input.Split(Environment.NewLine);
+        var hailstones = lines
+            .Skip(1)
+            .Take(3)
+            .Select(l =>
+            {
+                var portions = l.Split('@', StringSplitOptions.TrimEntries);
+                return new Ray3d(new Point3d(portions[0]), new Point3d(portions[1]));
+            }).ToList();
 
-        public double SlopeXy;
-
-        public Hailstone(string input)
-        {
-            var portions = input.Split('@', StringSplitOptions.TrimEntries);
-            Position0 = new Point3d(portions[0]);
-            Velocity = new Point3d(portions[1]);
-
-            // y - y1 = m (x - x1)
-            // y = m (x - x1) + y1
-
-            SlopeXy = (double)Velocity.Y / Velocity.X;
-        }
-
-        public bool MightCollideWith2d(Hailstone other, long testAreaFrom, long testAreaTo)
-        {
-            // Parallel; will never intersect
-            if (SlopeXy == other.SlopeXy)
-                return false;
-
-            // Find point of intersection
-            var x = (SlopeXy * Position0.X - other.SlopeXy * other.Position0.X - Position0.Y + other.Position0.Y) / (SlopeXy - other.SlopeXy);
-            var y = SlopeXy * (x - Position0.X) + Position0.Y;
-
-            // Also ensure that the point is in the future for both lines
-            var isThisInFuture = (x - Position0.X) / Velocity.X > 0;
-            var isOtherInFuture = (x - other.Position0.X) / other.Velocity.X > 0;
-
-            if (!isThisInFuture || !isOtherInFuture)
-                return false;
-
-            return x >= testAreaFrom && y >= testAreaFrom && x <= testAreaTo && y <= testAreaTo;
-        }
+        var (velocity, position) = Solve2(hailstones, lines.Count() < 10 ? 3 : 275);
+        var stone = new Ray3d(position, velocity);
+        return (stone.Position0.X + stone.Position0.Y + stone.Position0.Z).ToString();
     }
 
-    private class Point3d
+    private (Point3d, Point3d) Solve2(List<Ray3d> hailstones, int velocityRange)
     {
-        public readonly long X;
-        public readonly long Y;
-        public readonly long Z;
+        // The rock stands still, and each hailstone's
+        // velocity is adjusted by what the rock's
+        // velocity would have been.
 
-        public Point3d(long x, long y, long z)
+        for (var x = -velocityRange; x < velocityRange; x++)
         {
-            X = x;
-            Y = y;
-            Z = z;
+            for (var y = -velocityRange; y < velocityRange; y++)
+            {
+                for (var z = -velocityRange; z < velocityRange; z++)
+                {
+                    var rockVelocity = new Point3d(x, y, z);
+                    var adjustedHailstones = hailstones.Select(h => h.Minus(rockVelocity)).ToList();
+
+                    var (collision0with1, t1) = adjustedHailstones[0].Collision3d(adjustedHailstones[1]);
+                    var (collision0with2, t2) = adjustedHailstones[0].Collision3d(adjustedHailstones[2]);
+
+                    if (collision0with1 is not null &&
+                        collision0with2 is not null &&
+                        collision0with1.Equals(collision0with2))
+                        return (rockVelocity, collision0with1);
+                }
+            }
         }
 
-        public Point3d(string input)
-        {
-            var portions = input.Split(',', StringSplitOptions.TrimEntries).Select(long.Parse).ToArray();
-            X = portions[0];
-            Y = portions[1];
-            Z = portions[2];
-        }
+        throw new Exception("No point found");
     }
 }
