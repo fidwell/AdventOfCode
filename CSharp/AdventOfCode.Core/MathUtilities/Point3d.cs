@@ -23,4 +23,7 @@ public class Point3d
 
     public Point3d Plus(Point3d other) =>
         new Point3d(X + other.X, Y + other.Y, Z + other.Z);
+
+    public override bool Equals(object? obj) =>
+        obj is Point3d other && X == other.X && Y == other.Y && Z == other.Z;
 }
