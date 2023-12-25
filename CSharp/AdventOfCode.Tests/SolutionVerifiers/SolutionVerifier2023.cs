@@ -193,7 +193,7 @@ public class SolutionVerifier2023 : SolutionVerifier
     [DataTestMethod]//, Timeout(Timeout)]
     [DataRow(1, true, "2", DisplayName = "2023.24.1-e")]
     [DataRow(1, false, "20847", DisplayName = "2023.24.1-r")]
-    [DataRow(2, true, "_", DisplayName = "2023.24.2-e")]
+    [DataRow(2, true, "47", DisplayName = "2023.24.2-e")]
     [DataRow(2, false, "_", DisplayName = "2023.24.2-r")]
     public void Solve_2023_24(int part, bool useExample, string expected) =>
         Solve(new Puzzle24Solver(), 2023, 24, part, useExample, expected);

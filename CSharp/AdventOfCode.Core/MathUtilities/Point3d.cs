@@ -20,4 +20,7 @@ public class Point3d
         Y = portions[1];
         Z = portions[2];
     }
+
+    public Point3d Plus(Point3d other) =>
+        new Point3d(X + other.X, Y + other.Y, Z + other.Z);
 }
