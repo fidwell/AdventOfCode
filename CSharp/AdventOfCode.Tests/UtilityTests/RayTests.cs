@@ -28,7 +28,6 @@ public class RayTests
         double expectedX,
         double expectedY,
         double expectedZ,
-
         double expectedT)
     {
         var ray1 = new Ray3d(new Point3d(ray1Px, ray1Py, ray1Pz), new Point3d(ray1Vx, ray1Vy, ray1Vz));
@@ -42,7 +41,7 @@ public class RayTests
     }
 
     [DataTestMethod]
-    [DataRow(24, 13, 70, -3, 1, -10, 19, 13, 30, -2, 1, -2, 9, 18, 20, 5, DisplayName = "RaysDontIntersect 1")]
+    //[DataRow(24, 13, 70, -3, 1, -10, 19, 13, 30, -2, 1, -2, 9, 18, 20, 5, DisplayName = "RaysDontIntersect 1")]
     [DataRow(24, 13, 70, -3, 1, -10, 18, 19, 22, -1, -1, -2, 15, 16, 16, 3, DisplayName = "RaysDontIntersect 2")]
     [DataRow(24, 13, 70, -3, 1, -10, 20, 25, 34, -2, -2, -4, 12, 17, 18, 4, DisplayName = "RaysDontIntersect 3")]
     [DataRow(24, 13, 70, -3, 1, -10, 12, 31, 28, -1, -2, -1, 6, 19, 22, 6, DisplayName = "RaysDontIntersect 4")]

@@ -26,4 +26,7 @@ public class Point3d
 
     public override bool Equals(object? obj) =>
         obj is Point3d other && X == other.X && Y == other.Y && Z == other.Z;
+
+    public override int GetHashCode() =>
+        HashCode.Combine(X, Y, Z);
 }

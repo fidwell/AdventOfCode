@@ -63,22 +63,19 @@ public class Ray3d
         var u = (t * (b3 - a3) + s * (c3 - d3));
         var v = c3 - a3;
 
-        if (u == v)
+        if (u == v && 0 <= t && 0 <= s)
         {
-            if (0 <= t && 0 <= s)
-            {
-                var intersectionX = a1 + t * (b1 - a1);
-                var intersectionY = a2 + t * (b2 - a2);
-                var intersectionZ = a3 + t * (b3 - a3);
+            var intersectionX = a1 + t * (b1 - a1);
+            var intersectionY = a2 + t * (b2 - a2);
+            var intersectionZ = a3 + t * (b3 - a3);
 
-                // No floats allowed
-                if (intersectionX % 1 != 0 ||
-                    intersectionY % 1 != 0 ||
-                    intersectionZ % 1 != 0)
-                    return (null, 0);
+            // No floats allowed
+            if (intersectionX % 1 != 0 ||
+                intersectionY % 1 != 0 ||
+                intersectionZ % 1 != 0)
+                return (null, 0);
 
-                return (new Point3d(intersectionX, intersectionY, intersectionZ), t);
-            }
+            return (new Point3d(intersectionX, intersectionY, intersectionZ), t);
         }
         return (null, 0);
     }

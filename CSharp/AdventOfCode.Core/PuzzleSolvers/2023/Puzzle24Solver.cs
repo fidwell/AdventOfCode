@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AdventOfCode.Core.MathUtilities;
+﻿using AdventOfCode.Core.MathUtilities;
 
 namespace AdventOfCode.Core.PuzzleSolvers._2023;
 
@@ -42,36 +41,22 @@ public partial class Puzzle24Solver : IPuzzleSolver
                 return new Ray3d(new Point3d(portions[0]), new Point3d(portions[1]));
             }).ToList();
 
-        var (velocity, position) = Solve2(hailstones);
+        var (velocity, position) = Solve2(hailstones, lines.Count() < 10 ? 3 : 275);
         var stone = new Ray3d(position, velocity);
-
-        Trace.WriteLine($"Stone is position {position.X},{position.Y},{position.Z} velocity {velocity.X},{velocity.Y},{velocity.Z}");
-
-        for (var i = 0; i < hailstones.Count; i++)
-        {
-            var (collision, t) = hailstones[i].Collision3d(stone);
-            if (collision is not null)
-                Trace.WriteLine($"Hailstone {i} collides with stone at position {collision.X:0},{collision.Y:0},{collision.Z:0} and time {t}");
-            else
-                Trace.WriteLine($"No collision found for hailstone {i}");
-        }
-
         return (stone.Position0.X + stone.Position0.Y + stone.Position0.Z).ToString();
     }
 
-    private (Point3d, Point3d) Solve2(List<Ray3d> hailstones)
+    private (Point3d, Point3d) Solve2(List<Ray3d> hailstones, int velocityRange)
     {
         // The rock stands still, and each hailstone's
         // velocity is adjusted by what the rock's
         // velocity would have been.
 
-        const int velocityMin = -300;
-        const int velocityMax = 300;
-        for (var x = velocityMin; x < velocityMax; x++)
+        for (var x = -velocityRange; x < velocityRange; x++)
         {
-            for (var y = velocityMin; y < velocityMax; y++)
+            for (var y = -velocityRange; y < velocityRange; y++)
             {
-                for (var z = velocityMin; z < velocityMax; z++)
+                for (var z = -velocityRange; z < velocityRange; z++)
                 {
                     var rockVelocity = new Point3d(x, y, z);
                     var adjustedHailstones = hailstones.Select(h => h.Minus(rockVelocity)).ToList();

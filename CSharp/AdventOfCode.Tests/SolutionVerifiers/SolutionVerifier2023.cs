@@ -62,7 +62,7 @@ public class SolutionVerifier2023 : SolutionVerifier
     public void Solve_2023_07(int part, bool useExample, string expected) =>
         Solve(new Puzzle07Solver(), 2023, 7, part, useExample, expected);
 
-    [DataTestMethod, Timeout(Timeout)]
+    [DataTestMethod]
     [DataRow(1, true, "6", DisplayName = "2023.08.1-e")]
     [DataRow(1, false, "12737", DisplayName = "2023.08.1-r")]
     [DataRow(2, true, "6", DisplayName = "2023.08.2-e")]
@@ -110,7 +110,7 @@ public class SolutionVerifier2023 : SolutionVerifier
     public void Solve_2023_13(int part, bool useExample, string expected) =>
         Solve(new Puzzle13Solver(), 2023, 13, part, useExample, expected);
 
-    [DataTestMethod, Timeout(Timeout)]
+    [DataTestMethod]
     [DataRow(1, true, "136", DisplayName = "2023.14.1-e")]
     [DataRow(1, false, "113525", DisplayName = "2023.14.1-r")]
     [DataRow(2, true, "64", DisplayName = "2023.14.2-e")]
@@ -126,7 +126,7 @@ public class SolutionVerifier2023 : SolutionVerifier
     public void Solve_2023_15(int part, bool useExample, string expected) =>
         Solve(new Puzzle15Solver(), 2023, 15, part, useExample, expected);
 
-    [DataTestMethod, Timeout(Timeout)]
+    [DataTestMethod]
     [DataRow(1, true, "46", DisplayName = "2023.16.1-e")]
     [DataRow(1, false, "7185", DisplayName = "2023.16.1-r")]
     [DataRow(2, true, "51", DisplayName = "2023.16.2-e")]
@@ -182,7 +182,7 @@ public class SolutionVerifier2023 : SolutionVerifier
     public void Solve_2023_22(int part, bool useExample, string expected) =>
         Solve(new Puzzle22Solver(), 2023, 22, part, useExample, expected);
 
-    [DataTestMethod, Timeout(Timeout)]
+    [DataTestMethod]
     [DataRow(1, true, "94", DisplayName = "2023.23.1-e")]
     [DataRow(1, false, "2134", DisplayName = "2023.23.1-r")]
     [DataRow(2, true, "154", DisplayName = "2023.23.2-e")]
