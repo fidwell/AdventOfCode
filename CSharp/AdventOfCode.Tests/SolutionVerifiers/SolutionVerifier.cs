@@ -1,18 +1,16 @@
-﻿using AdventOfCode.Core.PuzzleSolvers;
+﻿using AdventOfCode.Solvers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AdventOfCode.Tests.SolutionVerifiers;
 
-public abstract class SolutionVerifier
+public abstract class SolutionVerifier(int year)
 {
     protected const int Timeout = 2000;
+    protected readonly int Year = year;
 
-    protected static void Solve(IPuzzleSolver solver, int year, int puzzle, int part, bool useExample, string expected)
+    protected void Solve(IPuzzleSolver solver, int puzzle, int part, bool useExample, string expected)
     {
-        if (DateTime.Today < new DateTime(2023, 12, puzzle))
-            return;
-
-        var input = DataReader.GetData(year, puzzle, part, useExample);
+        var input = DataReader.GetData(Year, puzzle, part, useExample);
         var result = part == 1
             ? solver.SolvePartOne(input)
             : solver.SolvePartTwo(input);

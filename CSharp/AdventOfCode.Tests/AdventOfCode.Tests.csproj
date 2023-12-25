@@ -86,6 +86,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdventOfCode.Core\AdventOfCode.Core.csproj" />
+    <ProjectReference Include="..\AdventOfCode.Solvers\AdventOfCode.Solvers.csproj" />
   </ItemGroup>
 
 </Project>
