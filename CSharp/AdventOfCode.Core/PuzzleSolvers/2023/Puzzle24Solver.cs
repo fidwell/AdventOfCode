@@ -45,6 +45,17 @@ public partial class Puzzle24Solver : IPuzzleSolver
         var (velocity, position) = Solve2(hailstones);
         var stone = new Ray3d(position, velocity);
 
+        Trace.WriteLine($"Stone is position {position.X},{position.Y},{position.Z} velocity {velocity.X},{velocity.Y},{velocity.Z}");
+
+        for (var i = 0; i < hailstones.Count; i++)
+        {
+            var (collision, t) = hailstones[i].Collision3d(stone);
+            if (collision is not null)
+                Trace.WriteLine($"Hailstone {i} collides with stone at position {collision.X:0},{collision.Y:0},{collision.Z:0} and time {t}");
+            else
+                Trace.WriteLine($"No collision found for hailstone {i}");
+        }
+
         return (stone.Position0.X + stone.Position0.Y + stone.Position0.Z).ToString();
     }
 
@@ -54,13 +65,13 @@ public partial class Puzzle24Solver : IPuzzleSolver
         // velocity is adjusted by what the rock's
         // velocity would have been.
 
-        const int velocityMin = -5;
-        const int velocityMax = 6;
-        for (var x = -3; x < velocityMax; x++)
+        const int velocityMin = -300;
+        const int velocityMax = 300;
+        for (var x = velocityMin; x < velocityMax; x++)
         {
-            for (var y = 1; y < velocityMax; y++)
+            for (var y = velocityMin; y < velocityMax; y++)
             {
-                for (var z = 2; z < velocityMax; z++)
+                for (var z = velocityMin; z < velocityMax; z++)
                 {
                     var rockVelocity = new Point3d(x, y, z);
                     var adjustedHailstones = hailstones.Select(h => h.Minus(rockVelocity)).ToList();

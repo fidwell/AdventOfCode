@@ -37,36 +37,49 @@ public class Ray3d
         var a1 = Position0.X;
         var a2 = Position0.Y;
         var a3 = Position0.Z;
+
         var b1 = Position1.X;
         var b2 = Position1.Y;
         var b3 = Position1.Z;
+
         var c1 = other.Position0.X;
         var c2 = other.Position0.Y;
         var c3 = other.Position0.Z;
+
         var d1 = other.Position1.X;
         var d2 = other.Position1.Y;
         var d3 = other.Position1.Z;
 
-        var denominator = (b1 - a1) * (d2 - c2) - (d1 - c1) * (b2 - a2);
+        var A = b1 - a1;
+        var B = c1 - d1;
+        var C = c1 - a1;
+        var D = b2 - a2;
+        var E = c2 - d2;
+        var F = c2 - a2;
 
-        if (denominator == 0)
-            // Lines are parallel or coincident
-            return (null, 0);
+        var t = (C * E - F * B) / (E * A - B * D);
+        var s = (D * C - A * F) / (D * B - A * E);
 
-        var t = ((c1 - a1) * (d2 - c2) - (d1 - c1) * (c2 - a2)) / denominator;
-        var s = ((b1 - a1) * (c2 - a2) - (c1 - a1) * (b2 - a2)) / denominator;
+        var u = (t * (b3 - a3) + s * (c3 - d3));
+        var v = c3 - a3;
 
-        if (t >= 0 || s >= 0)
+        if (u == v)
         {
-            // Intersection point
-            var intersectionX = a1 + t * (b1 - a1);
-            var intersectionY = a2 + t * (b2 - a2);
-            var intersectionZ = a3 + t * (b3 - a3);
+            if (0 <= t && 0 <= s)
+            {
+                var intersectionX = a1 + t * (b1 - a1);
+                var intersectionY = a2 + t * (b2 - a2);
+                var intersectionZ = a3 + t * (b3 - a3);
 
-            return (new Point3d(intersectionX, intersectionY, intersectionZ), t);
+                // No floats allowed
+                if (intersectionX % 1 != 0 ||
+                    intersectionY % 1 != 0 ||
+                    intersectionZ % 1 != 0)
+                    return (null, 0);
+
+                return (new Point3d(intersectionX, intersectionY, intersectionZ), t);
+            }
         }
-
-        // Intersection point is outside the line segments
         return (null, 0);
     }
 }
