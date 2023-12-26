@@ -13,8 +13,8 @@ class TestSolver202209(unittest.TestCase):
 
     def test_solver09_part2_example(self):
         data = datareader.read_lines(2022, 9, 2, True)
-        self.assertEqual(solver09.solve_part2(data), "_")
+        self.assertEqual(solver09.solve_part2(data), "36")
 
     def test_solver09_part2(self):
         data = datareader.read_lines(2022, 9, 2, False)
-        self.assertEqual(solver09.solve_part2(data), "_")
+        self.assertEqual(solver09.solve_part2(data), "2487")
