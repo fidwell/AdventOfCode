@@ -1,5 +1,6 @@
 import unittest
-from solvers2022 import solver01, solver02, solver03, solver04, solver05, solver06, solver07
+from solvers2022 import solver01, solver02, solver03, solver04, solver05
+from solvers2022 import solver06, solver07, solver08
 from utilities import datareader
 
 class TestSolver2022(unittest.TestCase):
@@ -114,9 +115,26 @@ class TestSolver2022(unittest.TestCase):
         self.assertEqual(solver07.solve_part1(data), "1886043")
 
     def test_solver07_part2_example(self):
-        data = datareader.read_lines(2022, 7, 1, True)
+        data = datareader.read_lines(2022, 7, 2, True)
         self.assertEqual(solver07.solve_part2(data), "24933642")
 
     def test_solver07_part2(self):
-        data = datareader.read_lines(2022, 7, 1, False)
+        data = datareader.read_lines(2022, 7, 2, False)
         self.assertEqual(solver07.solve_part2(data), "3842121")
+
+
+    def test_solver08_part1_example(self):
+        data = datareader.read_lines(2022, 8, 1, True)
+        self.assertEqual(solver08.solve_part1(data), "21")
+
+    def test_solver08_part1(self):
+        data = datareader.read_lines(2022, 8, 1, False)
+        self.assertEqual(solver08.solve_part1(data), "1715")
+
+    def test_solver08_part2_example(self):
+        data = datareader.read_lines(2022, 8, 2, True)
+        self.assertEqual(solver08.solve_part2(data), "8")
+
+    def test_solver08_part2(self):
+        data = datareader.read_lines(2022, 8, 2, False)
+        self.assertEqual(solver08.solve_part2(data), "374400")
