@@ -1,8 +1,8 @@
 import unittest
-from solvers2023 import solver01
-from utilities import datareader
+from solvers._2023 import solver01
+from tests import datareader
 
-class TestSolver2023(unittest.TestCase):
+class TestSolver202301(unittest.TestCase):
     def test_solver01_part1_example(self):
         data = datareader.read_lines(2023, 1, 1, True)
         self.assertEqual(solver01.solve(data, 1), "142")

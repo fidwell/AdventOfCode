@@ -26,19 +26,19 @@ def solve_part1(data):
 def solve_part2(data):
     matrix = [[int(char) for char in list(line)] for line in data]
 
-    max_score = 0
-    for y, row in enumerate(matrix):
-        for x, value in enumerate(row):
-            column = [row[x] for row in matrix]
-            this_score = scenic_score(x, y, row, column, value)
-            if this_score > max_score:
-                max_score = this_score
+    scenic_scores = [
+        [
+            scenic_score(x, y, row, [row[x] for row in matrix], value)
+            for x, value in enumerate(row)
+        ]
+        for y, row in enumerate(matrix)
+    ]
 
-    return str(max_score)
+    return str(max(flatten(scenic_scores)))
 
 
 def scenic_score(x, y, row, column, value):
-    if x == 0 or y == 0 or x == len(row) - 1 or y == len(column) - 1:
+    if 0 in (x, y) or x == len(row) - 1 or y == len(column) - 1:
         return 0
 
     east_value = viewing_distance(row[x + 1 :], value)
@@ -51,3 +51,7 @@ def scenic_score(x, y, row, column, value):
 def viewing_distance(values, maximum):
     big_indexes = (index for (index, value) in enumerate(values) if (value) >= maximum)
     return min(big_indexes, default=len(values) - 1) + 1
+
+
+def flatten(list_of_lists):
+    return [item for list in list_of_lists for item in list]
