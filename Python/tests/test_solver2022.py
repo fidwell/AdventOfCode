@@ -112,3 +112,11 @@ class TestSolver2022(unittest.TestCase):
     def test_solver07_part1(self):
         data = datareader.read_lines(2022, 7, 1, False)
         self.assertEqual(solver07.solve_part1(data), "1886043")
+
+    def test_solver07_part2_sample(self):
+        data = datareader.read_lines(2022, 7, 1, True)
+        self.assertEqual(solver07.solve_part2(data), "24933642")
+
+    def test_solver07_part2(self):
+        data = datareader.read_lines(2022, 7, 1, False)
+        self.assertEqual(solver07.solve_part2(data), "3842121")

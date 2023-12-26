@@ -1,5 +1,28 @@
 def solve_part1(data):
+    directories = get_directories(data)
+    return str(sum(directories[d] for d in directories if directories[d] < 100000))
+
+def solve_part2(data):
+    total_space = 70000000
+    required_space = 30000000
+    directories = get_directories(data)
+
+    used_space = directories[""]
+    unused_space = total_space - used_space
+    needed_space = required_space - unused_space
+    print(needed_space)
+
+    min_amount = directories[""]
+
+    for (_, size) in directories.items():
+        if needed_space <= size <= min_amount:
+            min_amount = size
+
+    return str(min_amount)
+
+def get_directories(data):
     long_paths = {"": 0}
+    directories = {}
 
     current_path = ""
     for line in data[1:]:
@@ -21,12 +44,9 @@ def solve_part1(data):
                 size = int(portions[0])
                 long_paths[current_path + "/" + file_name] = size
 
-    result = 0
     for (name, size) in long_paths.items():
         if size == 0:
             total_size = sum(long_paths[p] for p in long_paths if len(p) > len(name) and p.startswith(name))
-            if (total_size) < 100000:
-                result += total_size
-                print(f"{name} > {total_size}")
+            directories[name] = total_size
 
-    return str(result)
+    return directories
