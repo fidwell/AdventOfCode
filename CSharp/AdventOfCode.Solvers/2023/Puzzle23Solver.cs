@@ -89,7 +89,7 @@ public class Puzzle23Solver : IPuzzleSolver
             visited.Add(currentPosition);
 
             var charHere = matrix.CharAt(currentPosition);
-            if (charHere != '.' && DirectionOf(charHere) != direction)
+            if (charHere != '.' && charHere.ToDirection() != direction)
                 return ((-1, -1), -1, Direction.Undefined); // We hit a one-way going the wrong way
 
             length++;
@@ -147,16 +147,6 @@ public class Puzzle23Solver : IPuzzleSolver
             return Direction.Down;
         return Direction.Undefined;
     }
-
-    private static Direction DirectionOf(char c) =>
-        c switch
-        {
-            '>' => Direction.Right,
-            'v' => Direction.Down,
-            '<' => Direction.Left,
-            '^' => Direction.Up,
-            _ => Direction.Undefined
-        };
 
     private class Edge
     {
