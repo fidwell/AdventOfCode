@@ -1,5 +1,5 @@
 import unittest
-from solvers2022 import solver01, solver02, solver03, solver04, solver05, solver06
+from solvers2022 import solver01, solver02, solver03, solver04, solver05, solver06, solver07
 from utilities import datareader
 
 class TestSolver2022(unittest.TestCase):
@@ -103,3 +103,12 @@ class TestSolver2022(unittest.TestCase):
     def test_solver06_part2(self):
         data = datareader.read_lines(2022, 6, 2, False)
         self.assertEqual(solver06.solve_part2(data), "3774")
+
+
+    def test_solver07_part1_sample(self):
+        data = datareader.read_lines(2022, 7, 1, True)
+        self.assertEqual(solver07.solve_part1(data), "95437")
+
+    def test_solver07_part1(self):
+        data = datareader.read_lines(2022, 7, 1, False)
+        self.assertEqual(solver07.solve_part1(data), "1886043")
