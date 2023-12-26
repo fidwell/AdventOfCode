@@ -4,11 +4,7 @@ def solve_part1(data):
 def solve_part2(data):
     directories = get_directories(data)
     needed_space = 30000000 - (70000000 - directories[""])
-    min_amount = directories[""]
-    for (_, size) in directories.items():
-        if needed_space <= size <= min_amount:
-            min_amount = size
-    return str(min_amount)
+    return str(min(size for (_, size) in directories.items() if needed_space <= size))
 
 def get_directories(data):
     long_paths = {"": 0}
