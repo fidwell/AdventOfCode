@@ -1,5 +1,4 @@
 import ast
-from functools import cmp_to_key
 
 
 def solve_part1(data):
@@ -16,11 +15,8 @@ def solve_part1(data):
 
 def solve_part2(data):
     packets = list(ast.literal_eval(l) for l in data if len(l) > 0)
-    packets.append([[2]])
-    packets.append([[6]])
-    packets = sorted(packets, key=cmp_to_key(ordering))
-    index_of_first = next(i + 1 for i, p in enumerate(packets) if p == [[2]])
-    index_of_second = next(i + 1 for i, p in enumerate(packets) if p == [[6]])
+    index_of_first = len(list(p for p in packets if ordering(p, [[2]]) == -1)) + 1
+    index_of_second = len(list(p for p in packets if ordering(p, [[6]]) == -1)) + 2
     return str(index_of_first * index_of_second)
 
 
