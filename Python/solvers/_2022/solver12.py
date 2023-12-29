@@ -12,7 +12,25 @@ def solve_part1(data):
 
 
 def solve_part2(data):
-    return "_"
+    matrix = [list(list(line)) for line in data]
+    start = find_char(matrix, "S")
+    end = find_char(matrix, "E")
+    set_value(matrix, start, "a")
+    set_value(matrix, end, "z")
+
+    min_value = 9999
+    for y, row in enumerate(matrix):
+        for x, value in enumerate(row):
+            if value != "a":
+                continue
+            start = (x, y)
+            result = a_star(matrix, start, end)
+            if result is None:
+                continue
+            result_value = len(result) - 1
+            if result_value < min_value:
+                min_value = result_value
+    return str(min_value)
 
 
 def find_char(matrix, target):
@@ -25,9 +43,7 @@ def find_char(matrix, target):
 
 def a_star(matrix, start, end):
     start_node = Node(None, start)
-    start_node.total_cost = start_node.current_to_start = start_node.heuristic = 0
     end_node = Node(None, end)
-    end_node.total_cost = end_node.current_to_start = end_node.heuristic = 0
 
     visited = set([])
     queue = PriorityQueue()
@@ -38,7 +54,6 @@ def a_star(matrix, start, end):
         visited.add(current_node.position)
 
         if current_node.position == end:
-            print("Found end!!")
             path = []
             current = current_node
             while current is not None:
