@@ -1,4 +1,6 @@
 import ast
+from functools import cmp_to_key
+
 
 def solve_part1(data):
     total = 0
@@ -11,8 +13,15 @@ def solve_part1(data):
 
     return str(total)
 
+
 def solve_part2(data):
-    return ""
+    packets = list(ast.literal_eval(l) for l in data if len(l) > 0)
+    packets.append([[2]])
+    packets.append([[6]])
+    packets = sorted(packets, key=cmp_to_key(ordering))
+    index_of_first = next(i + 1 for i, p in enumerate(packets) if p == [[2]])
+    index_of_second = next(i + 1 for i, p in enumerate(packets) if p == [[6]])
+    return str(index_of_first * index_of_second)
 
 
 def ordering(left, right):
@@ -32,4 +41,4 @@ def ordering(left, right):
     if isinstance(left, int) and isinstance(right, list):
         return ordering([left], right)
 
-    raise ValueError("Couldn't compare")
+    return 0

@@ -18,4 +18,4 @@ class TestSolver202213(unittest.TestCase):
 
     def test_solver13_part2(self):
         data = datareader.read_lines(2022, 13, 2, False)
-        self.assertEqual(solver13.solve_part2(data), "_")
+        self.assertEqual(solver13.solve_part2(data), "21276")
