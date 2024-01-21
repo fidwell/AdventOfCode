@@ -1,16 +1,19 @@
 def solve_part1(data):
-    filled_points = parse_data(data)
-    print_rocks(filled_points)
-    sand_dropped = 0
-    done = False
-    while not done:
-        sand_dropped += 1
-        done = drop_one_sand(filled_points)
-    return str(sand_dropped - 1)
+    return str(solve(parse_data(data), False) - 1)
 
 
 def solve_part2(data):
-    return ""
+    return str(solve(parse_data(data), True))
+
+
+def solve(filled_points, add_floor):
+    sand_dropped = 0
+    done = False
+    floor = max(p[1] for p in filled_points) + 2
+    while not done:
+        sand_dropped += 1
+        done = drop_one_sand(filled_points, add_floor, floor)
+    return sand_dropped
 
 
 def parse_data(data):
@@ -33,25 +36,35 @@ def parse_data(data):
     return filled_points
 
 
-def drop_one_sand(filled_points):
-    position = (500, 0)
+def drop_one_sand(filled_points, add_floor, floor):
+    start = (500, 0)
+    position = start
 
-    # Try to drop one position
+    # Source blocked; we're done
+    if position in filled_points:
+        return True
+
     while True:
         # First, check if we'll drop forever
-        if not any(p[0] == position[0] and p[1] > position[1] for p in filled_points):
+        if not add_floor and not any(
+            p[0] == position[0] and p[1] > position[1] for p in filled_points
+        ):
             return True
 
         target = (position[0], position[1] + 1)
+
+        if add_floor and target[1] >= floor:
+            filled_points.add(position)
+            return False
+
         if target in filled_points:
             target = (target[0] - 1, target[1])
         if target in filled_points:
             target = (target[0] + 2, target[1])
         if target in filled_points:
-            # Be at rest
             filled_points.add(position)
-            break
-        # Drop to target
+            return position == start
+
         position = target
 
 
