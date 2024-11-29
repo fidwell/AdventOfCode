@@ -75,6 +75,9 @@
     <EmbeddedResource Include="Inputs\_2023\puzzle24_example.txt" />
     <EmbeddedResource Include="Inputs\_2023\puzzle25.txt" />
     <EmbeddedResource Include="Inputs\_2023\puzzle25_example.txt" />
+
+    <EmbeddedResource Include="Inputs\_2024\puzzle01.txt" />
+    <EmbeddedResource Include="Inputs\_2024\puzzle01_example.txt" />
   </ItemGroup>
 
   <ItemGroup>
