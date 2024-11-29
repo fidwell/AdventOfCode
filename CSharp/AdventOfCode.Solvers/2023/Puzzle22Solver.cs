@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using AdventOfCode.Solvers;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle22Solver : IPuzzleSolver
 {

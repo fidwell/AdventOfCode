@@ -1,7 +1,7 @@
 ﻿using AdventOfCode.Core.Ranges;
 using AdventOfCode.Solvers;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle19Solver : IPuzzleSolver
 {
