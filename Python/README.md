@@ -7,7 +7,8 @@ un-optimized.
 ## Solution architecture overview
 
 - `solvers`: Contains modules for each puzzle. Each module has `solve_part1` and
-  `solve_part1` functions.
+  `solve_part2` functions, or a combined `solve` function that takes a `part`
+  argument.
 - `tests`: Contains unit tests to execute the solving functions in each module.
 
 So far, each puzzle's code is very self-contained, so I haven't needed any
