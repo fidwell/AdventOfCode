@@ -1,12 +1,14 @@
 {
-    "python.testing.pytestArgs": [
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
         "tests",
-        "-s"
+        "-p",
+        "test*.py"
     ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": true,
+    "python.testing.pytestEnabled": false,
     "files.exclude": {
-        "**/.pytest_cache": true,
         "**/__pycache__": true,
         "debug.log": true
     },
