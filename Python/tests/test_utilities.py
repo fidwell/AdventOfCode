@@ -1,5 +1,5 @@
 import unittest
-from utilities import digitfinder
+from solvers._2023 import solver01
 
 class TestUtilities(unittest.TestCase):
     def test_digitfinder1(self):
@@ -12,6 +12,6 @@ class TestUtilities(unittest.TestCase):
         TestUtilities.digitfinder(self, "abcone2threexyz", 1, 3)
 
     def digitfinder(self, value, first, last):
-        digits = digitfinder.find_digits(value, True)
+        digits = solver01.find_digits(value, True)
         self.assertEqual(digits[0], first)
         self.assertEqual(digits[-1], last)

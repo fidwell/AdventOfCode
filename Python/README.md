@@ -9,10 +9,9 @@ un-optimized.
 - `solvers`: Contains modules for each puzzle. Each module has `solve_part1` and
   `solve_part1` functions.
 - `tests`: Contains unit tests to execute the solving functions in each module.
-- `utilities`: Common functions. So far, each puzzle's code is very
-  self-contained, so I haven't needed any common utility functions. The one that
-  does exist here should be moved into its puzzle's module; it should still be
-  unit-testable there.
+
+So far, each puzzle's code is very self-contained, so I haven't needed any
+common utility functions.
 
 ## Running the solvers
 
@@ -38,4 +37,3 @@ long time to run, so run at your own risk!
 ## To do
 
 - Set up timeouts for unit tests
-- Get rid of `utilities` folder
