@@ -1,22 +1,30 @@
-﻿using System.Reflection;
-
-namespace AdventOfCode.Tests;
+﻿namespace AdventOfCode.Tests;
 
 public static class DataReader
 {
     public static string GetData(int year, int puzzleId, int partId, bool useExample)
     {
-        var assembly = Assembly.GetExecutingAssembly();
         var exampleStringWithPart = useExample ? $"_part{partId}_example" : string.Empty;
-        var exampleStringWithputPart = useExample ? $"_example" : string.Empty;
-        var pathWithSamplePart = $"AdventOfCode.Tests.Inputs._{year}.puzzle{puzzleId:00}{exampleStringWithPart}.txt";
-        var pathWithoutSamplePart = $"AdventOfCode.Tests.Inputs._{year}.puzzle{puzzleId:00}{exampleStringWithputPart}.txt";
+        var exampleStringWithoutPart = useExample ? $"_example" : string.Empty;
 
-        using var stream = assembly.GetManifestResourceStream(pathWithoutSamplePart)
-             ?? assembly.GetManifestResourceStream(pathWithSamplePart)
-             ?? throw new FileNotFoundException();
+        var fileWithSample = Path.Combine(GetInputDirectory(), year.ToString(), $"puzzle{puzzleId:00}{exampleStringWithPart}.txt");
+        if (File.Exists(fileWithSample))
+            return File.ReadAllText(fileWithSample);
 
-        using var reader = new StreamReader(stream);
-        return reader.ReadToEnd();
+        var fileWithoutSample = Path.Combine(GetInputDirectory(), year.ToString(), $"puzzle{puzzleId:00}{exampleStringWithoutPart}.txt");
+        if (File.Exists(fileWithoutSample))
+            return File.ReadAllText(fileWithoutSample);
+
+        throw new FileNotFoundException();
+    }
+
+    private static string GetInputDirectory()
+    {
+        var directory = Environment.CurrentDirectory;
+        while (!directory.EndsWith("AdventOfCode"))
+        {
+            directory = Directory.GetParent(directory).FullName;
+        }
+        return Path.Combine(directory, "input");
     }
 }

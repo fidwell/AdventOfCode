@@ -16,15 +16,13 @@ solve AoC problems on-the-day.
 
 ### Preparing input
 
-My input files are not included. If you'd like to run your own, should go in the
-`AdventOfCode.Tests\Inputs` folder with the following naming convention:
+My input files are not included. If you'd like to run your own, they should go
+in the `input` folder in the repository's root directory with the following
+naming convention:
 
-- Subfolder named `_2022`, `_2023`, etc.
-- Example input files should be named `puzzle01_example.txt` if there is one
-  example for both parts, or `puzzle01_part1_example.txt` and
-  `puzzle01_part2_example.txt` if there are separate examples for each part.
+- Subfolder named `2022`, `2023`, etc.
 - Personal input files should be named `puzzle01.txt`, `puzzle02.txt`, etc.
-- Look at the `csproj` file contents for a full list.
+- Example input files that my solvers support should be included in the repo.
 
 ### Run tests
 
