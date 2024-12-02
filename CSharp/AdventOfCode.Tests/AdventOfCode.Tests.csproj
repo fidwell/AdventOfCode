@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Inputs\_2015\puzzle01.txt" />
+    <EmbeddedResource Include="Inputs\_2015\puzzle02.txt" />
     
     <EmbeddedResource Include="Inputs\_2022\puzzle01.txt" />
     <EmbeddedResource Include="Inputs\_2022\puzzle01_example.txt" />
