@@ -46,4 +46,41 @@ public static class ArrayExtensions
 
     public static IEnumerable<(int, int)> AllPoints(int xCount, int yCount) =>
         Enumerable.Range(0, yCount).SelectMany(y => Enumerable.Range(0, xCount).Select(x => (x, y)));
+
+    /// <summary>
+    /// Determines whether the elements in an array are in a sorted order,
+    /// either ascending or descending.
+    /// </summary>
+    /// <param name="input">The array to analyze.</param>
+    /// <returns>True if the list is sorted ascending or descending; false if not.</returns>
+    public static bool IsSorted(this int[] input)
+    {
+        var sorted = input.OrderBy(a => a);
+        return Enumerable.SequenceEqual(input, sorted) ||
+               Enumerable.SequenceEqual(input, sorted.Reverse());
+    }
+
+    /// <summary>
+    /// Returns a hard copy of an array, except for the element at a specific index.
+    /// </summary>
+    /// <typeparam name="T">The data type of the array.</typeparam>
+    /// <param name="input">The array to copy.</param>
+    /// <param name="index">The index to omit.</param>
+    /// <returns>A copy of the array.</returns>
+    public static T[] CopyExcept<T>(this T[] input, int index)
+    {
+        if (index < 0 || index >= input.Length)
+            throw new ArgumentOutOfRangeException(nameof(index));
+
+        var copy = new T[input.Length - 1];
+        for (int i = 0, j = 0; i < copy.Length; i++, j++)
+        {
+            if (i == index)
+            {
+                j++;
+            }
+            copy[i] = input[j];
+        }
+        return copy;
+    }
 }

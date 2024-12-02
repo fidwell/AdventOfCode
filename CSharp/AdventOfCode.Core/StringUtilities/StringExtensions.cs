@@ -15,4 +15,17 @@ public static class StringExtensions
 
         return Enumerable.Range(0, a.Length).Sum(i => a[i] != b[i] ? 1 : 0);
     }
+
+    /// <summary>
+    /// Converts a string input to an enumerable, where each element is an
+    /// array of the elements on that line, parsed to integers.
+    /// </summary>
+    /// <param name="input">The input string.</param>
+    /// <returns>An enumerable of arrays of ints.</returns>
+    public static IEnumerable<int[]> AsListOfIntArrays(this string input) =>
+        input.Split(Environment.NewLine)
+             .Select(l =>
+                 l.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                  .Select(int.Parse)
+                  .ToArray());
 }
