@@ -16,25 +16,12 @@ common utility functions.
 
 ## Running the solvers
 
-### Preparing input
-
-My input files are not included. If you'd like to run your own, should go in the
-`tests\input` folder with the following naming convention:
-
-- Subfolder named `2022`, `2023`, etc.
-- Example input files should be named `puzzle01_example.txt` if there is one
-  example for both parts, or `puzzle01_part1_example.txt` and
-  `puzzle01_part2_example.txt` if there are separate examples for each part.
-- Personal input files should be named `puzzle01.txt`, `puzzle02.txt`, etc.
-
-### Run tests
+If you'd like to try this code yourself, put your puzzle input in the `input`
+directory at the repository root. (See the root README for more info.)
 
 I wrote this code in Visual Studio Code and use the built-in testing suite to
-run my solution verifiers. All tests should appear in VSCode's "Testing" panel.
+run my solution verifiers. All tests should appear in VSCode's "Testing" panel,
+or can be run from the command line with Python's `unittest` utility.
 
 Currently, the tests do not have any timeouts set up. Some solvers may take a
 long time to run, so run at your own risk!
-
-## To do
-
-- Set up timeouts for unit tests
