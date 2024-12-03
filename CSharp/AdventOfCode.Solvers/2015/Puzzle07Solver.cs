@@ -1,5 +1,5 @@
-﻿using AdventOfCode.Core.LogicGates;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using AdventOfCode.Core.LogicGates;
 
 namespace AdventOfCode.Solvers._2015;
 
@@ -12,7 +12,13 @@ public partial class Puzzle07Solver : IPuzzleSolver
 
     public string SolvePartTwo(string input)
     {
-        throw new NotImplementedException();
+        var gates = ParseGateDefinitions(input);
+        var oldA = CalculateForWire("a", gates).ToString();
+        var bGate = gates.Single(g => g.Output == "b");
+        gates.Remove(bGate);
+        gates.Add(new InputGate(oldA, "b"));
+        _signals.Clear();
+        return CalculateForWire("a", gates).ToString();
     }
 
     private ushort CalculateForWire(string wire, List<Gate> gates)
