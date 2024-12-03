@@ -2,33 +2,34 @@
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle03Solver : IPuzzleSolver
+public partial class Puzzle03Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input) =>
-        Regex.Matches(input, @"mul\((\d{1,3}),(\d{1,3})\)").Select(DoMul).Sum().ToString();
+        MulCommand().Matches(input).Select(DoMul).Sum().ToString();
 
     public string SolvePartTwo(string input)
     {
-        var muls = Regex.Matches(input, @"mul\((\d{1,3}),(\d{1,3})\)");
-        var dos = Regex.Matches(input, @"do\(\)");
-        var donts = Regex.Matches(input, @"don\'t\(\)");
-
-        var matches = muls.Union(dos).Union(donts).OrderBy(m => m.Index).ToList();
+        var matches =
+            MulCommand().Matches(input)
+            .Union(DoCommand().Matches(input))
+            .Union(DontCommand().Matches(input))
+            .OrderBy(m => m.Index).ToList();
         var isEnabled = true;
         var sum = 0;
-        for (var i = 0; i < matches.Count; i++)
+
+        foreach (var m in matches)
         {
-            if (matches[i].Value.StartsWith("do()"))
+            if (m.Value.StartsWith("do()"))
             {
                 isEnabled = true;
             }
-            else if (matches[i].Value.StartsWith("don't()"))
+            else if (m.Value.StartsWith("don't()"))
             {
                 isEnabled = false;
             }
             else if (isEnabled)
             {
-                sum += DoMul(matches[i]);
+                sum += DoMul(m);
             }
         }
 
@@ -37,4 +38,13 @@ public class Puzzle03Solver : IPuzzleSolver
 
     private int DoMul(Match match) =>
         int.Parse(match.Groups[1].Value) * int.Parse(match.Groups[2].Value);
+
+    [GeneratedRegex(@"mul\((\d{1,3}),(\d{1,3})\)")]
+    private static partial Regex MulCommand();
+
+    [GeneratedRegex(@"do\(\)")]
+    private static partial Regex DoCommand();
+
+    [GeneratedRegex(@"don\'t\(\)")]
+    private static partial Regex DontCommand();
 }
