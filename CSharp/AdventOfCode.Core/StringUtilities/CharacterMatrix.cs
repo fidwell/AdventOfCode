@@ -19,7 +19,7 @@ public class CharacterMatrix
     /// <param name="input">A newline-separated string of input data.</param>
     public CharacterMatrix(string input)
     {
-        var lines = input.Split(Environment.NewLine).ToArray();
+        var lines = input.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToArray();
         var lineLength = lines[0].Length;
         _data = new char[lineLength, lines.Length];
 
@@ -46,11 +46,16 @@ public class CharacterMatrix
 
     /// <summary>
     /// Returns the single character value at a given coordinate.
+    /// If the coordinates are out of bounds, a null value is returned.
     /// </summary>
     /// <param name="x">The x coordinate.</param>
     /// <param name="y">The y coordinate.</param>
-    /// <returns>The character at this position in the matrix.</returns>
-    public char CharAt(int x, int y) => _data[x, y];
+    /// <returns>The character at this position in the matrix,
+    /// or null if the coordinates are out of bounds.</returns>
+    public char CharAt(int x, int y) =>
+        x < 0 || x >= Width || y < 0 || y >= Height
+            ? '\0'
+            : _data[x, y];
 
     /// <summary>
     /// Returns the single character value at a given coordinate.

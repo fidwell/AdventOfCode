@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -17,9 +16,9 @@ public class Puzzle22Solver : IPuzzleSolver
         return bricks.Sum(b => bricks.Count - graph.IfRemoveNode(b.Id).Count(b => b != -1) - 1).ToString();
     }
 
-    private (List<Brick>, Graph) Initialize(string input)
+    private static (List<Brick>, Graph) Initialize(string input)
     {
-        var bricks = input.Split(Environment.NewLine)
+        var bricks = input.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries)
             .Select((l, i) => new Brick(l, i))
             .OrderBy(b => b.Point1.Z)
             .ToList();

@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode.Solvers._2024;
+﻿using AdventOfCode.Core.StringUtilities;
+
+namespace AdventOfCode.Solvers._2024;
 
 public class Puzzle04Solver : IPuzzleSolver
 {
@@ -6,11 +8,11 @@ public class Puzzle04Solver : IPuzzleSolver
 
     public string SolvePartOne(string input)
     {
-        var wordSearch = ParseInput(input);
+        var wordSearch = new CharacterMatrix(input);
         var count = 0;
-        for (var x = 0; x < wordSearch.GetLength(0); x++)
+        for (var x = 0; x < wordSearch.Width; x++)
         {
-            for (var y = 0; y < wordSearch.GetLength(1); y++)
+            for (var y = 0; y < wordSearch.Height; y++)
             {
                 count += XmasesStartingAt(wordSearch, x, y);
             }
@@ -20,11 +22,11 @@ public class Puzzle04Solver : IPuzzleSolver
 
     public string SolvePartTwo(string input)
     {
-        var wordSearch = ParseInput(input);
+        var wordSearch = new CharacterMatrix(input);
         var count = 0;
-        for (var x = 0; x < wordSearch.GetLength(0); x++)
+        for (var x = 0; x < wordSearch.Width; x++)
         {
-            for (var y = 0; y < wordSearch.GetLength(1); y++)
+            for (var y = 0; y < wordSearch.Height; y++)
             {
                 count += XMasLocatedAt(wordSearch, x, y) ? 1 : 0;
             }
@@ -33,25 +35,9 @@ public class Puzzle04Solver : IPuzzleSolver
         return count.ToString();
     }
 
-    private static char[,] ParseInput(string input)
+    private static int XmasesStartingAt(CharacterMatrix wordSearch, int x, int y)
     {
-        var raw = input.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
-        var width = raw[0].Length;
-        var height = raw.Length;
-        var wordSearch = new char[width, height];
-        for (var x = 0; x < width; x++)
-        {
-            for (var y = 0; y < height; y++)
-            {
-                wordSearch[x, y] = raw[y][x];
-            }
-        }
-        return wordSearch;
-    }
-
-    private static int XmasesStartingAt(char[,] wordSearch, int x, int y)
-    {
-        if (wordSearch[x, y] != 'X')
+        if (wordSearch.CharAt(x, y) != 'X')
             return 0;
 
         var count = 0;
@@ -91,31 +77,18 @@ public class Puzzle04Solver : IPuzzleSolver
         return count;
     }
 
-    private static bool IsXmas(char[,] wordSearch, List<(int, int)> coords)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            if (coords[i].Item1 < 0 ||
-                coords[i].Item2 < 0 ||
-                coords[i].Item1 >= wordSearch.GetLength(0) ||
-                coords[i].Item2 >= wordSearch.GetLength(1) ||
-                wordSearch[coords[i].Item1, coords[i].Item2] != xmas[i])
-                return false;
-        }
-        return true;
-    }
+    private static bool IsXmas(CharacterMatrix wordSearch, List<(int, int)> coords) =>
+        Enumerable.Range(1, 3).All(i => wordSearch.CharAt(coords[i].Item1, coords[i].Item2) == xmas[i]);
 
-    private static bool XMasLocatedAt(char[,] wordSearch, int x, int y)
+    private static bool XMasLocatedAt(CharacterMatrix wordSearch, int x, int y)
     {
-        if (wordSearch[x, y] != 'A' ||
-            x == 0 || y == 0 ||
-            x == wordSearch.GetLength(0) - 1 || y == wordSearch.GetLength(1) - 1)
+        if (wordSearch.CharAt(x, y) != 'A')
             return false;
 
-        var nw = wordSearch[x - 1, y - 1];
-        var se = wordSearch[x + 1, y + 1];
-        var ne = wordSearch[x + 1, y - 1];
-        var sw = wordSearch[x - 1, y + 1];
+        var nw = wordSearch.CharAt(x - 1, y - 1);
+        var se = wordSearch.CharAt(x + 1, y + 1);
+        var ne = wordSearch.CharAt(x + 1, y - 1);
+        var sw = wordSearch.CharAt(x - 1, y + 1);
         return ((nw == 'M' && se == 'S') || (nw == 'S' && se == 'M')) &&
             ((ne == 'M' && sw == 'S') || (ne == 'S' && sw == 'M'));
     }

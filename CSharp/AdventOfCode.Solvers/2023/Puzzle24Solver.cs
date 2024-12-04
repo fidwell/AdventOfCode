@@ -1,5 +1,4 @@
 ﻿using AdventOfCode.Core.MathUtilities;
-using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -7,7 +6,7 @@ public partial class Puzzle24Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
     {
-        var lines = input.Split(Environment.NewLine);
+        var lines = input.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
         var testArea = lines.First().Split(" ").Select(long.Parse);
         var testAreaFrom = testArea.First();
         var testAreaTo = testArea.Last();
