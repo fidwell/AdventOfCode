@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Core.MathUtilities;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -13,7 +14,7 @@ public partial class Puzzle24Solver : IPuzzleSolver
 
         var hailstones = lines.Skip(1).Select(l =>
         {
-            var portions = l.Split('@', StringSplitOptions.TrimEntries);
+            var portions = l.SplitAndTrim('@');
             return new Ray3d(new Point3d(portions[0]), new Point3d(portions[1]));
         }).ToList();
 
@@ -37,7 +38,7 @@ public partial class Puzzle24Solver : IPuzzleSolver
             .Take(3)
             .Select(l =>
             {
-                var portions = l.Split('@', StringSplitOptions.TrimEntries);
+                var portions = l.SplitAndTrim('@');
                 return new Ray3d(new Point3d(portions[0]), new Point3d(portions[1]));
             }).ToList();
 

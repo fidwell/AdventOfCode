@@ -1,16 +1,17 @@
-﻿using System.Text.RegularExpressions;
+﻿using AdventOfCode.Core.StringUtilities;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
 public partial class Puzzle08Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input) =>
-        input.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+        input.SplitByNewline()
             .Sum(l => l.Length - Decode(l).Length)
             .ToString();
 
     public string SolvePartTwo(string input) =>
-        input.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+        input.SplitByNewline()
             .Sum(l => EncodedLength(l) - l.Length)
             .ToString();
 

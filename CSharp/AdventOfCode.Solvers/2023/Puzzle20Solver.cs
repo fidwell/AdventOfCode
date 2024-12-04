@@ -1,5 +1,5 @@
 ﻿using AdventOfCode.Core.MathUtilities;
-using AdventOfCode.Solvers;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -112,7 +112,7 @@ public class Puzzle20Solver : IPuzzleSolver
         public static Module Parse(string input)
         {
             var name = input.Split(' ').First().Substring(1);
-            var outputs = input.Substring(input.IndexOf('>') + 2).Split(',', StringSplitOptions.TrimEntries);
+            var outputs = input.Substring(input.IndexOf('>') + 2).SplitAndTrim(',');
 
             return input[0] switch
             {

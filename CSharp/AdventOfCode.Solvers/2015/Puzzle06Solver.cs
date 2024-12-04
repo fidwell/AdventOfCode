@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using AdventOfCode.Core.StringUtilities;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
@@ -21,7 +22,7 @@ public partial class Puzzle06Solver : IPuzzleSolver
     {
         var lights = new uint[1000, 1000];
 
-        foreach (var instruction in input.Split('\n'))
+        foreach (var instruction in input.SplitByNewline())
         {
             if (instruction.Length == 0)
                 continue;

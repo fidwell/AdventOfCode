@@ -1,5 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using AdventOfCode.Core;
+﻿using AdventOfCode.Core;
+using AdventOfCode.Core.StringUtilities;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
@@ -34,7 +35,7 @@ public partial class Puzzle09Solver : IPuzzleSolver
 
     private static (List<Edge>, List<string>) BuildGraph(string input)
     {
-        var edges = input.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+        var edges = input.SplitByNewline()
             .Select(l => DistanceDefinition().Match(l)).Select(m =>
                 new Edge(m.Groups[1].Value,
                 m.Groups[2].Value,

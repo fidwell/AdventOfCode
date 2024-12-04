@@ -1,5 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using AdventOfCode.Core.LogicGates;
+﻿using AdventOfCode.Core.LogicGates;
+using AdventOfCode.Core.StringUtilities;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
@@ -69,7 +70,7 @@ public partial class Puzzle07Solver : IPuzzleSolver
 
     private static List<Gate> ParseGateDefinitions(string input)
     {
-        var instructions = input.Split('\n');
+        var instructions = input.SplitByNewline();
         var gates = new List<Gate>();
         foreach (var instruction in instructions)
         {

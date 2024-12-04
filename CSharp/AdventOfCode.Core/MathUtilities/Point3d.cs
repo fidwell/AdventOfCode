@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode.Core.MathUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
+
+namespace AdventOfCode.Core.MathUtilities;
 
 public class Point3d
 {
@@ -15,14 +17,14 @@ public class Point3d
 
     public Point3d(string input)
     {
-        var portions = input.Split(',', StringSplitOptions.TrimEntries).Select(double.Parse).ToArray();
+        var portions = input.SplitAndTrim(',').Select(double.Parse).ToArray();
         X = portions[0];
         Y = portions[1];
         Z = portions[2];
     }
 
     public Point3d Plus(Point3d other) =>
-        new Point3d(X + other.X, Y + other.Y, Z + other.Z);
+        new(X + other.X, Y + other.Y, Z + other.Z);
 
     public override bool Equals(object? obj) =>
         obj is Point3d other && X == other.X && Y == other.Y && Z == other.Z;

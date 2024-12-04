@@ -1,11 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using AdventOfCode.Core.StringUtilities;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
 public partial class Puzzle05Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input) =>
-        input.Split('\n')
+        input.SplitByNewline()
             .Count(s =>
                 HasAtLeastThreeVowels(s) &&
                 HasAtLeastOneDouble(s) &&
@@ -13,7 +14,7 @@ public partial class Puzzle05Solver : IPuzzleSolver
             .ToString();
 
     public string SolvePartTwo(string input)  =>
-        input.Split('\n')
+        input.SplitByNewline()
             .Count(s =>
                 HasAtLeastTwoIdenticalPairs(s) &&
                 HasSandwich(s))
