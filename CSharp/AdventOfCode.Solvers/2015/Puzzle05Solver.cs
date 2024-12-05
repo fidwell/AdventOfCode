@@ -1,5 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2015;
 
@@ -13,7 +13,7 @@ public partial class Puzzle05Solver : IPuzzleSolver
                 HasNoForbiddenStrings(s))
             .ToString();
 
-    public string SolvePartTwo(string input)  =>
+    public string SolvePartTwo(string input) =>
         input.SplitByNewline()
             .Count(s =>
                 HasAtLeastTwoIdenticalPairs(s) &&
@@ -59,7 +59,6 @@ public partial class Puzzle05Solver : IPuzzleSolver
 
     private static bool HasSandwich(string input) =>
         Sandwich().IsMatch(input);
-
 
     [GeneratedRegex(@"(a|e|i|o|u)")]
     private static partial Regex Vowels();

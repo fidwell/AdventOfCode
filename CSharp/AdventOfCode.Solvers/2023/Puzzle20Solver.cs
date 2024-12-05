@@ -5,7 +5,6 @@ namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle20Solver : IPuzzleSolver
 {
-
     public string SolvePartOne(string input)
     {
         var system = new ModuleSystem(input);
@@ -33,7 +32,7 @@ public class Puzzle20Solver : IPuzzleSolver
 
         public ModuleSystem(string input)
         {
-            Modules = input.Split(Environment.NewLine).Select(Module.Parse).ToList();
+            Modules = input.SplitByNewline().Select(Module.Parse).ToList();
             foreach (var conjunction in Modules.OfType<Conjunction>())
             {
                 conjunction.Initialize(Modules.Where(m => m.Outputs.Contains(conjunction.Name)).Select(m => m.Name));
@@ -179,7 +178,7 @@ public class Puzzle20Solver : IPuzzleSolver
         {
             if (pulse.IsHigh)
             {
-                return Enumerable.Empty<Pulse>();
+                return [];
             }
 
             IsOn = !IsOn;

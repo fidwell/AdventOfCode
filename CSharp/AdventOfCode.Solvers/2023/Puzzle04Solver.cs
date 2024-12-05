@@ -19,7 +19,7 @@ public class Puzzle04Solver : IPuzzleSolver
     }
 
     private static IEnumerable<Scratchcard> GetCards(string input)
-        => input.Split(Environment.NewLine).Select(l => new Scratchcard(l));
+        => input.SplitByNewline().Select(l => new Scratchcard(l));
 
     private class Scratchcard
     {

@@ -1,4 +1,4 @@
-﻿using AdventOfCode.Solvers;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -6,7 +6,7 @@ public class Puzzle09Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input) =>
         input
-        .Split(Environment.NewLine)
+        .SplitByNewline()
         .Select(l => new DataLine(l))
         .Select(l => l.GetNextPredicted())
         .Sum()
@@ -14,7 +14,7 @@ public class Puzzle09Solver : IPuzzleSolver
 
     public string SolvePartTwo(string input) =>
         input
-        .Split(Environment.NewLine)
+        .SplitByNewline()
         .Select(l => new DataLine(l))
         .Select(l => l.GetPreviousPredicted())
         .Sum()

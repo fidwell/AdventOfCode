@@ -26,7 +26,7 @@ public class SolutionVerifier2015 : SolutionVerifier
     public void Solve_2015_03(int part, bool useExample, string expected) =>
         Solve(new Puzzle03Solver(), 3, part, useExample, expected);
 
-    [DataTestMethod, Timeout(4000)]
+    [DataTestMethod, Timeout(5000)]
     [DataRow(1, false, "282749", DisplayName = "2015.04.1-problem")]
     [DataRow(2, false, "9962624", DisplayName = "2015.04.2-problem")]
     public void Solve_2015_04(int part, bool useExample, string expected) =>

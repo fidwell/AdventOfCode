@@ -1,4 +1,4 @@
-﻿using AdventOfCode.Solvers;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -6,7 +6,7 @@ public class Puzzle25Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
     {
-        var lines = input.Split(Environment.NewLine);
+        var lines = input.SplitByNewline();
         var edges = new List<(string, string)>();
 
         foreach (var line in lines)

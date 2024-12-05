@@ -2,14 +2,24 @@
 
 public static class StringExtensions
 {
-    public static string[] SplitAndTrim(this string input, string separator)
-        => input.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    public static string[] SplitAndTrim(this string input, string separator,
+        StringSplitOptions options = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        => input.Split(separator, options);
 
-    public static string[] SplitAndTrim(this string input, char separator)
-        => input.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    public static string[] SplitAndTrim(this string input, char separator,
+        StringSplitOptions options = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        => input.Split(separator, options);
 
-    public static string[] SplitByNewline(this string input)
-        => input.SplitAndTrim('\n');
+    /// <summary>
+    /// Splits a string into an array of strings, based on newlines.
+    /// Supports an input that uses both "\n" and "\r\n" for newlines.
+    /// </summary>
+    /// <param name="input">The input string.</param>
+    /// <param name="options">Flags for StringSplitOptions.</param>
+    /// <returns>An array of strings.</returns>
+    public static string[] SplitByNewline(this string input,
+        StringSplitOptions options = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        => input.Replace("\r", "").SplitAndTrim('\n', options);
 
     public static string Repeat(this string input, int count, string separator) =>
         string.Join(separator, Enumerable.Range(0, count).Select(i => input));

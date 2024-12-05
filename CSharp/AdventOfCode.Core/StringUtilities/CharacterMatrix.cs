@@ -1,5 +1,5 @@
-﻿using AdventOfCode.Core.ArrayUtilities;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using AdventOfCode.Core.ArrayUtilities;
 
 namespace AdventOfCode.Core.StringUtilities;
 
@@ -19,7 +19,7 @@ public class CharacterMatrix
     /// <param name="input">A newline-separated string of input data.</param>
     public CharacterMatrix(string input)
     {
-        var lines = input.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToArray();
+        var lines = input.SplitByNewline().ToArray();
         var lineLength = lines[0].Length;
         _data = new char[lineLength, lines.Length];
 

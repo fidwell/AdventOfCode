@@ -1,5 +1,5 @@
 ﻿using AdventOfCode.Core.Ranges;
-using AdventOfCode.Solvers;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -10,7 +10,7 @@ public class Puzzle19Solver : IPuzzleSolver
         var workflows = new Dictionary<string, IEnumerable<WorkflowRule>>();
         var parts = new List<Part>();
 
-        foreach (var line in input.Split(Environment.NewLine))
+        foreach (var line in input.SplitByNewline())
         {
             if (line.StartsWith('{'))
             {
@@ -46,7 +46,7 @@ public class Puzzle19Solver : IPuzzleSolver
                 }
             }
         }
-        
+
         return acceptedPartSum.ToString();
     }
 
@@ -54,7 +54,7 @@ public class Puzzle19Solver : IPuzzleSolver
     {
         var workflows = new Dictionary<string, IEnumerable<WorkflowRule>>();
 
-        foreach (var line in input.Split(Environment.NewLine))
+        foreach (var line in input.SplitByNewline())
         {
             if (line.Length > 0 && line[0] != '{')
             {

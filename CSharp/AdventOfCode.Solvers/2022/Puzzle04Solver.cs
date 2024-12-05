@@ -1,18 +1,18 @@
-﻿using AdventOfCode.Solvers;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2022;
 
 public class Puzzle04Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input) =>
-        input.Split(Environment.NewLine)
+        input.SplitByNewline()
             .Select(l => l.Split(','))
             .Select(p => p.Select(ParseRange))
             .Count(p => Contains(p.First(), p.Last()))
             .ToString();
 
     public string SolvePartTwo(string input) =>
-        input.Split(Environment.NewLine)
+        input.SplitByNewline()
             .Select(l => l.Split(','))
             .Select(p => p.Select(ParseRange))
             .Count(p => Overlaps(p.First(), p.Last()))

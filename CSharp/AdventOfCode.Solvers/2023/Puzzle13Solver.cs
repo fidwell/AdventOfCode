@@ -1,6 +1,5 @@
 ﻿using AdventOfCode.Core.ArrayUtilities;
 using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -18,8 +17,8 @@ public class Puzzle13Solver : IPuzzleSolver
         .Sum()
         .ToString();
 
-    private IEnumerable<CharacterMatrix> GetMatrixes(string input) =>
-        input.Split(Environment.NewLine)
+    private static IEnumerable<CharacterMatrix> GetMatrixes(string input) =>
+        input.SplitByNewline(StringSplitOptions.None)
         .Chunk()
         .Select(c => new CharacterMatrix(string.Join(Environment.NewLine, c)));
 
