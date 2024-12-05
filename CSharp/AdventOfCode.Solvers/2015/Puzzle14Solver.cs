@@ -29,19 +29,17 @@ public partial class Puzzle14Solver : IPuzzleSolver
     private static IEnumerable<Reindeer> GetReindeer(string input) =>
         input.SplitByNewline().Select(l =>
         {
-            var matches = Definition().Match(l);
+            var match = Definition().Match(l);
             return new Reindeer
             {
-                Name = matches.Groups[1].Value,
-                Speed = int.Parse(matches.Groups[2].Value),
-                FlightDuration = int.Parse(matches.Groups[3].Value),
-                RestDuration = int.Parse(matches.Groups[4].Value)
+                Speed = int.Parse(match.Groups[2].Value),
+                FlightDuration = int.Parse(match.Groups[3].Value),
+                RestDuration = int.Parse(match.Groups[4].Value)
             };
         });
 
     private class Reindeer
     {
-        public string Name { get; set; } = "";
         public int Speed { get; set; }
         public int FlightDuration { get; set; }
         public int RestDuration { get; set; }
@@ -57,17 +55,11 @@ public partial class Puzzle14Solver : IPuzzleSolver
             var distanceOfFullFlights = fullCycles * DistancePerFlight;
 
             if (remainder >= FlightDuration)
-            {
                 // We stop to measure while this reindeer is resting
-                distanceOfFullFlights += DistancePerFlight;
-            }
-            else
-            {
-                // We stop to measure while this reindeer is flying
-                distanceOfFullFlights += remainder * Speed;
-            }
+                return distanceOfFullFlights + DistancePerFlight;
 
-            return distanceOfFullFlights;
+            // We stop to measure while this reindeer is flying
+            return distanceOfFullFlights + remainder * Speed;
         }
     }
 
