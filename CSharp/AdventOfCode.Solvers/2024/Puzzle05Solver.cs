@@ -9,16 +9,15 @@ public class Puzzle05Solver : IPuzzleSolver
         var (rules, updates) = ParseInput(input);
         return updates
             .Where(u => rules.All(r => DoesUpdateSatisfyRule(u, r)))
-            .Select(MiddleValue)
+            .Select(u => u[u.Length / 2])
             .Sum().ToString();
     }
 
     public string SolvePartTwo(string input)
     {
         var (rules, updates) = ParseInput(input);
-        var unsatisfiedUpdates = updates.Where(u => rules.Any(r => !DoesUpdateSatisfyRule(u, r))).ToList();
-        unsatisfiedUpdates.ForEach(u => FixUpdate(u, rules));
-        return unsatisfiedUpdates.Select(MiddleValue).Sum().ToString();
+        return updates.Where(u => rules.Any(r => !DoesUpdateSatisfyRule(u, r)))
+            .Sum(u => FindMiddle(u, rules)).ToString();
     }
 
     private static (List<(int, int)>, List<int[]>) ParseInput(string input)
@@ -45,16 +44,16 @@ public class Puzzle05Solver : IPuzzleSolver
         !update.Any(p => p == rule.Item1) || !update.Any(p => p == rule.Item2) ||
         Array.IndexOf(update, rule.Item1) < Array.IndexOf(update, rule.Item2);
 
-    private static void FixUpdate(int[] update, List<(int, int)> rules)
+    private static int FindMiddle(int[] update, List<(int, int)> rules)
     {
-        Array.Sort(update, (a, b) =>
+        for (var i = 0; i < update.Length; i++)
         {
-            return rules.SingleOrDefault(r =>
-                (r.Item1 == a && r.Item2 == b) ||
-                (r.Item1 == b && r.Item2 == a))
-            .Item1 == a ? -1 : 1;
-        });
+            var item = update[i];
+            var countBefore = rules.Count(r => r.Item1 == item && update.Contains(r.Item2));
+            var countAfter = rules.Count(r => r.Item2 == item && update.Contains(r.Item1));
+            if (countBefore == countAfter)
+                return item;
+        }
+        throw new Exception("Couldn't find the middle value.");
     }
-
-    private static int MiddleValue(int[] update) => update[update.Length / 2];
 }
