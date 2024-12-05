@@ -49,11 +49,10 @@ public class Puzzle05Solver : IPuzzleSolver
     {
         Array.Sort(update, (a, b) =>
         {
-            var matchingRules = rules.Where(r => (r.Item1 == a && r.Item2 == b) || (r.Item1 == b && r.Item2 == a));
-            if (!matchingRules.Any()) return 0;
-            var rule = matchingRules.Single();
-            if (rule.Item1 == a) return -1;
-            return 1;
+            return rules.SingleOrDefault(r =>
+                (r.Item1 == a && r.Item2 == b) ||
+                (r.Item1 == b && r.Item2 == a))
+            .Item1 == a ? -1 : 1;
         });
     }
 

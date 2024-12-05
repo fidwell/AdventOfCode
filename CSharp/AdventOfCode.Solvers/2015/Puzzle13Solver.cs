@@ -1,6 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using AdventOfCode.Core;
+﻿using AdventOfCode.Core;
 using AdventOfCode.Core.StringUtilities;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
@@ -11,20 +11,17 @@ public partial class Puzzle13Solver : IPuzzleSolver
         var feast = DefineFeast(input);
         var arrangements = feast.Names.Skip(1).ToList().AllPermutations()
             .Select(p => p.Concat([feast.Names.First()]).ToList());
-        return arrangements.Max(a => TotalHappinessChange(a, feast.Rules)).ToString();
+        return arrangements.Max(a => TotalHappinessChange(a, feast.Rules, true)).ToString();
     }
 
     public string SolvePartTwo(string input)
     {
-        const string me = "Andrew";
         var feast = DefineFeast(input);
-        var arrangements = feast.Names.ToList().AllPermutations()
-            .Select(p => p.Concat([me]).ToList());
-        feast.Names = feast.Names.Append(me);
-        return arrangements.Max(a => TotalHappinessChange(a, feast.Rules)).ToString();
+        var arrangements = feast.Names.ToList().AllPermutations();
+        return arrangements.Max(a => TotalHappinessChange(a, feast.Rules, false)).ToString();
     }
 
-    private static int TotalHappinessChange(List<string> arrangement, IEnumerable<HappinessDefinition> rules)
+    private static int TotalHappinessChange(List<string> arrangement, IEnumerable<HappinessDefinition> rules, bool wrap)
     {
         var amount = 0;
         for (int i = 0; i < arrangement.Count; i++)
@@ -32,11 +29,11 @@ public partial class Puzzle13Solver : IPuzzleSolver
             var toLeft = i - 1;
             var toRight = i + 1;
 
-            if (toLeft < 0) toLeft = arrangement.Count - 1;
-            if (toRight == arrangement.Count) toRight = 0;
+            if (toLeft < 0) toLeft = wrap ? arrangement.Count - 1 : -1;
+            if (toRight == arrangement.Count) toRight = wrap ? 0 : -1;
 
-            var ruleLeft = rules.FirstOrDefault(r => r.Source == arrangement[i] && r.Target == arrangement[toLeft]);
-            var ruleRight = rules.FirstOrDefault(r => r.Source == arrangement[i] && r.Target == arrangement[toRight]);
+            var ruleLeft = rules.FirstOrDefault(r => r.Source == arrangement[i] && toLeft >=0 && r.Target == arrangement[toLeft]);
+            var ruleRight = rules.FirstOrDefault(r => r.Source == arrangement[i] && toRight >= 0 && r.Target == arrangement[toRight]);
             amount += ruleLeft?.Amount ?? 0;
             amount += ruleRight?.Amount ?? 0;
         }

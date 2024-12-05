@@ -2,9 +2,9 @@
 
 public static class EnumerableExtensions
 {
-    public static IEnumerable<IEnumerable<T>> AllPermutations<T>(this List<T> options)
+    public static IEnumerable<List<T>> AllPermutations<T>(this List<T> options)
     {
-        if (options.Count == 1)
+        if (options.Count <= 1)
         {
             yield return options;
         }
