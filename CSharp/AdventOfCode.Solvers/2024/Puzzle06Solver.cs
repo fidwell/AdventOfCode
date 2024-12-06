@@ -34,10 +34,9 @@ public class Puzzle06Solver : IPuzzleSolver
 
             var target = coord.Go(direction);
             
-            if (!map.IsInBounds(target))
-                return (visitedLocations, false);
-
-            if (map.CharAt(target) == '#' || target == extraObstacle)
+            if (map.IsInBounds(target) &&
+                (map.CharAt(target) == '#' ||
+                target == extraObstacle))
             {
                 direction = direction.RotateRight();
             }
