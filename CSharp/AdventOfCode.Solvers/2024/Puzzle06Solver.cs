@@ -10,9 +10,6 @@ public class Puzzle06Solver : IPuzzleSolver
 
     public string SolvePartTwo(string input)
     {
-        // works for example, but not input.
-        // 1601 is too high
-        // (it's not off-by-one; 1600 isn't right either)
         var map = new CharacterMatrix(input);
         return GetRoute(map).Item1
             .Select(x => x.Coord)
@@ -33,15 +30,13 @@ public class Puzzle06Solver : IPuzzleSolver
             var state = new State(coord.Item1, coord.Item2, direction);
 
             if (!visitedLocations.Add(state))
-            {
-                // problematic?:
-                // obstacle: (76, 108); broke at coord (84, 108); length 122
-                if (visitedLocations.Count < 500)
-                    Console.WriteLine($"obstacle: {extraObstacle}; broke at coord {coord}; length {visitedLocations.Count}");
                 return ([], true);
-            }
 
             var target = coord.Go(direction);
+            
+            if (!map.IsInBounds(target))
+                return (visitedLocations, false);
+
             if (map.CharAt(target) == '#' || target == extraObstacle)
             {
                 direction = direction.RotateRight();
