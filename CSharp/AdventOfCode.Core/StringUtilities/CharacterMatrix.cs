@@ -93,6 +93,9 @@ public class CharacterMatrix
     public IEnumerable<(int, int)> FindAllCharacters(char matchingChar) =>
         AllCoordinates.Where(c => _data[c.Item1, c.Item2] == matchingChar);
 
+    public (int, int) SingleMatch(char matchingChar) =>
+        AllCoordinates.Single(c => matchingChar == _data[c.Item1, c.Item2]);
+
     /// <summary>
     /// Finds "words" in the data that match the specified regular expression.
     /// Does not allow matching across lines.
