@@ -5,105 +5,58 @@ namespace AdventOfCode.Solvers._2024;
 
 public class Puzzle06Solver : IPuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public string SolvePartOne(string input) =>
+        GetRoute(new CharacterMatrix(input)).Item1.DistinctBy(x => x.Coord).Count().ToString();
+
+    public string SolvePartTwo(string input)
     {
+        // works for example, but not input.
+        // 1601 is too high
+        // (it's not off-by-one; 1600 isn't right either)
         var map = new CharacterMatrix(input);
+        return GetRoute(map).Item1
+            .Select(x => x.Coord)
+            .Distinct()
+            .Where(x => x != map.SingleMatch('^'))
+            .Count(p => GetRoute(map, p).Item2)
+            .ToString();
+    }
+
+    private static (HashSet<State>, bool) GetRoute(CharacterMatrix map, (int, int)? extraObstacle = null)
+    {
         var coord = map.SingleMatch('^');
         var direction = Direction.Up;
-        HashSet<(int, int)> visitedLocations = [coord];
+        HashSet<State> visitedLocations = [];
 
-        while (coord.Item1 >= 0 &&
-            coord.Item2 >= 0 &&
-            coord.Item1 < map.Width &&
-            coord.Item2 < map.Height)
+        while (map.IsInBounds(coord))
         {
-            var target = direction switch
-            {
-                Direction.Right => (coord.Item1 + 1, coord.Item2),
-                Direction.Down => (coord.Item1, coord.Item2 + 1),
-                Direction.Left => (coord.Item1 - 1, coord.Item2),
-                Direction.Up => (coord.Item1, coord.Item2 - 1),
-                _ => throw new Exception("Invalid direction")
-            };
+            var state = new State(coord.Item1, coord.Item2, direction);
 
-            if (map.CharAt(target) == '#')
+            if (!visitedLocations.Add(state))
+            {
+                // problematic?:
+                // obstacle: (76, 108); broke at coord (84, 108); length 122
+                if (visitedLocations.Count < 500)
+                    Console.WriteLine($"obstacle: {extraObstacle}; broke at coord {coord}; length {visitedLocations.Count}");
+                return ([], true);
+            }
+
+            var target = coord.Go(direction);
+            if (map.CharAt(target) == '#' || target == extraObstacle)
             {
                 direction = direction.RotateRight();
             }
             else
             {
                 coord = target;
-                visitedLocations.Add(coord);
             }
         }
 
-        return (visitedLocations.Count - 1).ToString();
+        return (visitedLocations, false);
     }
 
-    public string SolvePartTwo(string input)
+    private record State(int X, int Y, Direction Direction)
     {
-        // try brute force lol
-        // it doesn't work anyway
-
-        var map = new CharacterMatrix(input);
-        var start = map.SingleMatch('^');
-        var direction = Direction.Up;
-
-        var invalidChars = new char[] { '^', '#' };
-        var answers = 0;
-
-        foreach (var possibleLocation in map.AllCoordinates)
-        {
-            if (invalidChars.Contains(map.CharAt(possibleLocation)))
-                continue;
-
-            var coord = start;
-            var done = false;
-            var steps = 0;
-
-            while (coord.Item1 >= 0 &&
-                coord.Item2 >= 0 &&
-                coord.Item1 < map.Width &&
-                coord.Item2 < map.Height)
-            {
-                steps++;
-                var target = direction switch
-                {
-                    Direction.Right => (coord.Item1 + 1, coord.Item2),
-                    Direction.Down => (coord.Item1, coord.Item2 + 1),
-                    Direction.Left => (coord.Item1 - 1, coord.Item2),
-                    Direction.Up => (coord.Item1, coord.Item2 - 1),
-                    _ => throw new Exception("Invalid direction")
-                };
-
-                if (map.CharAt(target) == '#' || target == possibleLocation)
-                {
-                    direction = direction.RotateRight();
-                }
-                else
-                {
-                    coord = target;
-                }
-
-                if (coord == start && direction == Direction.Up)
-                {
-                    // we're in a loop!
-                    answers++;
-                    done = true;
-                    break;
-                }
-
-                if (steps > map.Width * map.Height)
-                {
-                    done = true;
-                    break;
-                }
-            }
-
-            if (done)
-                continue;
-        }
-
-        return answers.ToString();
+        public (int, int) Coord => (X, Y);
     }
 }
