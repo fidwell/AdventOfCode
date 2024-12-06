@@ -7,7 +7,7 @@ public partial class Puzzle24Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
     {
-        var lines = input.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
+        var lines = input.SplitByNewline();
 
         long testAreaFrom = 7;
         long testAreaTo = 27;

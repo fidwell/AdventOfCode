@@ -48,7 +48,7 @@ public class SolutionVerifier2024 : SolutionVerifier
     public void Solve_2024_05(int part, bool useExample, string expected) =>
         Solve(new Puzzle05Solver(), 5, part, useExample, expected);
 
-    [DataTestMethod]
+    [DataTestMethod, Timeout(LongTimeout)]
     [DataRow(1, true, "41", DisplayName = "2024.06.1-example")]
     [DataRow(1, false, "4776", DisplayName = "2024.06.1-problem")]
     [DataRow(2, true, "6", DisplayName = "2024.06.2-example")]

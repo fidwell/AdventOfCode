@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using AdventOfCode.Core.StringUtilities;
+using System.Diagnostics;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -18,7 +19,7 @@ public class Puzzle22Solver : IPuzzleSolver
 
     private static (List<Brick>, Graph) Initialize(string input)
     {
-        var bricks = input.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries)
+        var bricks = input.SplitByNewline()
             .Select((l, i) => new Brick(l, i))
             .OrderBy(b => b.Point1.Z)
             .ToList();
