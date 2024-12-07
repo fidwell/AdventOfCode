@@ -1,5 +1,4 @@
-﻿using AdventOfCode.Core.MathUtilities;
-using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -82,29 +81,36 @@ public partial class Puzzle07Solver : IPuzzleSolver
 
             foreach (var permutation in operationPermutations)
             {
-                ulong total = Operands[0];
-                for (var i = 0; i < permutation.Length; i++)
+                var answer = Answer;
+                // Work right-to-left so we can give up earlier
+                for (var i = permutation.Length - 1; i >= 0; i--)
                 {
                     if (permutation[i] == Operation.Add)
                     {
-                        total += Operands[i + 1];
+                        answer -= Operands[i + 1];
                     }
                     else if (permutation[i] == Operation.Multiply)
                     {
-                        total *= Operands[i + 1];
+                        if (answer % Operands[i + 1] != 0)
+                            break;
+                        answer /= Operands[i + 1];
                     }
                     else
                     {
-                        total = MathExtensions.Concatenate(total, Operands[i + 1]);
+                        var operand = Operands[i + 1];
+                        var operandLength = (int)Math.Log10(operand) + 1;
+                        var powerOfTen = (ulong)Math.Pow(10, operandLength);
+                        if ((answer - operand) % powerOfTen != 0)
+                            break;
+                        answer -= Operands[i + 1];
+                        answer /= powerOfTen;
                     }
-
-                    // Break early if we know the answer can't be computed already
-                    if (total > Answer)
-                        break;
                 }
 
-                if (total == Answer)
+                if (answer == Operands[0])
+                {
                     return true;
+                }
             }
 
             return false;
