@@ -7,7 +7,7 @@ public class Puzzle01Solver : IPuzzleSolver
     public string SolvePartOne(string input)
     {
         var (leftNums, rightNums) = ParseInput(input);
-        return leftNums.Select((n, i) => Math.Abs(leftNums[i] - rightNums[i])).Sum().ToString();
+        return leftNums.Zip(rightNums, (a, b) => Math.Abs(a - b)).Sum().ToString();
     }
 
     public string SolvePartTwo(string input)
