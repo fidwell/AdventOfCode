@@ -5,24 +5,34 @@ namespace AdventOfCode.Solvers._2024;
 
 public class Puzzle06Solver : IPuzzleSolver
 {
-    public string SolvePartOne(string input) =>
-        GetRoute(new CharacterMatrix(input)).Item1.DistinctBy(x => x.Coord).Count().ToString();
+    public string SolvePartOne(string input)
+    {
+        var map = new CharacterMatrix(input);
+        return GetRoute(map, map.SingleMatch('^'), Direction.Up).Item1.DistinctBy(x => x.Coord).Count().ToString();
+    }
 
     public string SolvePartTwo(string input)
     {
         var map = new CharacterMatrix(input);
-        return GetRoute(map).Item1
+        var originalRoute = GetRoute(map, map.SingleMatch('^'), Direction.Up).Item1;
+        return originalRoute
             .Select(x => x.Coord)
             .Distinct()
             .Where(x => x != map.SingleMatch('^'))
-            .Count(p => GetRoute(map, p).Item2)
+            .Count(obstacle =>
+            {
+                var start = originalRoute.First(c => c.Coord.Go(c.Direction) == obstacle);
+                return GetRoute(map, start.Coord, start.Direction, obstacle).Item2;
+            })
             .ToString();
     }
 
-    private static (HashSet<State>, bool) GetRoute(CharacterMatrix map, (int, int)? extraObstacle = null)
+    private static (HashSet<State>, bool) GetRoute(
+        CharacterMatrix map,
+        (int, int) coord,
+        Direction direction,
+        (int, int)? extraObstacle = null)
     {
-        var coord = map.SingleMatch('^');
-        var direction = Direction.Up;
         HashSet<State> visitedLocations = [];
 
         while (map.IsInBounds(coord))
@@ -33,7 +43,7 @@ public class Puzzle06Solver : IPuzzleSolver
                 return ([], true);
 
             var target = coord.Go(direction);
-            
+
             if (map.IsInBounds(target) &&
                 (map.CharAt(target) == '#' ||
                 target == extraObstacle))

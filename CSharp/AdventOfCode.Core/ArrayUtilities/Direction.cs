@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode.Core.ArrayUtilities;
 
-public enum Direction
+public enum Direction : byte
 {
     Undefined,
     Right,
