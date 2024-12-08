@@ -5,20 +5,15 @@ namespace AdventOfCode.Solvers._2024;
 
 public class Puzzle08Solver : IPuzzleSolver
 {
-    public string SolvePartOne(string input)
-    {
-        var map = new CharacterMatrix(input);
-        var groups = GetAntennas(map);
-        var nodes = groups.SelectMany(g => NodesCausedByAntennas(map, g, false));
-        return nodes.Distinct().Count().ToString();
-    }
+    public string SolvePartOne(string input) => Solve(input, false);
+    public string SolvePartTwo(string input) => Solve(input, true);
 
-    public string SolvePartTwo(string input)
+    private static string Solve(string input, bool isPartTwo)
     {
         var map = new CharacterMatrix(input);
-        var groups = GetAntennas(map);
-        var nodes = groups.SelectMany(g => NodesCausedByAntennas(map, g, true));
-        return nodes.Distinct().Count().ToString();
+        return GetAntennas(map)
+            .SelectMany(g => NodesCausedByAntennas(map, g, isPartTwo))
+            .Distinct().Count().ToString();
     }
 
     private static IEnumerable<IEnumerable<Antenna>> GetAntennas(CharacterMatrix map) =>
@@ -34,34 +29,39 @@ public class Puzzle08Solver : IPuzzleSolver
         {
             var diff = pair[0] - pair[1];
 
+            var fromNode1 = pair[0].Coord;
             if (includeHarmonics)
+                yield return fromNode1;
+
+            do
             {
-                var fromNode1 = pair[0].Coord;
-                while (map.IsInBounds(fromNode1))
-                {
+                fromNode1 = Add(fromNode1, diff);
+                if (map.IsInBounds(fromNode1))
                     yield return fromNode1;
-                    fromNode1 = (fromNode1.Item1 + diff.Item1, fromNode1.Item2 + diff.Item2);
-                }
+                else
+                    break;
+            } while (includeHarmonics);
 
-                var fromNode2 = pair[1].Coord;
-                while (map.IsInBounds(fromNode2))
-                {
-                    yield return fromNode2;
-                    fromNode2 = (fromNode2.Item1 - diff.Item1, fromNode2.Item2 - diff.Item2);
-                }
-            }
-            else
+            var fromNode2 = pair[1].Coord;
+            if (includeHarmonics)
+                yield return fromNode2;
+
+            do
             {
-                var node1 = (pair[0].X + diff.Item1, pair[0].Y + diff.Item2);
-                var node2 = (pair[1].X - diff.Item1, pair[1].Y - diff.Item2);
-
-                if (map.IsInBounds(node1))
-                    yield return node1;
-                if (map.IsInBounds(node2))
-                    yield return node2;
-            }
+                fromNode2 = Subtract(fromNode2, diff);
+                if (map.IsInBounds(fromNode2))
+                    yield return fromNode2;
+                else
+                    break;
+            } while (includeHarmonics);
         }
     }
+
+    private static (int, int) Add((int, int) a, (int, int) b) =>
+        (a.Item1 + b.Item1, a.Item2 + b.Item2);
+
+    private static (int, int) Subtract((int, int) a, (int, int) b) =>
+        (a.Item1 - b.Item1, a.Item2 - b.Item2);
 
     private record Antenna(int X, int Y, char Type)
     {
