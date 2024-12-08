@@ -1,5 +1,4 @@
 ﻿using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -27,7 +26,7 @@ public class Puzzle21Solver : IPuzzleSolver
         // right answer, but you're gonna be waiting a while.
     }
 
-    private int Solve(CharacterMatrix matrix, int target, bool allowWrapping)
+    private static int Solve(CharacterMatrix matrix, int target, bool allowWrapping)
     {
         var start = matrix.FindAllCharacters('S').Single();
         var answers = new HashSet<(int, int)> { start };
@@ -36,7 +35,7 @@ public class Puzzle21Solver : IPuzzleSolver
         {
             answers = new HashSet<(int, int)>(answers
                 .SelectMany(a => matrix.CoordinatesOfNeighbors(a, allEight: false, allowWrapping)
-                    .Where(c => matrix.CharAt(c) != '#')));
+                    .Where(c => matrix.CharAt(c, allowWrapping) != '#')));
         }
 
         return answers.Count;

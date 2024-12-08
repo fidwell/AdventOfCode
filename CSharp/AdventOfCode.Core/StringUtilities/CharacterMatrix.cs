@@ -10,8 +10,8 @@ public class CharacterMatrix
 {
     private readonly char[,] _data;
 
-    public int Width => _data.GetLength(0);
-    public int Height => _data.GetLength(1);
+    public int Width { get; private set; }
+    public int Height { get; private set; }
 
     /// <summary>
     /// Creates a matrix of characters from a "rectanuglar-shaped" string.
@@ -20,13 +20,14 @@ public class CharacterMatrix
     public CharacterMatrix(string input)
     {
         var lines = input.SplitByNewline().ToArray();
-        var lineLength = lines[0].Length;
-        _data = new char[lineLength, lines.Length];
+        Width = lines[0].Length;
+        Height = lines.Length;
+        _data = new char[Width, Height];
 
-        for (int y = 0; y < lines.Length; y++)
+        for (int y = 0; y < Height; y++)
         {
             var thisLine = lines[y];
-            if (thisLine.Length != lineLength)
+            if (thisLine.Length != Width)
             {
                 throw new ArgumentException("All lines must be the same length.", nameof(input));
             }
@@ -52,26 +53,29 @@ public class CharacterMatrix
     /// <param name="y">The y coordinate.</param>
     /// <returns>The character at this position in the matrix,
     /// or null if the coordinates are out of bounds.</returns>
-    public char CharAt(int x, int y) =>
-        x < 0 || x >= Width || y < 0 || y >= Height
+    public char CharAt(int x, int y, bool allowOutOfBounds = false)
+    {
+        if (allowOutOfBounds)
+        {
+            while (x < 0) x += Width;
+            while (y < 0) y += Height;
+            while (x >= Width) x -= Width;
+            while (y >= Height) y -= Height;
+            return _data[x, y];
+        }
+
+        return x < 0 || x >= Width || y < 0 || y >= Height
             ? '\0'
             : _data[x, y];
+    }
 
     /// <summary>
     /// Returns the single character value at a given coordinate.
     /// </summary>
     /// <param name="coord">The coordinate.</param>
     /// <returns>The character at this position in the matrix.</returns>
-    public char CharAt((int, int) coord)
-    {
-        // Allow wrapping
-        while (coord.Item1 < 0) coord.Item1 += Width;
-        while (coord.Item2 < 0) coord.Item2 += Height;
-        while (coord.Item1 >= Width) coord.Item1 -= Width;
-        while (coord.Item2 >= Height) coord.Item2 -= Height;
-
-        return _data[coord.Item1, coord.Item2];
-    }
+    public char CharAt((int, int) coord, bool allowOutOfBounds = false) =>
+        CharAt(coord.Item1, coord.Item2, allowOutOfBounds);
 
     /// <summary>
     /// Returns a string starting at a given index, of a given length.
