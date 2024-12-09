@@ -7,6 +7,7 @@ public abstract class SolutionVerifier(int year)
 {
     protected const int Timeout = 2000;
     protected const int LongTimeout = 5000;
+    protected const int MaxTimeout = 15000;
     protected readonly int Year = year;
 
     protected void Solve(IPuzzleSolver solver, int puzzle, int part, bool useExample, string expected)

@@ -26,7 +26,7 @@ public class SolutionVerifier2015 : SolutionVerifier
     public void Solve_2015_03(int part, bool useExample, string expected) =>
         Solve(new Puzzle03Solver(), 3, part, useExample, expected);
 
-    [DataTestMethod, Timeout(5000)]
+    [DataTestMethod, Timeout(LongTimeout)]
     [DataRow(1, false, "282749", DisplayName = "2015.04.1-problem")]
     [DataRow(2, false, "9962624", DisplayName = "2015.04.2-problem")]
     public void Solve_2015_04(int part, bool useExample, string expected) =>
@@ -85,14 +85,14 @@ public class SolutionVerifier2015 : SolutionVerifier
     public void Solve_2015_12(int part, bool useExample, string expected) =>
         Solve(new Puzzle12Solver(), 12, part, useExample, expected);
 
-    [DataTestMethod]
+    [DataTestMethod, Timeout(MaxTimeout)]
     [DataRow(1, true, "330", DisplayName = "2015.13.1-example")]
     [DataRow(1, false, "733", DisplayName = "2015.13.1-problem")]
     [DataRow(2, false, "725", DisplayName = "2015.13.2-problem")]
     public void Solve_2015_13(int part, bool useExample, string expected) =>
         Solve(new Puzzle13Solver(), 13, part, useExample, expected);
 
-    [DataTestMethod]
+    [DataTestMethod, Timeout(MaxTimeout)]
     [DataRow(1, false, "2660", DisplayName = "2015.14.1-problem")]
     [DataRow(2, false, "1256", DisplayName = "2015.14.2-problem")]
     public void Solve_2015_14(int part, bool useExample, string expected) =>
