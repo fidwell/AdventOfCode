@@ -23,40 +23,27 @@ internal class Program
 
         cliArgs.TryGetValue("session", out string? session);
 
+        int? year = null, day = null;
+        if (cliArgs.TryGetValue("year", out string? yearStr))
+        {
+            year = TryParseNullable(yearStr);
+        }
+        if (cliArgs.TryGetValue("day", out string? dayStr))
+        {
+            day = TryParseNullable(dayStr);
+        }
+
         switch (value)
         {
             case "download-today":
                 await DownloadToday(session);
                 break;
             case "download-day":
-                cliArgs.TryGetValue("year", out string? yearStr);
-                cliArgs.TryGetValue("day", out string? dayStr);
-
-                if (int.TryParse(yearStr, out int year) &&
-                    int.TryParse(dayStr, out int day))
-                {
-                    await DownloadDay(session, year, day);
-                }
-                else
-                {
-                    ConsoleWriter.Error($"Invalid year {yearStr} or day {dayStr}.");
-                }
+                ConsoleWriter.Info($"Downloading input for {year} day {day}...");
+                await DownloadDay(session, year, day);
                 return;
             case "download-year":
-                if (!cliArgs.TryGetValue("year", out string? yearStr2))
-                {
-                    ConsoleWriter.Error("No year value provided.");
-                    return;
-                }
-
-                if (int.TryParse(yearStr2, out int year2))
-                {
-                    await DownloadYear(session, year2);
-                }
-                else
-                {
-                    ConsoleWriter.Error($"Invalid year {yearStr2}.");
-                }
+                await DownloadYear(session, year);
                 break;
             default:
                 ConsoleWriter.Error("Invalid program argument.");
@@ -78,25 +65,24 @@ internal class Program
         await DownloadInner(session, today.Year, today.Day);
     }
 
-    private static async Task DownloadDay(string session, int year, int day)
+    private static async Task DownloadDay(string session, int? year, int? day)
     {
-        if (!IsValidYear(year))
+        if (!year.HasValue || !IsValidYear(year.Value))
         {
             ConsoleWriter.Error($"Invalid year: {year}");
             return;
         }
 
-        if (!IsValidDay(day))
+        if (!day.HasValue || !IsValidDay(day.Value))
         {
             ConsoleWriter.Error($"Invalid day: {day}");
             return;
         }
 
-        ConsoleWriter.Info($"Downloading input for {year} day {day}...");
-        await DownloadInner(session, year, day);
+        await DownloadInner(session, year.Value, day.Value);
     }
 
-    private static async Task DownloadYear(string session, int year)
+    private static async Task DownloadYear(string session, int? year)
     {
         ConsoleWriter.Info($"Downloading all missing inputs for {year}...");
         for (var day = 1; day <= 25; day++)
@@ -117,6 +103,9 @@ internal class Program
         Downloader.SetUpDirectories(year);
         await Downloader.DownloadInput(year, day, session);
     }
+
+    private static int? TryParseNullable(string val) =>
+        int.TryParse(val, out int outValue) ? outValue : null;
 
     private static bool IsValidYear(int year) => year >= 2015 && year <= DateTime.Now.Year;
     private static bool IsValidDay(int day) => day >= 1 && day <= 25;

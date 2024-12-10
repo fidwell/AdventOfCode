@@ -9,7 +9,7 @@ internal static class Downloader
     {
         var inputDirectoryName = DataReader.GetInputDirectory();
         var filename = Path.Combine(inputDirectoryName, year.ToString(), $"puzzle{day.ToString().PadLeft(2, '0')}.txt");
-        if (false && File.Exists(filename))
+        if (File.Exists(filename))
         {
             ConsoleWriter.Error("File already exists.");
             return;
