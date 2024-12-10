@@ -4,20 +4,18 @@ namespace AdventOfCode.Solvers._2024;
 
 public class Puzzle10Solver : IPuzzleSolver
 {
-    public string SolvePartOne(string input)
-    {
-        var map = new CharacterMatrix(input);
-        return map.FindAllCharacters('0')
-            .Sum(s => NinesReachedFromHere(map, s, '0').Distinct().Count())
-            .ToString();
-    }
+    public string SolvePartOne(string input) => Solve(input, true);
+    public string SolvePartTwo(string input) => Solve(input, false);
 
-    public string SolvePartTwo(string input)
+    private static string Solve(string input, bool getDistinct)
     {
         var map = new CharacterMatrix(input);
         return map.FindAllCharacters('0')
-            .Sum(s => NinesReachedFromHere(map, s, '0').Count())
-            .ToString();
+            .Sum(s =>
+            {
+                var paths = NinesReachedFromHere(map, s, '0');
+                return (getDistinct ? paths.Distinct() : paths).Count();
+            }).ToString();
     }
 
     private static IEnumerable<(int, int)> NinesReachedFromHere(CharacterMatrix map, (int, int) coord, char charHere)
