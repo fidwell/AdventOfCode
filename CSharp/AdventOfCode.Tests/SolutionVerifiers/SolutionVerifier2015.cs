@@ -92,9 +92,17 @@ public class SolutionVerifier2015 : SolutionVerifier
     public void Solve_2015_13(int part, bool useExample, string expected) =>
         Solve(new Puzzle13Solver(), 13, part, useExample, expected);
 
-    [DataTestMethod, Timeout(MaxTimeout)]
+    [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, false, "2660", DisplayName = "2015.14.1-problem")]
     [DataRow(2, false, "1256", DisplayName = "2015.14.2-problem")]
     public void Solve_2015_14(int part, bool useExample, string expected) =>
         Solve(new Puzzle14Solver(), 14, part, useExample, expected);
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, true, "62842880", DisplayName = "2015.15.1-example")]
+    [DataRow(1, false, "222870", DisplayName = "2015.15.1-problem")]
+    [DataRow(2, true, "57600000", DisplayName = "2015.15.2-example")]
+    [DataRow(2, false, "117936", DisplayName = "2015.15.2-problem")]
+    public void Solve_2015_15(int part, bool useExample, string expected) =>
+        Solve(new Puzzle15Solver(), 15, part, useExample, expected);
 }
