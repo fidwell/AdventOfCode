@@ -15,7 +15,7 @@ internal class Program
             }
         }
 
-        if (!cliArgs.TryGetValue("action", out string? value))
+        if (!cliArgs.TryGetValue("action", out string? action))
         {
             ConsoleWriter.Error("No CLI action provided.");
             return;
@@ -33,7 +33,7 @@ internal class Program
             day = TryParseNullable(dayStr);
         }
 
-        switch (value)
+        switch (action)
         {
             case "download-today":
                 await DownloadToday(session);
@@ -85,7 +85,8 @@ internal class Program
     private static async Task DownloadYear(string session, int? year)
     {
         ConsoleWriter.Info($"Downloading all missing inputs for {year}...");
-        for (var day = 1; day <= 25; day++)
+        var maxDay = year == DateTime.Now.Year ? DateTime.Now.Day : 25;
+        for (var day = 1; day <= maxDay; day++)
         {
             await DownloadDay(session, year, day);
             Thread.Sleep(TimeSpan.FromSeconds(1));
