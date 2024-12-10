@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode.Tests;
+﻿namespace AdventOfCode.Core.Input;
 
 public static class DataReader
 {
@@ -18,6 +18,6 @@ public static class DataReader
         throw new FileNotFoundException();
     }
 
-    private static string GetInputDirectory() =>
+    public static string GetInputDirectory() =>
         Path.Combine(Environment.CurrentDirectory, @"..\..\..\..\..\input");
 }

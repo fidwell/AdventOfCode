@@ -1,3 +1,6 @@
 # Input files
 input/**/*.txt
 !input/**/*example.txt
+
+# Launch settings for console app (contains session key)
+launchSettings.json

@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Solvers;
+﻿using AdventOfCode.Core.Input;
+using AdventOfCode.Solvers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AdventOfCode.Tests.SolutionVerifiers;
