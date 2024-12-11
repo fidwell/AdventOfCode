@@ -5,15 +5,15 @@ internal class Program
     private static async Task Main(string[] args)
     {
         ConsoleWriter.Write(" --- Advent of Code utility helper --- ", ConsoleColor.Yellow);
+        await Run(args);
 
-        var cliArgs = new Dictionary<string, string>();
-        for (var i = 0; i < args.Length; i++)
-        {
-            if (args[i].StartsWith("--") && args.Length >= i)
-            {
-                cliArgs.Add(args[i][2..], args[i + 1]);
-            }
-        }
+        Console.WriteLine($"{Environment.NewLine}Press any key to close this window . . .");
+        Console.ReadKey();
+    }
+
+    private static async Task Run(string[] args)
+    {
+        var cliArgs = ParseArgs(args);
 
         if (!cliArgs.TryGetValue("action", out string? action))
         {
@@ -49,6 +49,20 @@ internal class Program
                 ConsoleWriter.Error("Invalid program argument.");
                 break;
         }
+    }
+
+    private static Dictionary<string, string> ParseArgs(string[] args)
+    {
+        var cliArgs = new Dictionary<string, string>();
+        for (var i = 0; i < args.Length; i++)
+        {
+            if (args[i].StartsWith("--") && args.Length >= i)
+            {
+                cliArgs.Add(args[i][2..], args[i + 1]);
+            }
+        }
+
+        return cliArgs;
     }
 
     private static async Task DownloadToday(string session)
@@ -101,8 +115,10 @@ internal class Program
             return;
         }
 
-        Downloader.SetUpDirectories(year);
-        await Downloader.DownloadInput(year, day, session);
+        if (Downloader.SetUpDirectories(year))
+        {
+            await Downloader.DownloadInput(year, day, session);
+        }
     }
 
     private static int? TryParseNullable(string val) =>

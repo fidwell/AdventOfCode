@@ -18,6 +18,17 @@ public static class DataReader
         throw new FileNotFoundException();
     }
 
-    public static string GetInputDirectory() =>
-        Path.Combine(Environment.CurrentDirectory, @"..\..\..\..\..\input");
+    public static string GetInputDirectory()
+    {
+        var directory = new DirectoryInfo(Environment.CurrentDirectory);
+        do
+        {
+            directory = directory.Parent;
+
+            if (directory is null)
+                throw new Exception("Couldn't find the root directory");
+        }
+        while (directory.Name != "AdventOfCode");
+        return Path.Combine(directory.FullName, "input");
+    }
 }

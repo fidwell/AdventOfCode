@@ -1,5 +1,5 @@
-﻿using AdventOfCode.Core.Input;
-using System.Net;
+﻿using System.Net;
+using AdventOfCode.Core.Input;
 
 namespace AdventOfCode.ConsoleApp;
 
@@ -35,13 +35,13 @@ internal static class Downloader
         }
     }
 
-    internal static void SetUpDirectories(int year)
+    internal static bool SetUpDirectories(int year)
     {
         var inputDirectoryName = DataReader.GetInputDirectory();
         if (!Directory.Exists(inputDirectoryName))
         {
             ConsoleWriter.Error("Couldn't find root input directory.");
-            return;
+            return false;
         }
 
         var thisYearDirectory = Path.Join(inputDirectoryName, year.ToString());
@@ -50,5 +50,6 @@ internal static class Downloader
             ConsoleWriter.Info($"Creating new directory for {year}...");
             Directory.CreateDirectory(thisYearDirectory);
         }
+        return true;
     }
 }
