@@ -15,10 +15,12 @@ internal static class Downloader
             return;
         }
 
+        // Prevent hammering the site
+        Thread.Sleep(TimeSpan.FromSeconds(1));
+
         var uri = new Uri("https://adventofcode.com");
         var cookies = new CookieContainer();
         cookies.Add(uri, new Cookie("session", cookie));
-        using var file = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
         using var handler = new HttpClientHandler() { CookieContainer = cookies };
         using var client = new HttpClient(handler) { BaseAddress = uri };
         using var response = await client.GetAsync($"/{year}/day/{day}/input");
@@ -26,6 +28,7 @@ internal static class Downloader
         if (response.IsSuccessStatusCode)
         {
             using var stream = await response.Content.ReadAsStreamAsync();
+            using var file = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
             await stream.CopyToAsync(file);
             ConsoleWriter.Info("File successfully downloaded.");
         }

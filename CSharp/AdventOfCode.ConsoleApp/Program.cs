@@ -103,7 +103,6 @@ internal class Program
         for (var day = 1; day <= maxDay; day++)
         {
             await DownloadDay(session, year, day);
-            Thread.Sleep(TimeSpan.FromSeconds(1));
         }
     }
 
