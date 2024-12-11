@@ -7,14 +7,26 @@ public class Puzzle11Solver : IPuzzleSolver
 
     private static string Solve(string input, int blinks)
     {
-        var stones = input.Split([' ', '\n'], StringSplitOptions.RemoveEmptyEntries).Select(ulong.Parse);
-
+        var stones = input.Split([' ', '\n'], StringSplitOptions.RemoveEmptyEntries)
+            .Select(ulong.Parse)
+            .ToDictionary(val => val, _ => 1UL);
         for (var i = 0; i < blinks; i++)
         {
-            stones = stones.SelectMany(ProcessStone);
+            var newDict = new Dictionary<ulong, ulong>();
+            foreach (var stone in stones)
+            {
+                var results = ProcessStone(stone.Key);
+                foreach (var newStone in results)
+                {
+                    if (!newDict.TryAdd(newStone, stone.Value))
+                    {
+                        newDict[newStone] += stone.Value;
+                    }
+                }
+            }
+            stones = newDict;
         }
-
-        return stones.Count().ToString();
+        return stones.Select(s => (decimal)s.Value).Sum().ToString();
     }
 
     private static ulong[] ProcessStone(ulong stone)
@@ -25,8 +37,8 @@ public class Puzzle11Solver : IPuzzleSolver
         var asString = stone.ToString();
         if (asString.Length % 2 == 0)
         {
-            var left = ulong.Parse(asString.Substring(0, asString.Length / 2));
-            var right = ulong.Parse(asString.Substring(asString.Length / 2));
+            var left = ulong.Parse(asString[..(asString.Length / 2)]);
+            var right = ulong.Parse(asString[(asString.Length / 2)..]);
             return [left, right];
         }
 

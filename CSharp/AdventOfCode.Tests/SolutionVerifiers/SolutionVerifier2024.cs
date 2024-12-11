@@ -91,7 +91,7 @@ public class SolutionVerifier2024 : SolutionVerifier
     [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "55312", DisplayName = "2024.11.1-example")]
     [DataRow(1, false, "224529", DisplayName = "2024.11.1-problem")]
-    [DataRow(2, false, "", DisplayName = "2024.11.2-problem")]
+    [DataRow(2, false, "266820198587914", DisplayName = "2024.11.2-problem")]
     public void Solve_2024_11(int part, bool useExample, string expected) =>
         Solve(new Puzzle11Solver(), 11, part, useExample, expected);
 }
