@@ -105,4 +105,10 @@ public class SolutionVerifier2015 : SolutionVerifier
     [DataRow(2, false, "117936", DisplayName = "2015.15.2-problem")]
     public void Solve_2015_15(int part, bool useExample, string expected) =>
         Solve(new Puzzle15Solver(), 15, part, useExample, expected);
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, false, "103", DisplayName = "2015.16.1-problem")]
+    [DataRow(2, false, "405", DisplayName = "2015.16.2-problem")]
+    public void Solve_2015_16(int part, bool useExample, string expected) =>
+        Solve(new Puzzle16Solver(), 16, part, useExample, expected);
 }
