@@ -1,5 +1,4 @@
-﻿using AdventOfCode.Core.ArrayUtilities;
-using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -53,7 +52,7 @@ public class Puzzle12Solver : IPuzzleSolver
 
         public int Area => Locations.Count;
         public int Price1(CharacterMatrix map) => Area * Perimeter(map);
-        public int Price2(CharacterMatrix _) => Area * SideCount();
+        public int Price2(CharacterMatrix _) => Area * CornerCount();
 
         public int Perimeter(CharacterMatrix map)
         { // can probably be improved
@@ -73,68 +72,64 @@ public class Puzzle12Solver : IPuzzleSolver
             return sum;
         }
 
-        public int SideCount()
+        public int CornerCount()
         {
-            // Use the wall-follower maze algorithm.
-
-            var sides = 0;
-            var initial = Locations[0]; // hopefully a top edge
-            var current = initial;
-            var direction = Direction.Right;
-            var isBackAtStart = false;
-
-            do
+            // a "corner" being at the top-left of a coordinate
+            var cornerLocations = new HashSet<(int, int)>();
+            var doubleCounted = new HashSet<(int, int)>();
+            foreach (var c in Locations)
             {
-                if (!Locations.Contains(current))
-                    throw new Exception("Went off region");
+                var e = Locations.Contains((c.Item1 + 1, c.Item2));
+                var s = Locations.Contains((c.Item1, c.Item2 + 1));
+                var w = Locations.Contains((c.Item1 - 1, c.Item2));
+                var n = Locations.Contains((c.Item1, c.Item2 - 1));
+                var se = Locations.Contains((c.Item1 + 1, c.Item2 + 1));
+                var sw = Locations.Contains((c.Item1 - 1, c.Item2 + 1));
+                var nw = Locations.Contains((c.Item1 - 1, c.Item2 - 1));
+                var ne = Locations.Contains((c.Item1 + 1, c.Item2 - 1));
 
-                // Find neighbors
-                var hasRight = Locations.Any(l => l.Item1 == current.Item1 + 1 && l.Item2 == current.Item2);
-                var hasDown = Locations.Any(l => l.Item1 == current.Item1 && l.Item2 == current.Item2 + 1);
-                var hasLeft = Locations.Any(l => l.Item1 == current.Item1 - 1 && l.Item2 == current.Item2);
-                var hasUp = Locations.Any(l => l.Item1 == current.Item1 && l.Item2 == current.Item2 - 1);
-
-                var wallOnLeft = direction switch
+                if ((e && s && !se) ||
+                    (!e && !s) ||
+                    (se && e && !s) ||
+                    (se && !e && s))
                 {
-                    Direction.Right => !hasUp,
-                    Direction.Down => !hasRight,
-                    Direction.Left => !hasDown,
-                    Direction.Up => !hasLeft
-                };
-
-                if (!wallOnLeft)
-                {
-                    direction = direction.RotateLeft();
-                    current = current.Go(direction);
-                    sides++;
-                    continue;
+                    cornerLocations.Add((c.Item1 + 1, c.Item2 + 1));
+                    if (se && !e & !s)
+                        doubleCounted.Add((c.Item1 + 1, c.Item2 + 1));
                 }
 
-                var wallAhead = direction switch
+                if ((w && s && !sw) ||
+                    (!w && !s) ||
+                    (sw && w && !s) ||
+                    (sw && !w && s))
                 {
-                    Direction.Right => !hasRight,
-                    Direction.Down => !hasDown,
-                    Direction.Left => !hasLeft,
-                    Direction.Up => !hasUp
-                };
-                if (!wallAhead)
-                {
-                    current = current.Go(direction);
+                    cornerLocations.Add((c.Item1, c.Item2 + 1));
+                    if (sw && !w & !s)
+                        doubleCounted.Add((c.Item1, c.Item2 + 1));
                 }
-                else
+
+                if ((w && n && !nw) ||
+                    (!w && !n) ||
+                    (nw && w && !n) ||
+                    (nw && !w && n))
                 {
-                    direction = direction.RotateRight();
-                    sides++;
+                    cornerLocations.Add((c.Item1, c.Item2));
+                    if (nw && !w & !n)
+                        doubleCounted.Add((c.Item1, c.Item2));
                 }
-                isBackAtStart = current == initial && direction == Direction.Right;
-            } while (!isBackAtStart);
-            if (Identifier == 'A')
-                Console.WriteLine($"{Identifier} region has {sides} sides");
-            return sides;
-            // 799676 is too low
-            // Does not take into account HOLES!
+
+                if ((e && n && !ne) ||
+                    (!e && !n) ||
+                    (ne && e && !n) ||
+                    (ne && !e && n))
+                {
+                    cornerLocations.Add((c.Item1 + 1, c.Item2));
+                    if (ne && !e & !n)
+                        doubleCounted.Add((c.Item1 + 1, c.Item2));
+                }
+            }
+
+            return cornerLocations.Count + doubleCounted.Count;
         }
-
-        public override string ToString() => $"{Identifier} of size {Locations.Count}";
     }
 }
