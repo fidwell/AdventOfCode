@@ -5,8 +5,8 @@ namespace AdventOfCode.Solvers._2024;
 
 public class Puzzle12Solver : IPuzzleSolver
 {
-    public string SolvePartOne(string input) => Solve(input, (r, m) => r.Price1(m));
-    public string SolvePartTwo(string input) => Solve(input, (r, m) => r.Price2(m));
+    public string SolvePartOne(string input) => Solve(input, (r, m) => r.Area * r.Perimeter(m));
+    public string SolvePartTwo(string input) => Solve(input, (r, _) => r.Area  * r.CornerCount());
 
     private static string Solve(string input, Func<Region, CharacterMatrix, int> priceFunc)
     {
@@ -33,8 +33,6 @@ public class Puzzle12Solver : IPuzzleSolver
         public List<(int, int)> Locations { get; } = locations;
 
         public int Area => Locations.Count;
-        public int Price1(CharacterMatrix map) => Area * Perimeter(map);
-        public int Price2(CharacterMatrix _) => Area * CornerCount();
 
         public int Perimeter(CharacterMatrix map)
         { // can probably be improved
