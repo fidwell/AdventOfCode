@@ -21,11 +21,11 @@ public partial class Puzzle16Solver : IPuzzleSolver
 
     public string SolvePartOne(string input) => input.SplitByNewline()
         .Select(MapAunt)
-        .Single(a => IsExactMatch(a.Item2)).Item1.ToString();
+        .Single(a => IsMatch(a.Item2, false)).Item1.ToString();
 
     public string SolvePartTwo(string input) => input.SplitByNewline()
         .Select(MapAunt)
-        .Single(a => IsRangedMatch(a.Item2)).Item1.ToString();
+        .Single(a => IsMatch(a.Item2, true)).Item1.ToString();
 
     private static (int, Dictionary<string, int>) MapAunt(string input)
     {
@@ -43,29 +43,19 @@ public partial class Puzzle16Solver : IPuzzleSolver
         return (id, result);
     }
 
-    private static bool IsExactMatch(Dictionary<string, int> aunt)
-    {
-        foreach (var key in aunt.Keys)
-        {
-            if (Analysis[key] != aunt[key])
-                return false;
-        }
-        return true;
-    }
-
-    private static bool IsRangedMatch(Dictionary<string, int> aunt)
+    private static bool IsMatch(Dictionary<string, int> aunt, bool isRangedMatch)
     {
         foreach (var key in aunt.Keys)
         {
             switch (key)
             {
-                case "cats":
-                case "trees":
+                case "cats" when isRangedMatch:
+                case "trees" when isRangedMatch:
                     if (aunt[key] <= Analysis[key])
                         return false;
                     break;
-                case "pomeranians":
-                case "goldfish":
+                case "pomeranians" when isRangedMatch:
+                case "goldfish" when isRangedMatch:
                     if (aunt[key] >= Analysis[key])
                         return false;
                     break;
