@@ -53,7 +53,7 @@ public class Puzzle12Solver : IPuzzleSolver
 
         public int Area => Locations.Count;
         public int Price1(CharacterMatrix map) => Area * Perimeter(map);
-        public int Price2(CharacterMatrix map) => Area * SideCount();
+        public int Price2(CharacterMatrix _) => Area * SideCount();
 
         public int Perimeter(CharacterMatrix map)
         { // can probably be improved
@@ -75,24 +75,16 @@ public class Puzzle12Solver : IPuzzleSolver
 
         public int SideCount()
         {
-            // Try to use the wall-follower maze algorithm.
-            // It doesn't work. The visited hash set is supposed
-            // to keep the algorithm from backtracking, but
-            // it also prevents following a single-tile-wide
-            // shape. Needs rethinking.
+            // Use the wall-follower maze algorithm.
 
             var sides = 0;
-            var initial = Locations[0]; // hopefully a top-left corner; if we're wrong, this might not be
+            var initial = Locations[0]; // hopefully a top edge
             var current = initial;
-            var direction = Locations.Any(l => l.Item1 == current.Item1 + 1 && l.Item2 == current.Item2)
-                ? Direction.Right
-                : Direction.Down;
-            var visited = new HashSet<(int, int)>();
+            var direction = Direction.Right;
+            var isBackAtStart = false;
 
             do
             {
-                visited.Add(current);
-
                 if (!Locations.Contains(current))
                     throw new Exception("Went off region");
 
@@ -102,79 +94,45 @@ public class Puzzle12Solver : IPuzzleSolver
                 var hasLeft = Locations.Any(l => l.Item1 == current.Item1 - 1 && l.Item2 == current.Item2);
                 var hasUp = Locations.Any(l => l.Item1 == current.Item1 && l.Item2 == current.Item2 - 1);
 
-                if (direction == Direction.Right)
+                var wallOnLeft = direction switch
                 {
-                    if (hasUp && !visited.Contains(current.Go(Direction.Up)))
-                    {
-                        sides++;
-                        direction = Direction.Up;
-                    }
-                    else if (hasRight)
-                    {
-                        current = current.Go(direction);
-                    }
-                    else
-                    {
-                        sides++;
-                        direction = Direction.Down;
-                    }
-                }
-                else if (direction == Direction.Down)
-                {
-                    if (hasRight && !visited.Contains(current.Go(Direction.Right)))
-                    {
-                        sides++;
-                        direction = Direction.Right;
-                    }
-                    else if (hasDown)
-                    {
-                        current = current.Go(direction);
-                    }
-                    else
-                    {
-                        sides++;
-                        direction = Direction.Left;
-                    }
-                }
-                else if (direction == Direction.Left)
-                {
-                    if (hasDown && !visited.Contains(current.Go(Direction.Down)))
-                    {
-                        sides++;
-                        direction = Direction.Down;
-                    }
-                    else if (hasLeft)
-                    {
-                        current = current.Go(direction);
-                    }
-                    else
-                    {
-                        sides++;
-                        direction = Direction.Up;
-                    }
-                }
-                else if (direction == Direction.Up)
-                {
-                    if (hasLeft && !visited.Contains(current.Go(Direction.Left)))
-                    {
-                        sides++;
-                        direction = Direction.Left;
-                    }
-                    else if (hasUp)
-                    {
-                        current = current.Go(direction);
-                    }
-                    else
-                    {
-                        sides++;
-                        direction = Direction.Right;
-                    }
-                }
-            } while (initial != current);
+                    Direction.Right => !hasUp,
+                    Direction.Down => !hasRight,
+                    Direction.Left => !hasDown,
+                    Direction.Up => !hasLeft
+                };
 
-            sides++;
-            Console.WriteLine($"{Identifier} region has {sides} sides");
+                if (!wallOnLeft)
+                {
+                    direction = direction.RotateLeft();
+                    current = current.Go(direction);
+                    sides++;
+                    continue;
+                }
+
+                var wallAhead = direction switch
+                {
+                    Direction.Right => !hasRight,
+                    Direction.Down => !hasDown,
+                    Direction.Left => !hasLeft,
+                    Direction.Up => !hasUp
+                };
+                if (!wallAhead)
+                {
+                    current = current.Go(direction);
+                }
+                else
+                {
+                    direction = direction.RotateRight();
+                    sides++;
+                }
+                isBackAtStart = current == initial && direction == Direction.Right;
+            } while (!isBackAtStart);
+            if (Identifier == 'A')
+                Console.WriteLine($"{Identifier} region has {sides} sides");
             return sides;
+            // 799676 is too low
+            // Does not take into account HOLES!
         }
 
         public override string ToString() => $"{Identifier} of size {Locations.Count}";

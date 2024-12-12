@@ -61,4 +61,14 @@ public static class DirectionExtensions
             Direction.Up => Direction.Right,
             _ => Direction.Undefined
         };
+
+    public static Direction RotateLeft(this Direction input) =>
+        input switch
+        {
+            Direction.Right => Direction.Up,
+            Direction.Down => Direction.Right,
+            Direction.Left => Direction.Down,
+            Direction.Up => Direction.Left,
+            _ => Direction.Undefined
+        };
 }
