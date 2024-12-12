@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -18,31 +19,12 @@ public class Puzzle12Solver : IPuzzleSolver
         while (coordsToRegionize.Count != 0)
         {
             var start = coordsToRegionize[0];
-            var identifier = map.CharAt(start);
-            var coords = new List<(int, int)>();
-            FloodFill(map, identifier, start, coords);
-            plots.Add(new Region(identifier, coords));
+            var coords = TileMath.FloodFill(map, start);
+            plots.Add(new Region(map.CharAt(coords[0]), coords));
             coordsToRegionize.RemoveAll(coords.Contains);
         }
 
         return plots.Sum(p => priceFunc(p, map)).ToString();
-    }
-
-    private static void FloodFill(CharacterMatrix map, char targetChar, (int, int) start, List<(int, int)> result)
-    {
-        var queue = new Queue<(int, int)>();
-        queue.Enqueue(start);
-
-        while (queue.Count != 0)
-        {
-            var coord = queue.Dequeue();
-            if (!result.Contains(coord))
-            {
-                result.Add(coord);
-                foreach (var neighbor in map.CoordinatesOfNeighbors(coord, allEight: false).Where(n => map.CharAt(n) == targetChar))
-                    queue.Enqueue(neighbor);
-            }
-        }
     }
 
     private class Region(char identifier, List<(int, int)> locations)
