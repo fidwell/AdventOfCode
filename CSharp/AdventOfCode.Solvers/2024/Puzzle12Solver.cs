@@ -74,9 +74,8 @@ public class Puzzle12Solver : IPuzzleSolver
 
         public int CornerCount()
         {
-            // a "corner" being at the top-left of a coordinate
-            var cornerLocations = new HashSet<(int, int)>();
-            var doubleCounted = new HashSet<(int, int)>();
+            var sum = 0;
+
             foreach (var c in Locations)
             {
                 var e = Locations.Contains((c.Item1 + 1, c.Item2));
@@ -88,48 +87,20 @@ public class Puzzle12Solver : IPuzzleSolver
                 var nw = Locations.Contains((c.Item1 - 1, c.Item2 - 1));
                 var ne = Locations.Contains((c.Item1 + 1, c.Item2 - 1));
 
-                if ((e && s && !se) ||
-                    (!e && !s) ||
-                    (se && e && !s) ||
-                    (se && !e && s))
-                {
-                    cornerLocations.Add((c.Item1 + 1, c.Item2 + 1));
-                    if (se && !e & !s)
-                        doubleCounted.Add((c.Item1 + 1, c.Item2 + 1));
-                }
+                if (!e && !n || e && n && !ne)
+                    sum++;
 
-                if ((w && s && !sw) ||
-                    (!w && !s) ||
-                    (sw && w && !s) ||
-                    (sw && !w && s))
-                {
-                    cornerLocations.Add((c.Item1, c.Item2 + 1));
-                    if (sw && !w & !s)
-                        doubleCounted.Add((c.Item1, c.Item2 + 1));
-                }
+                if (!e && !s || e && s && !se)
+                    sum++;
 
-                if ((w && n && !nw) ||
-                    (!w && !n) ||
-                    (nw && w && !n) ||
-                    (nw && !w && n))
-                {
-                    cornerLocations.Add((c.Item1, c.Item2));
-                    if (nw && !w & !n)
-                        doubleCounted.Add((c.Item1, c.Item2));
-                }
+                if (!w && !s || w && s && !sw)
+                    sum++;
 
-                if ((e && n && !ne) ||
-                    (!e && !n) ||
-                    (ne && e && !n) ||
-                    (ne && !e && n))
-                {
-                    cornerLocations.Add((c.Item1 + 1, c.Item2));
-                    if (ne && !e & !n)
-                        doubleCounted.Add((c.Item1 + 1, c.Item2));
-                }
+                if (!w && !n || w && n && !nw)
+                    sum++;
             }
 
-            return cornerLocations.Count + doubleCounted.Count;
+            return sum;
         }
     }
 }
