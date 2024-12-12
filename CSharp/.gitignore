@@ -11,3 +11,6 @@
 
 # Input files
 **/Inputs/*
+
+# Launch settings for console app (contains session key)
+launchSettings.json
