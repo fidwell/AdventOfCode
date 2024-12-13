@@ -4,7 +4,7 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        ConsoleWriter.Write(" --- Advent of Code utility helper --- ", ConsoleColor.Yellow);
+        ConsoleWriter.Write(" ** Advent of Code utility helper ** ", ConsoleColor.Yellow);
         await Run(args);
 
         Console.WriteLine($"{Environment.NewLine}Press any key to close this window . . .");
@@ -44,6 +44,15 @@ internal class Program
                 return;
             case "download-year":
                 await DownloadYear(session, year);
+                break;
+            case "benchmark":
+                if (!year.HasValue)
+                {
+                    ConsoleWriter.Error("Year not provided.");
+                    break;
+                }
+
+                Benchmarker.Run(year.Value);
                 break;
             default:
                 ConsoleWriter.Error("Invalid program argument.");

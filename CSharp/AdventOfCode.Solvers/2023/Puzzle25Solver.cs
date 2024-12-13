@@ -24,7 +24,7 @@ public class Puzzle25Solver : IPuzzleSolver
             : CheeseIt(graph).ToString();
     }
 
-    public string SolvePartTwo(string input) => throw new NotImplementedException();
+    public string SolvePartTwo(string input) => string.Empty;
 
     private static int BruteForceIt(Graph graph)
     {
