@@ -17,17 +17,17 @@ public partial class Puzzle13Solver : IPuzzleSolver
 
         for (var i = 0; i < lines.Length; i += 3)
         {
-            var buttonA = ButtonPattern().Match(lines[i]);
-            var buttonAX = int.Parse(buttonA.Groups[1].Value);
-            var buttonAY = int.Parse(buttonA.Groups[2].Value);
+            var buttonA = DigitPattern().Matches(lines[i]);
+            var buttonAX = int.Parse(buttonA[0].Value);
+            var buttonAY = int.Parse(buttonA[1].Value);
 
-            var buttonB = ButtonPattern().Match(lines[i + 1]);
-            var buttonBX = int.Parse(buttonB.Groups[1].Value);
-            var buttonBY = int.Parse(buttonB.Groups[2].Value);
+            var buttonB = DigitPattern().Matches(lines[i + 1]);
+            var buttonBX = int.Parse(buttonB[0].Value);
+            var buttonBY = int.Parse(buttonB[1].Value);
 
-            var prize = PrizePatern().Match(lines[i + 2]);
-            double prizeX = ulong.Parse(prize.Groups[1].Value) + (isBig ? conversionError : 0);
-            double prizeY = ulong.Parse(prize.Groups[2].Value) + (isBig ? conversionError : 0);
+            var prize = DigitPattern().Matches(lines[i + 2]);
+            double prizeX = ulong.Parse(prize[0].Value) + (isBig ? conversionError : 0);
+            double prizeY = ulong.Parse(prize[1].Value) + (isBig ? conversionError : 0);
 
             // buttonAX * x + buttonBX * x = prizeX
             // buttonAY * y + buttonBY * y = prizeY
@@ -42,9 +42,6 @@ public partial class Puzzle13Solver : IPuzzleSolver
         return total.ToString();
     }
 
-    [GeneratedRegex(@"Button \w: X\+(\d+), Y\+(\d+)")]
-    private static partial Regex ButtonPattern();
-
-    [GeneratedRegex(@"Prize: X=(\d+), Y=(\d+)")]
-    private static partial Regex PrizePatern();
+    [GeneratedRegex(@"(\d+)")]
+    private static partial Regex DigitPattern();
 }
