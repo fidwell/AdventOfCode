@@ -13,4 +13,9 @@ public static class MathExtensions
             }
         }
     }
+
+    public static bool IsWholeNumber(this double x) => x - Math.Floor(x) <= double.Epsilon;
+
+    public static (double, double) SolveSystemOfEquations(double a1, double a2, double b1, double b2, double c1, double c2)
+        => ((c1 * b2 - b1 * c2) / (a1 * b2 - b1 * a2), (a1 * c2 - c1 * a2) / (a1 * b2 - b1 * a2));
 }
