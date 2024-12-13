@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2015;
 
@@ -29,12 +28,12 @@ public partial class Puzzle14Solver : IPuzzleSolver
     private static IEnumerable<Reindeer> GetReindeer(string input) =>
         input.SplitByNewline().Select(l =>
         {
-            var match = Definition().Match(l);
+            var numbers = Regexes.Integer().Matches(l);
             return new Reindeer
             {
-                Speed = int.Parse(match.Groups[2].Value),
-                FlightDuration = int.Parse(match.Groups[3].Value),
-                RestDuration = int.Parse(match.Groups[4].Value)
+                Speed = int.Parse(numbers[0].Value),
+                FlightDuration = int.Parse(numbers[1].Value),
+                RestDuration = int.Parse(numbers[2].Value)
             };
         });
 
@@ -62,7 +61,4 @@ public partial class Puzzle14Solver : IPuzzleSolver
             return distanceOfFullFlights + remainder * Speed;
         }
     }
-
-    [GeneratedRegex(@"(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.")]
-    private static partial Regex Definition();
 }

@@ -24,7 +24,7 @@ public partial class Puzzle05Solver : IPuzzleSolver
         Vowels().Matches(input).Count >= 3;
 
     private static bool HasAtLeastOneDouble(string input) =>
-        DoubleLetter().IsMatch(input);
+        Regexes.DoubleCharacter().IsMatch(input);
 
     private static bool HasAtLeastTwoIdenticalPairs(string input)
     {
@@ -62,9 +62,6 @@ public partial class Puzzle05Solver : IPuzzleSolver
 
     [GeneratedRegex(@"(a|e|i|o|u)")]
     private static partial Regex Vowels();
-
-    [GeneratedRegex(@"(\w)\1")]
-    private static partial Regex DoubleLetter();
 
     [GeneratedRegex(@"(ab|cd|pq|xy)")]
     private static partial Regex ForbiddenStrings();

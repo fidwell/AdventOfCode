@@ -1,9 +1,8 @@
 ﻿using AdventOfCode.Core.StringUtilities;
-using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
-public partial class Puzzle06Solver : IPuzzleSolver
+public class Puzzle06Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input) => Solve(input,
         x => 1,
@@ -27,7 +26,7 @@ public partial class Puzzle06Solver : IPuzzleSolver
             if (instruction.Length == 0)
                 continue;
 
-            var coordinates = Digit().Matches(instruction)
+            var coordinates = Regexes.Integer().Matches(instruction)
                 .Select(m => int.Parse(m.Value)).ToArray();
             var x1 = coordinates[0];
             var y1 = coordinates[1];
@@ -67,7 +66,4 @@ public partial class Puzzle06Solver : IPuzzleSolver
         }
         return totalBrightness.ToString();
     }
-
-    [GeneratedRegex(@"\d+")]
-    private static partial Regex Digit();
 }

@@ -1,8 +1,8 @@
-﻿using System.Text.RegularExpressions;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2015;
 
-public partial class Puzzle11Solver : IPuzzleSolver
+public class Puzzle11Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
     {
@@ -21,7 +21,7 @@ public partial class Puzzle11Solver : IPuzzleSolver
         !input.Contains('i') &&
         !input.Contains('o') &&
         !input.Contains('l') &&
-        DoubleCharacter().Matches(input).Count >= 2;
+        Regexes.DoubleCharacter().Matches(input).Count >= 2;
 
     private static bool HasSequence(string input)
     {
@@ -50,7 +50,4 @@ public partial class Puzzle11Solver : IPuzzleSolver
         }
         return new string(asBytes);
     }
-
-    [GeneratedRegex(@"(\w)\1")]
-    private static partial Regex DoubleCharacter();
 }
