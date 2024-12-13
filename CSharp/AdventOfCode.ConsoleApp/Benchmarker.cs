@@ -21,8 +21,8 @@ internal static class Benchmarker
             return;
         }
 
-        ConsoleWriter.Write("┌─────┬──────┬─────────┬─────────────┬─────────────┬─────────────┬─────────────┐");
-        ConsoleWriter.Write("│ Day │ Part │ Samples │ Mean time   │ Mode time   │ Min time    │ Max time    │");
+        ConsoleWriter.Write("┌─────┬──────┬─────────────┬─────────────┬─────────────┬─────────────┐");
+        ConsoleWriter.Write("│ Day │ Part │ Mean time   │ Mode time   │ Min time    │ Max time    │");
 
         var aggregates = new List<Aggregate>();
 
@@ -31,7 +31,7 @@ internal static class Benchmarker
             if (solver is null)
                 continue;
 
-            ConsoleWriter.Write("├─────┼──────┼─────────┼─────────────┼─────────────┼─────────────┼─────────────┤");
+            ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
             var dayNum = int.Parse(Regexes.Integer().Match(solver.GetType().Name).Value);
             var input = DataReader.GetData(year, dayNum, 0, false);
             var partOne = AggregateSolves(dayNum, 1, () => solver.SolvePartOne(input));
@@ -41,7 +41,7 @@ internal static class Benchmarker
             WritePartLine(dayNum, 1, partOne);
             WritePartLine(dayNum, 2, partTwo);
         }
-        ConsoleWriter.Write("└─────┴──────┴─────────┴─────────────┴─────────────┴─────────────┴─────────────┘");
+        ConsoleWriter.Write("└─────┴──────┴─────────────┴─────────────┴─────────────┴─────────────┘");
 
         Console.WriteLine();
         ConsoleWriter.Write("┌─────────────────┬─────────────┬─────────────┬─────────────┬─────────────┐");
@@ -130,8 +130,7 @@ internal static class Benchmarker
     private static void WritePartLine(int day, int part, Aggregate aggregate)
     {
         var dayStr = day.ToString().PadLeft(2, ' ');
-        var samplesStr = aggregate.Count.ToString().PadLeft(7, ' ');
-        Console.Write($"│  {dayStr} │    {part} │ {samplesStr} │ ");
+        Console.Write($"│  {dayStr} │    {part} │ ");
         WriteTime(aggregate.Mean);
         Console.Write(" │ ");
         WriteTime(aggregate.Mode);
@@ -169,8 +168,11 @@ internal static class Benchmarker
         if (duration.TotalSeconds > 10)
             return ConsoleColor.DarkRed;
 
-        if (duration.TotalSeconds > 1)
+        if (duration.TotalSeconds > 5)
             return ConsoleColor.Red;
+
+        if (duration.TotalSeconds > 1)
+            return ConsoleColor.DarkYellow;
 
         if (duration.TotalMilliseconds > 500)
             return ConsoleColor.Yellow;
@@ -181,7 +183,10 @@ internal static class Benchmarker
         if (duration.TotalMilliseconds > 1)
                 return ConsoleColor.DarkGreen;
 
-        return ConsoleColor.Blue;
+        if (duration.TotalMicroseconds > 500)
+            return ConsoleColor.Blue;
+
+        return ConsoleColor.DarkBlue;
     }
 
     private record Aggregate(int Day, int Part, int Count, TimeSpan Mean, TimeSpan Mode, TimeSpan Min, TimeSpan Max);
