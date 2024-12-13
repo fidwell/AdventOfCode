@@ -4,9 +4,51 @@ public class Puzzle09Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
     {
-        var memory = LoadMemory1(input);
-        Defrag1(memory);
-        return Checksum1(memory).ToString();
+        input = input.ReplaceLineEndings("");
+        var idFromLeft = input.Length / 2;
+        var amountLeftOnLeft = input[^1] - '0';
+        ulong total = 0;
+        var block = 0;
+        var allDone = false;
+
+        for (var i = 0; i < input.Length && !allDone; i++)
+        {
+            var blockLength = input[i] - '0';
+            for (var j = 0; j < blockLength; j++)
+            {
+                int idHere;
+                if (i % 2 == 0)
+                {
+                    // Calculate full block
+                    idHere = i / 2;
+
+                    if (idHere == idFromLeft)
+                    {
+                        // Last block
+                        blockLength = amountLeftOnLeft;
+                        allDone = true;
+                    }
+                }
+                else
+                {
+                    // Calculate empty block
+                    idHere = idFromLeft;
+                    amountLeftOnLeft--;
+                    if (amountLeftOnLeft == 0)
+                    {
+                        idFromLeft--;
+                        amountLeftOnLeft = input[idFromLeft * 2] - '0';
+
+                        if (idFromLeft == i)
+                            break;
+                    }
+                }
+                total += (ulong)((block + j) * idHere);
+            }
+            block += blockLength;
+        }
+
+        return total.ToString();
     }
 
     public string SolvePartTwo(string input)
@@ -14,71 +56,6 @@ public class Puzzle09Solver : IPuzzleSolver
         var memory = LoadMemory2(input);
         memory = Defrag2(memory);
         return Checksum2(memory).ToString();
-    }
-
-    private static int[] LoadMemory1(string input)
-    {
-        var blockSizes = input.ToCharArray().Select(c => c - '0').ToArray();
-        var totalLength = blockSizes.Sum();
-        var memory = new int[totalLength + 100]; // why do we need this buffer?
-
-        // initialize memory
-        for (var i = 0; i < memory.Length; i++)
-        {
-            memory[i] = -1;
-        }
-
-        // load memory
-        var currentBlockId = 0;
-        for (var i = 0; i < memory.Length;)
-        {
-            if (currentBlockId == blockSizes.Length)
-                break;
-
-            var currentBlockSize = blockSizes[currentBlockId];
-            for (var j = 0; j < currentBlockSize; j++)
-            {
-                if (currentBlockId % 2 == 0)
-                    memory[i] = currentBlockId / 2;
-
-                i++;
-            }
-
-            currentBlockId++;
-        }
-
-        return memory;
-    }
-
-    private static void Defrag1(int[] memory)
-    {
-        for (var i = memory.Length - 1; i > 0; i--)
-        {
-            var firstFree = Array.IndexOf(memory, -1);
-
-            // No free memory
-            if (firstFree == -1) break;
-
-            // Done defragging
-            if (firstFree >= i) break;
-
-            if (memory[i] == -1)
-                continue;
-
-            memory[firstFree] = memory[i];
-            memory[i] = -1;
-        }
-    }
-
-    private static ulong Checksum1(int[] memory)
-    {
-        ulong checksum = 0;
-        for (var i = memory.Length - 1; i > 0; i--)
-        {
-            if (memory[i] >= 0)
-                checksum += (ulong)(i * memory[i]);
-        }
-        return checksum;
     }
 
     private static List<MemChunk> LoadMemory2(string input) =>
