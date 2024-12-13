@@ -4,7 +4,7 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        ConsoleWriter.Write(" --- Advent of Code utility helper --- ", ConsoleColor.Yellow);
+        ConsoleWriter.Write(" ** Advent of Code utility helper ** ", ConsoleColor.Yellow);
         await Run(args);
 
         Console.WriteLine($"{Environment.NewLine}Press any key to close this window . . .");
