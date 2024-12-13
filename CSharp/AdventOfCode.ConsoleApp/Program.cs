@@ -45,6 +45,15 @@ internal class Program
             case "download-year":
                 await DownloadYear(session, year);
                 break;
+            case "benchmark":
+                if (!year.HasValue)
+                {
+                    ConsoleWriter.Error("Year not provided.");
+                    break;
+                }
+
+                Benchmarker.Run(year.Value);
+                break;
             default:
                 ConsoleWriter.Error("Invalid program argument.");
                 break;
