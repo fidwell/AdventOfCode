@@ -9,7 +9,7 @@ public class Puzzle14Solver : IPuzzleSolver
     const int AreaHeight = 103;
 
     // Disabled for benchmarking.
-    // Toggle on if you want to see the output! 
+    // Toggle on if you want to see the output!
     const bool ShouldPrint = false;
 
     public string SolvePartOne(string input)
@@ -34,36 +34,32 @@ public class Puzzle14Solver : IPuzzleSolver
     // to just ticks that fit the pattern (in my case,
     // (t + 48) % 101 == 0).
     //
-    // Another way (which works but isn't implied in the
-    // puzzle) is to check to see if all robots don't
-    // overlap. I didn't solve it that way originally,
-    // but I've done it here anyway just so show
-    // something programmatic.
+    // Another way is to consider that if the robots form
+    // a picture, they'll likely be densely clustered, as
+    // opposed to pseudo-randomly spread about the area.
+    // So, find the time at which the variance of their
+    // locations is "unnaturally" low.
     public string SolvePartTwo(string input)
     {
         var robots = SetUpRobots(input);
+        var startingVariance = Variance(robots);
 
-        // All robots will be back in their
-        // original location after some number
-        // of iterations.
-        var maximumAnswer = AreaHeight * AreaWidth;
-
-        var ticks = 0;
-        while (ticks < maximumAnswer)
+        for (var tick = 1; tick < AreaHeight * AreaWidth; tick++)
         {
             foreach (var robot in robots)
                 robot.Move(AreaWidth, AreaHeight, 1);
-            ticks++;
-            if (robots.Select(r => (r.X, r.Y)).Distinct().Count() == robots.Count)
+
+            if (Variance(robots) < startingVariance / 2)
             {
                 if (ShouldPrint)
+                {
                     Print(robots);
-
-                return ticks.ToString();
+                }
+                return tick.ToString();
             }
         }
 
-        throw new Exception("No pattern found");
+        throw new Exception("Couldn't find a solution");
     }
 
     private static List<Robot> SetUpRobots(string input) =>
@@ -72,6 +68,17 @@ public class Puzzle14Solver : IPuzzleSolver
             var matches = Regexes.Integer().Matches(l).Select(m => int.Parse(m.Value)).ToArray();
             return new Robot(matches[0], matches[1], matches[2], matches[3]);
         }).ToList();
+
+    private static double Variance(IEnumerable<Robot> robots)
+    {
+        var xs = robots.Select(r => r.X);
+        var xMean = xs.Average();
+        var xVariance = xs.Average(x => (x - xMean) * (x - xMean));
+        var ys = robots.Select(r => r.Y);
+        var yMean = ys.Average();
+        var yVariance = ys.Average(y => (y - yMean) * (y - yMean));
+        return xVariance + yVariance;
+    }
 
     private static void Print(IEnumerable<Robot> robots)
     {
@@ -83,12 +90,13 @@ public class Puzzle14Solver : IPuzzleSolver
             }
             Console.WriteLine();
         }
+        Console.WriteLine();
     }
 
-    private class Robot(int x, int y, int Vx, int Vy)
+    private class Robot(int x0, int y0, int Vx, int Vy)
     {
-        public int X { get; private set; } = x;
-        public int Y { get; private set; } = y;
+        public int X { get; private set; } = x0;
+        public int Y { get; private set; } = y0;
 
         public bool IsAt(int x, int y) => X == x && Y == y;
 
