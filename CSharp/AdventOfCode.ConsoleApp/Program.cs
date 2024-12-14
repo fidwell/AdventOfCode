@@ -46,6 +46,7 @@ internal class Program
                 await DownloadYear(session, year);
                 break;
             case "benchmark":
+            case "benchmarks":
                 if (!year.HasValue)
                 {
                     ConsoleWriter.Error("Year not provided.");
