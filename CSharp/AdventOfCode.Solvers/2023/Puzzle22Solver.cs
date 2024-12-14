@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using AdventOfCode.Solvers;
+﻿using AdventOfCode.Core.StringUtilities;
+using System.Diagnostics;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle22Solver : IPuzzleSolver
 {
@@ -17,9 +17,9 @@ public class Puzzle22Solver : IPuzzleSolver
         return bricks.Sum(b => bricks.Count - graph.IfRemoveNode(b.Id).Count(b => b != -1) - 1).ToString();
     }
 
-    private (List<Brick>, Graph) Initialize(string input)
+    private static (List<Brick>, Graph) Initialize(string input)
     {
-        var bricks = input.Split(Environment.NewLine)
+        var bricks = input.SplitByNewline()
             .Select((l, i) => new Brick(l, i))
             .OrderBy(b => b.Point1.Z)
             .ToList();

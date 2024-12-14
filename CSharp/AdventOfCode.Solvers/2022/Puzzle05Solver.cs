@@ -1,6 +1,6 @@
-﻿using AdventOfCode.Solvers;
+﻿using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2022;
+namespace AdventOfCode.Solvers._2022;
 
 public class Puzzle05Solver : IPuzzleSolver
 {
@@ -39,9 +39,9 @@ public class Puzzle05Solver : IPuzzleSolver
         return new string(stacks.Select(s => s.Pop()).ToArray());
     }
 
-    private (List<Stack<char>>, IEnumerable<Move>) SetUp(string input)
+    private static (List<Stack<char>>, IEnumerable<Move>) SetUp(string input)
     {
-        var lines = input.Split(Environment.NewLine).ToArray();
+        var lines = input.SplitByNewline(StringSplitOptions.None);
 
         var moveStartLine = lines.TakeWhile(l => !l.StartsWith("move")).Count();
         var stackNumberLine = moveStartLine - 2;

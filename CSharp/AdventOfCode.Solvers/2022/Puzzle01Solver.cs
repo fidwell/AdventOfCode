@@ -1,22 +1,22 @@
 ﻿using AdventOfCode.Core.ArrayUtilities;
-using AdventOfCode.Solvers;
+using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2022;
+namespace AdventOfCode.Solvers._2022;
 
 public class Puzzle01Solver() : IPuzzleSolver
 {
     public string SolvePartOne(string input) =>
         input
-            .Split(Environment.NewLine)
+            .SplitByNewline(StringSplitOptions.None)
             .Chunk()
-            .Max(g => g.Sum(i => int.Parse(i)))
+            .Max(g => g.Sum(int.Parse))
             .ToString();
 
     public string SolvePartTwo(string input) =>
         input
-            .Split(Environment.NewLine)
+            .SplitByNewline(StringSplitOptions.None)
             .Chunk()
-            .Select(g => g.Sum(i => int.Parse(i)))
+            .Select(g => g.Sum(int.Parse))
             .OrderByDescending(s => s)
             .Take(3)
             .Sum()

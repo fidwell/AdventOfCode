@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
-using AdventOfCode.Solvers;
+using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle01Solver() : IPuzzleSolver
 {
@@ -10,7 +10,7 @@ public class Puzzle01Solver() : IPuzzleSolver
     public string SolvePartTwo(string input) => Solve(input, true);
 
     private static string Solve(string input, bool allowWords)
-        => input.Split(Environment.NewLine)
+        => input.SplitByNewline()
             .Where(l => !string.IsNullOrWhiteSpace(l))
             .Select(l => GetFirstAndLastDigits(l, allowWords))
             .Select(pair => pair.Item1 * 10 + pair.Item2)

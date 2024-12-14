@@ -1,9 +1,8 @@
 ﻿using AdventOfCode.Core.ArrayUtilities;
 using AdventOfCode.Core.Ranges;
 using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle05Solver : IPuzzleSolver
 {
@@ -22,8 +21,8 @@ public class Puzzle05Solver : IPuzzleSolver
 
         public Almanac(string input, bool isPartOne)
         {
-            var data = input.Split(Environment.NewLine);
-            var seedData = data[0].Split(": ")[1].SplitAndTrim(" ").Select(long.Parse).ToArray();
+            var data = input.SplitByNewline(StringSplitOptions.None);
+            var seedData = data[0].Split(": ")[1].SplitAndTrim(' ').Select(long.Parse).ToArray();
             _seedRanges = isPartOne
                 ? seedData.Select(s => new RangeLong(s, 1))
                 : seedData
@@ -123,7 +122,7 @@ public class Puzzle05Solver : IPuzzleSolver
                 }.Where(r => r.Length > 0);
         }
 
-        private RangeLong AsRange => new (SourceRangeStart, RangeLength);
+        private RangeLong AsRange => new(SourceRangeStart, RangeLength);
 
         public override string ToString() => $"[{SourceRangeStart},{SourceRangeEnd}) > [{DestinationRangeStart},{DestinationRangeStart + RangeLength}) ({RangeLength}); {Transformation}";
     }

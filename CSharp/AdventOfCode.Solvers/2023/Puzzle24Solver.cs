@@ -1,20 +1,25 @@
 ﻿using AdventOfCode.Core.MathUtilities;
-using AdventOfCode.Solvers;
+using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public partial class Puzzle24Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
     {
-        var lines = input.Split(Environment.NewLine);
-        var testArea = lines.First().Split(" ").Select(long.Parse);
-        var testAreaFrom = testArea.First();
-        var testAreaTo = testArea.Last();
+        var lines = input.SplitByNewline();
 
-        var hailstones = lines.Skip(1).Select(l =>
+        long testAreaFrom = 7;
+        long testAreaTo = 27;
+        if (lines[0].Length > 30)
         {
-            var portions = l.Split('@', StringSplitOptions.TrimEntries);
+            testAreaFrom = 200000000000000;
+            testAreaTo = 400000000000000;
+        }
+
+        var hailstones = lines.Select(l =>
+        {
+            var portions = l.SplitAndTrim('@');
             return new Ray3d(new Point3d(portions[0]), new Point3d(portions[1]));
         }).ToList();
 
@@ -32,13 +37,12 @@ public partial class Puzzle24Solver : IPuzzleSolver
 
     public string SolvePartTwo(string input)
     {
-        var lines = input.Split(Environment.NewLine);
+        var lines = input.SplitByNewline();
         var hailstones = lines
-            .Skip(1)
             .Take(3)
             .Select(l =>
             {
-                var portions = l.Split('@', StringSplitOptions.TrimEntries);
+                var portions = l.SplitAndTrim('@');
                 return new Ray3d(new Point3d(portions[0]), new Point3d(portions[1]));
             }).ToList();
 
@@ -47,7 +51,7 @@ public partial class Puzzle24Solver : IPuzzleSolver
         return (stone.Position0.X + stone.Position0.Y + stone.Position0.Z).ToString();
     }
 
-    private (Point3d, Point3d) Solve2(List<Ray3d> hailstones, int velocityRange)
+    private static (Point3d, Point3d) Solve2(List<Ray3d> hailstones, int velocityRange)
     {
         // The rock stands still, and each hailstone's
         // velocity is adjusted by what the rock's

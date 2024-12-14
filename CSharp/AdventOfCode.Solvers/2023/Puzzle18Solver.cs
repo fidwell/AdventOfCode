@@ -1,15 +1,15 @@
 ﻿using AdventOfCode.Core.ArrayUtilities;
-using AdventOfCode.Solvers;
+using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle18Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input) =>
-        Solve(input.Split(Environment.NewLine).Select(l => new Instruction(l, true))).ToString();
+        Solve(input.SplitByNewline().Select(l => new Instruction(l, true))).ToString();
 
     public string SolvePartTwo(string input) =>
-        Solve(input.Split(Environment.NewLine).Select(l => new Instruction(l, false)).ToList()).ToString();
+        Solve(input.SplitByNewline().Select(l => new Instruction(l, false)).ToList()).ToString();
 
     private static long Solve(IEnumerable<Instruction> instructions) =>
         Shoelace(FindVertices(instructions)) + instructions.Sum(i => i.Amount) / 2 + 1;
@@ -26,7 +26,7 @@ public class Puzzle18Solver : IPuzzleSolver
         return vertices;
     }
 
-    private static long Shoelace(IList<(long, long)> vertexes) =>
+    private static long Shoelace(List<(long, long)> vertexes) =>
         Enumerable.Range(0, vertexes.Count)
             .Select(i => Determinant(vertexes[i], vertexes[i == vertexes.Count - 1 ? 0 : i + 1])).Sum() / 2;
 

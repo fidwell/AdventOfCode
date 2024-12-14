@@ -1,7 +1,7 @@
 ﻿using AdventOfCode.Core.MathUtilities;
-using AdventOfCode.Solvers;
+using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle08Solver : IPuzzleSolver
 {
@@ -25,7 +25,7 @@ public class Puzzle08Solver : IPuzzleSolver
 
     private void Init(string input)
     {
-        var data = input.Split(Environment.NewLine);
+        var data = input.SplitByNewline(StringSplitOptions.None);
         _instructions = data[0].ToCharArray();
         _nodes = data.Skip(2).Select(l => new Node(l));
     }

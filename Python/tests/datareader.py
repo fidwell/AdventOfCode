@@ -16,4 +16,4 @@ def read_lines(year: int, puzzle: int, part: int, use_example: bool):
 def get_path(year: int, puzzle: int, part: int, use_example: bool):
     part_str = f"_part{part}" if part > 0 else ""
     example_str = f"{part_str}_example" if use_example else ""
-    return f"tests\\input\\{year}\\puzzle{puzzle:02}{example_str}.txt"
+    return f"..\\input\\{year}\\puzzle{puzzle:02}{example_str}.txt"

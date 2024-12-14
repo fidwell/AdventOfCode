@@ -1,12 +1,12 @@
-﻿using AdventOfCode.Solvers;
+﻿using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle25Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
     {
-        var lines = input.Split(Environment.NewLine);
+        var lines = input.SplitByNewline();
         var edges = new List<(string, string)>();
 
         foreach (var line in lines)
@@ -24,7 +24,7 @@ public class Puzzle25Solver : IPuzzleSolver
             : CheeseIt(graph).ToString();
     }
 
-    public string SolvePartTwo(string input) => throw new NotImplementedException();
+    public string SolvePartTwo(string input) => string.Empty;
 
     private static int BruteForceIt(Graph graph)
     {

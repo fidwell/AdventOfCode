@@ -1,5 +1,5 @@
-﻿using AdventOfCode.Core.ArrayUtilities;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using AdventOfCode.Core.ArrayUtilities;
 
 namespace AdventOfCode.Core.StringUtilities;
 
@@ -10,8 +10,8 @@ public class CharacterMatrix
 {
     private readonly char[,] _data;
 
-    public int Width => _data.GetLength(0);
-    public int Height => _data.GetLength(1);
+    public int Width { get; private set; }
+    public int Height { get; private set; }
 
     /// <summary>
     /// Creates a matrix of characters from a "rectanuglar-shaped" string.
@@ -19,14 +19,15 @@ public class CharacterMatrix
     /// <param name="input">A newline-separated string of input data.</param>
     public CharacterMatrix(string input)
     {
-        var lines = input.Split(Environment.NewLine).ToArray();
-        var lineLength = lines[0].Length;
-        _data = new char[lineLength, lines.Length];
+        var lines = input.SplitByNewline().ToArray();
+        Width = lines[0].Length;
+        Height = lines.Length;
+        _data = new char[Width, Height];
 
-        for (int y = 0; y < lines.Length; y++)
+        for (int y = 0; y < Height; y++)
         {
             var thisLine = lines[y];
-            if (thisLine.Length != lineLength)
+            if (thisLine.Length != Width)
             {
                 throw new ArgumentException("All lines must be the same length.", nameof(input));
             }
@@ -46,27 +47,35 @@ public class CharacterMatrix
 
     /// <summary>
     /// Returns the single character value at a given coordinate.
+    /// If the coordinates are out of bounds, a null value is returned.
     /// </summary>
     /// <param name="x">The x coordinate.</param>
     /// <param name="y">The y coordinate.</param>
-    /// <returns>The character at this position in the matrix.</returns>
-    public char CharAt(int x, int y) => _data[x, y];
+    /// <returns>The character at this position in the matrix,
+    /// or null if the coordinates are out of bounds.</returns>
+    public char CharAt(int x, int y, bool allowOutOfBounds = false)
+    {
+        if (allowOutOfBounds)
+        {
+            while (x < 0) x += Width;
+            while (y < 0) y += Height;
+            while (x >= Width) x -= Width;
+            while (y >= Height) y -= Height;
+            return _data[x, y];
+        }
+
+        return x < 0 || x >= Width || y < 0 || y >= Height
+            ? '\0'
+            : _data[x, y];
+    }
 
     /// <summary>
     /// Returns the single character value at a given coordinate.
     /// </summary>
     /// <param name="coord">The coordinate.</param>
     /// <returns>The character at this position in the matrix.</returns>
-    public char CharAt((int, int) coord)
-    {
-        // Allow wrapping
-        while (coord.Item1 < 0) coord.Item1 += Width;
-        while (coord.Item2 < 0) coord.Item2 += Height;
-        while (coord.Item1 >= Width) coord.Item1 -= Width;
-        while (coord.Item2 >= Height) coord.Item2 -= Height;
-
-        return _data[coord.Item1, coord.Item2];
-    }
+    public char CharAt((int, int) coord, bool allowOutOfBounds = false) =>
+        CharAt(coord.Item1, coord.Item2, allowOutOfBounds);
 
     /// <summary>
     /// Returns a string starting at a given index, of a given length.
@@ -87,6 +96,9 @@ public class CharacterMatrix
     /// <returns>All coordinates that match that character.</returns>
     public IEnumerable<(int, int)> FindAllCharacters(char matchingChar) =>
         AllCoordinates.Where(c => _data[c.Item1, c.Item2] == matchingChar);
+
+    public (int, int) SingleMatch(char matchingChar) =>
+        AllCoordinates.Single(c => matchingChar == _data[c.Item1, c.Item2]);
 
     /// <summary>
     /// Finds "words" in the data that match the specified regular expression.

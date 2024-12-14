@@ -1,7 +1,6 @@
 ﻿using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle12Solver : IPuzzleSolver
 {
@@ -9,14 +8,14 @@ public class Puzzle12Solver : IPuzzleSolver
 
     public string SolvePartOne(string input) =>
         input
-        .Split(Environment.NewLine)
+        .SplitByNewline()
         .Select(l => PossibleArrangementCount(l, 1))
         .Sum()
         .ToString();
 
     public string SolvePartTwo(string input) =>
         input
-        .Split(Environment.NewLine)
+        .SplitByNewline()
         .Select(l => PossibleArrangementCount(l, 5))
         .Sum()
         .ToString();

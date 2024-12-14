@@ -1,15 +1,14 @@
 ﻿using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle06Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input)
     {
-        var data = input.Split(Environment.NewLine);
-        var times = data[0].Split(": ")[1].SplitAndTrim(" ");
-        var records = data[1].Split(": ")[1].SplitAndTrim(" ");
+        var data = input.SplitByNewline();
+        var times = data[0].Split(": ")[1].SplitAndTrim(' ');
+        var records = data[1].Split(": ")[1].SplitAndTrim(' ');
         return times
             .Select((t, i) => SolveRace(int.Parse(t), int.Parse(records[i])))
             .Aggregate((a, b) => a * b)
@@ -18,7 +17,7 @@ public class Puzzle06Solver : IPuzzleSolver
 
     public string SolvePartTwo(string input)
     {
-        var data = input.Split(Environment.NewLine);
+        var data = input.SplitByNewline();
         var time = data[0].Split(": ")[1].Replace(" ", "");
         var record = data[1].Split(": ")[1].Replace(" ", "");
         return SolveRace(long.Parse(time), long.Parse(record)).ToString();

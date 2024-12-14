@@ -1,22 +1,22 @@
-﻿using AdventOfCode.Solvers;
+﻿using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2022;
+namespace AdventOfCode.Solvers._2022;
 
 public class Puzzle02Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input) =>
-        input.Split(Environment.NewLine)
-        .Select(l => new { opp = ToRps(l[0]), me = ToRps(l[2]) })
-        .Select(l => Score(l.me, Decide(l.me, l.opp)))
-        .Sum()
-        .ToString();
-    
+        input.SplitByNewline()
+            .Select(l => new { opp = ToRps(l[0]), me = ToRps(l[2]) })
+            .Select(l => Score(l.me, Decide(l.me, l.opp)))
+            .Sum()
+            .ToString();
+
     public string SolvePartTwo(string input) =>
-        input.Split(Environment.NewLine)
-        .Select(l => new { opp = ToRps(l[0]), outcome = ToOutcome(l[2]) })
-        .Select(l => Score(WhatIPlayed(l.opp, l.outcome), l.outcome))
-        .Sum()
-        .ToString();
+        input.SplitByNewline()
+            .Select(l => new { opp = ToRps(l[0]), outcome = ToOutcome(l[2]) })
+            .Select(l => Score(WhatIPlayed(l.opp, l.outcome), l.outcome))
+            .Sum()
+            .ToString();
 
     private enum RPS { Rock, Paper, Scissors }
     private enum Outcome { Loss, Draw, Win }

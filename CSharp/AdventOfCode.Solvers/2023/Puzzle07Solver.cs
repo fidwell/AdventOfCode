@@ -1,7 +1,7 @@
 ﻿using AdventOfCode.Core.Poker;
-using AdventOfCode.Solvers;
+using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle07Solver : IPuzzleSolver
 {
@@ -10,7 +10,7 @@ public class Puzzle07Solver : IPuzzleSolver
 
     private static string Solve(bool isPartOne, string input)
         => input
-            .Split(Environment.NewLine)
+            .SplitByNewline()
             .Select(l => new InputLine(l, !isPartOne))
             .OrderBy(l => l.Hand)
             .Select((line, ix) => (long)(line.Bid * (ix + 1)))

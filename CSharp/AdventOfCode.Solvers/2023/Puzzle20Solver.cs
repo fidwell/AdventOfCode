@@ -1,11 +1,10 @@
 ﻿using AdventOfCode.Core.MathUtilities;
-using AdventOfCode.Solvers;
+using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle20Solver : IPuzzleSolver
 {
-
     public string SolvePartOne(string input)
     {
         var system = new ModuleSystem(input);
@@ -33,7 +32,7 @@ public class Puzzle20Solver : IPuzzleSolver
 
         public ModuleSystem(string input)
         {
-            Modules = input.Split(Environment.NewLine).Select(Module.Parse).ToList();
+            Modules = input.SplitByNewline().Select(Module.Parse).ToList();
             foreach (var conjunction in Modules.OfType<Conjunction>())
             {
                 conjunction.Initialize(Modules.Where(m => m.Outputs.Contains(conjunction.Name)).Select(m => m.Name));
@@ -112,7 +111,7 @@ public class Puzzle20Solver : IPuzzleSolver
         public static Module Parse(string input)
         {
             var name = input.Split(' ').First().Substring(1);
-            var outputs = input.Substring(input.IndexOf('>') + 2).Split(',', StringSplitOptions.TrimEntries);
+            var outputs = input.Substring(input.IndexOf('>') + 2).SplitAndTrim(',');
 
             return input[0] switch
             {
@@ -179,7 +178,7 @@ public class Puzzle20Solver : IPuzzleSolver
         {
             if (pulse.IsHigh)
             {
-                return Enumerable.Empty<Pulse>();
+                return [];
             }
 
             IsOn = !IsOn;

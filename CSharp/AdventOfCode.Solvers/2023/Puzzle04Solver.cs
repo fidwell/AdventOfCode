@@ -1,7 +1,6 @@
 ﻿using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
 
-namespace AdventOfCode.Core.PuzzleSolvers._2023;
+namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle04Solver : IPuzzleSolver
 {
@@ -20,7 +19,7 @@ public class Puzzle04Solver : IPuzzleSolver
     }
 
     private static IEnumerable<Scratchcard> GetCards(string input)
-        => input.Split(Environment.NewLine).Select(l => new Scratchcard(l));
+        => input.SplitByNewline().Select(l => new Scratchcard(l));
 
     private class Scratchcard
     {
@@ -32,8 +31,8 @@ public class Puzzle04Solver : IPuzzleSolver
         {
             Id = int.Parse(input.Split(": ")[0].Substring("Card ".Length).Trim());
             var numberData = input.Split(": ")[1].SplitAndTrim(" | ");
-            var winningNumbers = numberData[0].SplitAndTrim(" ").Select(int.Parse);
-            var ownNumbers = numberData[1].SplitAndTrim(" ").Select(int.Parse);
+            var winningNumbers = numberData[0].SplitAndTrim(' ').Select(int.Parse);
+            var ownNumbers = numberData[1].SplitAndTrim(' ').Select(int.Parse);
             MatchingCount = winningNumbers.Intersect(ownNumbers).Count();
             CopyCount = 1;
         }

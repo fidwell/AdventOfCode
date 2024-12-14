@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode.Core.ArrayUtilities;
 
-public enum Direction
+public enum Direction : byte
 {
     Undefined,
     Right,
@@ -50,5 +50,25 @@ public static class DirectionExtensions
             'L' or 'l' or '<' => Direction.Left,
             'U' or 'u' or '^' => Direction.Up,
             _ => Direction.Undefined,
+        };
+
+    public static Direction RotateRight(this Direction input) =>
+        input switch
+        {
+            Direction.Right => Direction.Down,
+            Direction.Down => Direction.Left,
+            Direction.Left => Direction.Up,
+            Direction.Up => Direction.Right,
+            _ => Direction.Undefined
+        };
+
+    public static Direction RotateLeft(this Direction input) =>
+        input switch
+        {
+            Direction.Right => Direction.Up,
+            Direction.Down => Direction.Right,
+            Direction.Left => Direction.Down,
+            Direction.Up => Direction.Left,
+            _ => Direction.Undefined
         };
 }
