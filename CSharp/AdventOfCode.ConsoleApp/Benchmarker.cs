@@ -40,6 +40,8 @@ internal static class Benchmarker
             }
             catch (FileNotFoundException)
             {
+                ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
+                ConsoleWriter.Write($"│  {dayNum,2} │ Could not run: no input file found.                          │");
                 continue;
             }
 
@@ -121,7 +123,7 @@ internal static class Benchmarker
             }
             catch (NotImplementedException)
             {
-                results.Add(TimeSpan.MinValue);
+                return new Aggregate(day, part, 0, TimeSpan.MinValue, TimeSpan.MinValue, TimeSpan.MinValue, TimeSpan.MinValue);
             }
         }
         stopwatch.Stop();
@@ -146,8 +148,14 @@ internal static class Benchmarker
 
     private static void WritePartLine(int day, int part, Aggregate aggregate)
     {
-        var dayStr = day.ToString().PadLeft(2, ' ');
-        Console.Write($"│  {dayStr} │    {part} │ ");
+        if (aggregate.Count == 0)
+        {
+            ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
+            ConsoleWriter.Write($"│  {day,2} │ Could not run: solver not implemented.                       │");
+            return;
+        }
+
+        Console.Write($"│  {day,2} │    {part} │ ");
         WriteTime(aggregate.Mean);
         Console.Write(" │ ");
         WriteTime(aggregate.Mode);
