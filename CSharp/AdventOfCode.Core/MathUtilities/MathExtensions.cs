@@ -18,4 +18,13 @@ public static class MathExtensions
 
     public static (double, double) SolveSystemOfEquations(double a1, double a2, double b1, double b2, double c1, double c2)
         => ((c1 * b2 - b1 * c2) / (a1 * b2 - b1 * a2), (a1 * c2 - c1 * a2) / (a1 * b2 - b1 * a2));
+
+    /// <summary>
+    /// Performs a modulo operation which allows for alternate behavior
+    /// from the standard '%' operator when the dividend is negative.
+    /// </summary>
+    /// <param name="dividend"></param>
+    /// <param name="divisor"></param>
+    /// <returns></returns>
+    public static int Modulo(int dividend, int divisor) => (dividend % divisor + divisor) % divisor;
 }
