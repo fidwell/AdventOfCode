@@ -38,7 +38,3 @@ long time to run, so run at your own risk!
 | [2017](https://adventofcode.com/2017) | | | | | | | | | | | | | | | | | | | | | | | | | |
 | [2016](https://adventofcode.com/2016) | | | | | | | | | | | | | | | | | | | | | | | | | |
 | [2015](https://adventofcode.com/2015) | | | | | | | | | | | | | | | | | | | | | | | | | |
-
-## To do
-
-2022 puzzle 15 part 1 is missing from the repo
