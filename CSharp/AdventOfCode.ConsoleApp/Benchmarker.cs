@@ -31,9 +31,19 @@ internal static class Benchmarker
             if (solver is null)
                 continue;
 
-            ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
             var dayNum = int.Parse(Regexes.NonNegativeInteger().Match(solver.GetType().Name).Value);
-            var input = DataReader.GetData(year, dayNum, 0, false);
+
+            string input;
+            try
+            {
+                input = DataReader.GetData(year, dayNum, 0, false);
+            }
+            catch (FileNotFoundException)
+            {
+                continue;
+            }
+
+            ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
             var partOne = AggregateSolves(dayNum, 1, () => solver.SolvePartOne(input));
             var partTwo = AggregateSolves(dayNum, 2, () => solver.SolvePartTwo(input));
             aggregates.AddRange(partOne);
@@ -105,7 +115,14 @@ internal static class Benchmarker
         stopwatch.Start();
         while (results.Count < 2 || (results.Count < 20 && stopwatch.Elapsed.TotalSeconds < 1))
         {
-            results.Add(SolvePart(action));
+            try
+            {
+                results.Add(SolvePart(action));
+            }
+            catch (NotImplementedException)
+            {
+                results.Add(TimeSpan.MinValue);
+            }
         }
         stopwatch.Stop();
 
@@ -181,7 +198,7 @@ internal static class Benchmarker
             return ConsoleColor.Green;
 
         if (duration.TotalMilliseconds > 1)
-                return ConsoleColor.DarkGreen;
+            return ConsoleColor.DarkGreen;
 
         if (duration.TotalMicroseconds > 500)
             return ConsoleColor.Blue;
