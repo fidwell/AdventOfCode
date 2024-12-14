@@ -32,7 +32,7 @@ internal static class Benchmarker
                 continue;
 
             ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
-            var dayNum = int.Parse(Regexes.Integer().Match(solver.GetType().Name).Value);
+            var dayNum = int.Parse(Regexes.NonNegativeInteger().Match(solver.GetType().Name).Value);
             var input = DataReader.GetData(year, dayNum, 0, false);
             var partOne = AggregateSolves(dayNum, 1, () => solver.SolvePartOne(input));
             var partTwo = AggregateSolves(dayNum, 2, () => solver.SolvePartTwo(input));

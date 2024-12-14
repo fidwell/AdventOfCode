@@ -26,7 +26,7 @@ public class Puzzle06Solver : IPuzzleSolver
             if (instruction.Length == 0)
                 continue;
 
-            var coordinates = Regexes.Integer().Matches(instruction)
+            var coordinates = Regexes.NonNegativeInteger().Matches(instruction)
                 .Select(m => int.Parse(m.Value)).ToArray();
             var x1 = coordinates[0];
             var y1 = coordinates[1];

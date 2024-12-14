@@ -16,15 +16,15 @@ public class Puzzle13Solver : IPuzzleSolver
 
         for (var i = 0; i < lines.Length; i += 3)
         {
-            var buttonA = Regexes.Integer().Matches(lines[i]);
+            var buttonA = Regexes.NonNegativeInteger().Matches(lines[i]);
             var buttonAX = int.Parse(buttonA[0].Value);
             var buttonAY = int.Parse(buttonA[1].Value);
 
-            var buttonB = Regexes.Integer().Matches(lines[i + 1]);
+            var buttonB = Regexes.NonNegativeInteger().Matches(lines[i + 1]);
             var buttonBX = int.Parse(buttonB[0].Value);
             var buttonBY = int.Parse(buttonB[1].Value);
 
-            var prize = Regexes.Integer().Matches(lines[i + 2]);
+            var prize = Regexes.NonNegativeInteger().Matches(lines[i + 2]);
             double prizeX = ulong.Parse(prize[0].Value) + (isBig ? conversionError : 0);
             double prizeY = ulong.Parse(prize[1].Value) + (isBig ? conversionError : 0);
 

@@ -28,7 +28,7 @@ public partial class Puzzle14Solver : IPuzzleSolver
     private static IEnumerable<Reindeer> GetReindeer(string input) =>
         input.SplitByNewline().Select(l =>
         {
-            var numbers = Regexes.Integer().Matches(l);
+            var numbers = Regexes.NonNegativeInteger().Matches(l);
             return new Reindeer
             {
                 Speed = int.Parse(numbers[0].Value),

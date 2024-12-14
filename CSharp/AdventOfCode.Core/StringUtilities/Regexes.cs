@@ -5,6 +5,9 @@ namespace AdventOfCode.Core.StringUtilities;
 public static partial class Regexes
 {
     [GeneratedRegex(@"(\d+)")]
+    public static partial Regex NonNegativeInteger();
+
+    [GeneratedRegex(@"(\-?\d+)")]
     public static partial Regex Integer();
 
     [GeneratedRegex(@"(\w)\1")]
