@@ -121,7 +121,7 @@ public class SolutionVerifier2024 : SolutionVerifier
     [DataRow(1, true, "10092", DisplayName = "2024.15.1-example")]
     [DataRow(1, false, "1527563", DisplayName = "2024.15.1-problem")]
     [DataRow(2, true, "9021", DisplayName = "2024.15.2-example")]
-    [DataRow(2, false, "", DisplayName = "2024.15.2-problem")]
+    [DataRow(2, false, "1521635", DisplayName = "2024.15.2-problem")]
     public void Solve_2024_15(int part, bool useExample, string expected) =>
         Solve(new Puzzle15Solver(), 15, part, useExample, expected);
 }

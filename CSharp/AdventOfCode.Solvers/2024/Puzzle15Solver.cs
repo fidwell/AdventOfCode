@@ -18,11 +18,9 @@ public class Puzzle15Solver : IPuzzleSolver
     public string SolvePartTwo(string input)
     {
         var warehouse = new WideWarehouse(input);
-        warehouse.Print();
         while (!warehouse.IsDone)
         {
             warehouse.Step();
-            warehouse.Print();
         }
         return warehouse.BoxLocationSum.ToString();
     }
@@ -132,7 +130,6 @@ public class Puzzle15Solver : IPuzzleSolver
         public List<(int, int)> Walls { get; } = [];
         public string RobotInstructions { get; private set; } = string.Empty;
 
-        private readonly int _size;
         private int _step = 0;
 
         public bool IsDone => _step >= RobotInstructions.Length;
@@ -164,14 +161,11 @@ public class Puzzle15Solver : IPuzzleSolver
                     RobotInstructions = $"{RobotInstructions}{line}";
                 }
             }
-            _size = y;
         }
 
         public void Step()
         {
             var direction = RobotInstructions[_step].ToDirection();
-            var boxCount = Boxes.Count;
-
             var robotTarget = Robot.Go(direction);
             var boxTree = CreateDependencyTree(Boxes, robotTarget, direction);
 
@@ -185,15 +179,7 @@ public class Puzzle15Solver : IPuzzleSolver
                 boxTree.Move(Boxes, direction);
                 Robot = robotTarget;
             }
-            else
-            {
-                // nobody can move
-            }
 
-            if (boxCount != Boxes.Count)
-                throw new Exception("Box count changed");
-            if (Boxes.Distinct().Count() != Boxes.Count)
-                throw new Exception("Boxes overlap");
             _step++;
         }
 
@@ -255,46 +241,28 @@ public class Puzzle15Solver : IPuzzleSolver
 
             public bool CanMove(List<(int, int)> walls, Direction direction)
             {
-                return Branches.Count != 0
-                    ? Branches.All(b => b.CanMove(walls, direction))
-                    : !walls.Any(w => w == Root.Go(direction) || w == Root.Go(Direction.Right).Go(direction));
+                if (walls.Any(w =>
+                    w == Root.Go(direction) ||
+                    w == Root.Go(Direction.Right).Go(direction)))
+                    return false;
+                return Branches.All(b => b.CanMove(walls, direction));
             }
 
             public void Move(List<(int, int)> boxes, Direction direction)
             {
-                foreach (var b in Branches)
+                // if another boxed pushed this one, there
+                // was an overlapping tree structure, but
+                // that's okay
+                if (boxes.Any(b => b == Root))
                 {
-                    b.Move(boxes, direction);
-                }
-                boxes.RemoveAll(b => b == Root);
-                boxes.Add(Root.Go(direction));
-            }
-        }
-
-        public void Print()
-        {
-            Console.WriteLine(_step);
-            if (_step > 0)
-                Console.WriteLine(RobotInstructions[_step - 1]);
-            for (int y = 0; y < _size; y++)
-            {
-                for (int x = 0; x < _size * 2; x++)
-                {
-                    if (Walls.Contains((x, y)))
-                        Console.Write('#');
-                    else if (Boxes.Contains((x, y)))
+                    foreach (var b in Branches)
                     {
-                        Console.Write("[]");
-                        x++;
+                        b.Move(boxes, direction);
                     }
-                    else if (Robot == (x, y))
-                        Console.Write('@');
-                    else
-                        Console.Write('.');
+                    boxes.RemoveAll(b => b == Root);
+                    boxes.Add(Root.Go(direction));
                 }
-                Console.WriteLine();
             }
-            Console.WriteLine();
         }
     }
 }
