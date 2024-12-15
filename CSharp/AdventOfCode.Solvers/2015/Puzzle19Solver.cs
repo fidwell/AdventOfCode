@@ -29,7 +29,45 @@ public partial class Puzzle19Solver : IPuzzleSolver
 
     public string SolvePartTwo(string input)
     {
-        throw new NotImplementedException();
+        ParseInput(input);
+        var iterations = MaybeSolveIterator(Target, 0);
+        return iterations.ToString();
+    }
+
+    private int MaybeSolveIterator(string target, int iterations)
+    {
+        if (target == "e")
+            return iterations;
+
+        // Greedily run the rules backwards
+        var validReplacements = Replacements.Where(r => target.Contains(r.To));
+        if (!validReplacements.Any())
+        {
+            return -1;
+        }
+
+        var biggestReplacementLength = validReplacements.Max(r => r.To.Length);
+        var replacements = validReplacements.Where(r => r.To.Length == biggestReplacementLength);
+
+        var minResult = int.MaxValue;
+        foreach (var replacement in replacements)
+        {
+            // Create candidate molecule
+            var indexOf = target.IndexOf(replacement.To);
+            var subTarget = string.Concat(
+                target.AsSpan(0, indexOf),
+                replacement.From,
+                target.AsSpan(indexOf + replacement.To.Length));
+
+            // See if our candidate is solvable
+            var subResult = MaybeSolveIterator(subTarget, iterations + 1);
+            if (subResult >= 0 && subResult < minResult)
+            {
+                minResult = subResult;
+            }
+        }
+
+        return minResult == int.MaxValue ? -1 : minResult;
     }
 
     private void ParseInput(string input)
