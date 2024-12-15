@@ -55,6 +55,8 @@ internal static class Benchmarker
         }
         ConsoleWriter.Write("└─────┴──────┴─────────────┴─────────────┴─────────────┴─────────────┘");
 
+        aggregates = aggregates.Where(a => a.Count > 0).ToList();
+
         Console.WriteLine();
         ConsoleWriter.Write("┌─────────────────┬─────────────┬─────────────┬─────────────┬─────────────┐");
         ConsoleWriter.Write("│  ** OVERALL **  │ Mean time   │ Mode time   │ Min time    │ Max time    │");
@@ -123,7 +125,7 @@ internal static class Benchmarker
             }
             catch (NotImplementedException)
             {
-                return new Aggregate(day, part, 0, TimeSpan.MinValue, TimeSpan.MinValue, TimeSpan.MinValue, TimeSpan.MinValue);
+                return new Aggregate(day, part, 0, TimeSpan.Zero, TimeSpan.Zero, TimeSpan.Zero, TimeSpan.Zero);
             }
         }
         stopwatch.Stop();
@@ -150,7 +152,6 @@ internal static class Benchmarker
     {
         if (aggregate.Count == 0)
         {
-            ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
             ConsoleWriter.Write($"│  {day,2} │ Could not run: solver not implemented.                       │");
             return;
         }
