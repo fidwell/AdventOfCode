@@ -7,6 +7,7 @@ public partial class Puzzle19Solver : IPuzzleSolver
 {
     private readonly List<Replacement> Replacements = [];
     private string Target = "";
+    private Random Random = new();
 
     public string SolvePartOne(string input)
     {
@@ -30,17 +31,27 @@ public partial class Puzzle19Solver : IPuzzleSolver
     public string SolvePartTwo(string input)
     {
         ParseInput(input);
+        for (var attempts = 0; attempts < 100; attempts++)
+        {
+            var result = MaybeSolvePartTwo();
+            if (result >= 0)
+                return result.ToString();
+        }
+        throw new Exception("No solution found");
+    }
 
+    public int MaybeSolvePartTwo()
+    {
         var target = Target;
         var iterations = 0;
         while (target != "e" && iterations < Target.Length)
         {
             var replacementCandidates = Replacements
                 .Where(r => target.Contains(r.To))
-                .OrderByDescending(r => r.To.Length)
+                .OrderBy(r => Random.Next())
                 .ToList();
             if (replacementCandidates.Count == 0)
-                throw new Exception($"Couldn't solve for {target}");
+                return -1;
 
             foreach (var replacement in replacementCandidates)
             {
@@ -55,7 +66,7 @@ public partial class Puzzle19Solver : IPuzzleSolver
             }
         }
 
-        return iterations.ToString();
+        return iterations;
     }
 
     private void ParseInput(string input)
