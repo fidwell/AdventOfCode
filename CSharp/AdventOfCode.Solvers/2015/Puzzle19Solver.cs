@@ -30,44 +30,32 @@ public partial class Puzzle19Solver : IPuzzleSolver
     public string SolvePartTwo(string input)
     {
         ParseInput(input);
-        var iterations = MaybeSolveIterator(Target, 0);
-        return iterations.ToString();
-    }
 
-    private int MaybeSolveIterator(string target, int iterations)
-    {
-        if (target == "e")
-            return iterations;
-
-        // Greedily run the rules backwards
-        var validReplacements = Replacements.Where(r => target.Contains(r.To));
-        if (!validReplacements.Any())
+        var target = Target;
+        var iterations = 0;
+        while (target != "e" && iterations < Target.Length)
         {
-            return -1;
-        }
+            var replacementCandidates = Replacements
+                .Where(r => target.Contains(r.To))
+                .OrderByDescending(r => r.To.Length)
+                .ToList();
+            if (replacementCandidates.Count == 0)
+                throw new Exception($"Couldn't solve for {target}");
 
-        var biggestReplacementLength = validReplacements.Max(r => r.To.Length);
-        var replacements = validReplacements.Where(r => r.To.Length == biggestReplacementLength);
-
-        var minResult = int.MaxValue;
-        foreach (var replacement in replacements)
-        {
-            // Create candidate molecule
-            var indexOf = target.IndexOf(replacement.To);
-            var subTarget = string.Concat(
-                target.AsSpan(0, indexOf),
-                replacement.From,
-                target.AsSpan(indexOf + replacement.To.Length));
-
-            // See if our candidate is solvable
-            var subResult = MaybeSolveIterator(subTarget, iterations + 1);
-            if (subResult >= 0 && subResult < minResult)
+            foreach (var replacement in replacementCandidates)
             {
-                minResult = subResult;
+                var index = target.LastIndexOf(replacement.To);
+                target = string.Join("", [
+                    .. target.Substring(0, index),
+                    replacement.From,
+                    .. target.Substring(index + replacement.To.Length)
+                ]);
+                iterations++;
+                break;
             }
         }
 
-        return minResult == int.MaxValue ? -1 : minResult;
+        return iterations.ToString();
     }
 
     private void ParseInput(string input)
