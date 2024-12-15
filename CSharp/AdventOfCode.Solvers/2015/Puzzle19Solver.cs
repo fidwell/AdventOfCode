@@ -6,20 +6,21 @@ namespace AdventOfCode.Solvers._2015;
 public partial class Puzzle19Solver : IPuzzleSolver
 {
     private readonly List<Replacement> Replacements = [];
-    private string[] Target = [];
+    private string Target = "";
 
     public string SolvePartOne(string input)
     {
         ParseInput(input);
+        var targetSplit = TargetMoleculePattern().Match(Target).Groups[1].Captures.Select(c => c.Value).ToArray();
 
         var distinctMolecules = new HashSet<string>();
-        for (var i = 0; i < Target.Length; i++)
+        for (var i = 0; i < targetSplit.Length; i++)
         {
-            var thisMolecule = Target[i];
+            var thisMolecule = targetSplit[i];
             var replacementsForThis = Replacements.Where(r => r.From == thisMolecule);
             foreach (var r in replacementsForThis)
             {
-                var newMoleculeArray = Target.Take(i).Concat(r.To).Concat(Target.Skip(i + 1));
+                var newMoleculeArray = targetSplit.Take(i).Concat([r.To]).Concat(targetSplit.Skip(i + 1));
                 distinctMolecules.Add(string.Join("", newMoleculeArray));
             }
         }
@@ -44,21 +45,20 @@ public partial class Puzzle19Solver : IPuzzleSolver
                 {
                     var match = replacementPattern.Match(lines[i]);
                     var from = match.Groups[1].Value;
-                    var to = match.Groups[2].Captures.Select(c => c.Value).ToArray();
+                    var to = match.Groups[2].Value;
                     Replacements.Add(new Replacement(from, to));
                 }
                 else
                 {
-                    var targetSplit = TargetMoleculePattern().Match(lines[i]).Groups[1].Captures.Select(c => c.Value).ToArray();
-                    Target = targetSplit;
+                    Target = lines[i];
                 }
             }
         }
     }
 
-    private record Replacement(string From, string[] To);
+    private record Replacement(string From, string To);
 
-    [GeneratedRegex(@"(\w{1,2}) => ([A-Z][a-z]?){1,}")]
+    [GeneratedRegex(@"(\w+) => (\w+)")]
     private static partial Regex ReplacementDefinitionPattern();
 
     [GeneratedRegex(@"([A-Z][a-z]?){1,}")]
