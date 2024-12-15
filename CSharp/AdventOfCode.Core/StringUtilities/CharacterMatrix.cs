@@ -24,7 +24,7 @@ public class CharacterMatrix
         Height = lines.Length;
         _data = new char[Width, Height];
 
-        for (int y = 0; y < Height; y++)
+        for (var y = 0; y < Height; y++)
         {
             var thisLine = lines[y];
             if (thisLine.Length != Width)
@@ -35,6 +35,27 @@ public class CharacterMatrix
             for (var x = 0; x < thisLine.Length; x++)
             {
                 _data[x, y] = thisLine[x];
+            }
+        }
+    }
+
+    /// <summary>
+    /// Creates a matrix of characters initialized to one value.
+    /// </summary>
+    /// <param name="width">The width of the matrix.</param>
+    /// <param name="height">The height of the matrix.</param>
+    /// <param name="value">The character to set every value to.</param>
+    public CharacterMatrix(int width, int height, char value)
+    {
+        Width = width;
+        Height = height;
+        _data = new char[Width, Height];
+
+        for (var y = 0; y < Height; y++)
+        {
+            for (var x = 0; x < Width; x++)
+            {
+                _data[x, y] = value;
             }
         }
     }
