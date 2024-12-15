@@ -109,57 +109,18 @@ public class Puzzle15Solver : IPuzzleSolver
             return IterateDependency(firstBox.Single(), direction);
         }
 
-        private BoxDependency IterateDependency((int, int) box, Direction direction)
-        {
-            IEnumerable<(int, int)> subBoxes;
-            switch (direction)
-            {
-                /* .V...
-                 * .[]..
-                 * [][].
-                 */
-                case Direction.Down:
-                    if (AreBoxesWide)
+        private BoxDependency IterateDependency((int, int) box, Direction direction) =>
+            new(box, (direction == Direction.Down || direction == Direction.Up
+                ? AreBoxesWide
+                    ? new List<(int, int)>
                     {
-                        var dl = box.Go(Direction.Down).Go(Direction.Left);
-                        var dm = box.Go(Direction.Down);
-                        var dr = box.Go(Direction.Down).Go(Direction.Right);
-                        subBoxes = new List<(int, int)> { dl, dm, dr }.Where(Boxes.Contains);
-                    }
-                    else
-                    {
-                        subBoxes = Boxes.Where(b => b == box.Go(Direction.Down));
-                    }
-                    break;
-
-                case Direction.Up:
-                    if (AreBoxesWide)
-                    {
-                        var ul = box.Go(Direction.Up).Go(Direction.Left);
-                        var um = box.Go(Direction.Up);
-                        var ur = box.Go(Direction.Up).Go(Direction.Right);
-                        subBoxes = new List<(int, int)> { ul, um, ur }.Where(Boxes.Contains);
-                    }
-                    else
-                    {
-                        subBoxes = Boxes.Where(b => b == box.Go(Direction.Up));
-                    }
-                    break;
-
-                // >[][]
-                case Direction.Right:
-                    subBoxes = Boxes.Where(b => b == box.Go(Direction.Right, AreBoxesWide ? 2 : 1));
-                    break;
-
-                // [][]<
-                case Direction.Left:
-                    subBoxes = Boxes.Where(b => b == box.Go(Direction.Left, AreBoxesWide ? 2 : 1));
-                    break;
-
-                default: throw new ArgumentException(nameof(direction));
-            }
-            return new BoxDependency(box, subBoxes.Select(b => IterateDependency(b, direction)));
-        }
+                        box.Go(direction).Go(Direction.Left),
+                        box.Go(direction),
+                        box.Go(direction).Go(Direction.Right)
+                    }.Where(Boxes.Contains)
+                    : Boxes.Where(b => b == box.Go(direction))
+                : Boxes.Where(b => b == box.Go(direction, AreBoxesWide ? 2 : 1)))
+                .Select(b => IterateDependency(b, direction)));
 
         public int BoxLocationSum => Boxes.Sum(b => b.Item1 + 100 * b.Item2);
 
@@ -168,15 +129,11 @@ public class Puzzle15Solver : IPuzzleSolver
             public (int, int) Root { get; } = root;
             public List<BoxDependency> Branches { get; } = branches.ToList();
 
-            public bool CanMove(List<(int, int)> walls, Direction direction, bool areBoxesWide)
-            {
-                if (walls.Any(w =>
+            public bool CanMove(List<(int, int)> walls, Direction direction, bool areBoxesWide) =>
+                !walls.Any(w =>
                     w == Root.Go(direction) ||
-                    (areBoxesWide && w == Root.Go(Direction.Right).Go(direction))))
-                    return false;
-
-                return Branches.All(b => b.CanMove(walls, direction, areBoxesWide));
-            }
+                    (areBoxesWide && w == Root.Go(Direction.Right).Go(direction))) &&
+                Branches.All(b => b.CanMove(walls, direction, areBoxesWide));
 
             public void Move(List<(int, int)> boxes, Direction direction)
             {
