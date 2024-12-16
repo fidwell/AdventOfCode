@@ -147,6 +147,8 @@ public class Puzzle16Solver : IPuzzleSolver
         // Track visited states (score and path history for each node)
         var visitedScores = new Dictionary<(int, int), int>();
 
+        const int fixedThreshold = 10;
+
         while (priorityQueue.Count > 0)
         {
             var (currentScore, currentNode, currentPath) = priorityQueue.Dequeue();
@@ -155,24 +157,9 @@ public class Puzzle16Solver : IPuzzleSolver
             if (expectedBestValue > 0 && currentScore > expectedBestValue)
                 continue;
 
-            // Check visitedScores to avoid redundant processing
-            //if (!visitedScores.ContainsKey(currentNode))
-            //    visitedScores[currentNode] = new List<(int score, List<(int, int)> path)>();
-
-            // If this state (score and path) has been visited, skip it
-            /*
-            bool isRedundant = visitedScores[currentNode].Any(state =>
-                state.score <= currentScore && state.path.SequenceEqual(currentPath));
-
-            if (isRedundant)
-            {
-                Console.WriteLine($"Skipping redundant path to {currentNode} with score {currentScore}");
+            // Too long --- the answer for part 1 had 158 segments
+            if (currentPath.Count > 159)
                 continue;
-            }
-            */
-
-            // Update visitedScores with this new state
-            //visitedScores[currentNode].Add((currentScore, currentPath));
 
             // If we reach the end, update the best paths
             if (currentNode == End)
@@ -211,9 +198,14 @@ public class Puzzle16Solver : IPuzzleSolver
 
                     var newPath = new List<(int, int)>(currentPath) { nextNode };
 
-                    // Check if we've already visited this node with a lower score
-                    if (visitedScores.TryGetValue(nextNode, out var existingScore) && existingScore <= newScore)
-                        continue;
+                    // Check if we've already visited this node with a lower score or if it's within the fixed threshold
+                    if (visitedScores.TryGetValue(nextNode, out var existingScore))
+                    {
+                        // Skip revisiting if the new score is worse by more than the fixed threshold
+                        var scoreDifference = Math.Abs(existingScore - newScore);
+                        if (existingScore > newScore && scoreDifference > fixedThreshold)
+                            continue;
+                    }
 
                     // Update the visited score for this node
                     visitedScores[nextNode] = newScore;
