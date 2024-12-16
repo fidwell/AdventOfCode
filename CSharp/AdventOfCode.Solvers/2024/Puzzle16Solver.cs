@@ -18,17 +18,12 @@ public class Puzzle16Solver : IPuzzleSolver
         SetUp(input);
         var (paths, score) = BestPaths(0);
 
-        // To do: "Calculated" score is wrong, so we have to recalculate it
-        var realScore = PathScore(paths[0]);
-
         if (ShouldPrint)
         {
-            Console.WriteLine($"Got {score}, should be {realScore} (off by {score - realScore})");
-            var allCoords = AllCoordsInPath(paths[0]);
-            Print(allCoords);
+            Print(AllCoordsInPath(paths[0]));
         }
 
-        return realScore.ToString();
+        return score.ToString();
     }
 
     public string SolvePartTwo(string input)
@@ -150,7 +145,7 @@ public class Puzzle16Solver : IPuzzleSolver
         priorityQueue.Enqueue((0, Start, new List<(int, int)> { Start }), 0);
 
         // Track visited states (score and path history for each node)
-        //var visitedScores = new Dictionary<(int, int), List<(int score, List<(int, int)> path)>>();
+        var visitedScores = new Dictionary<(int, int), int>();
 
         while (priorityQueue.Count > 0)
         {
@@ -211,17 +206,22 @@ public class Puzzle16Solver : IPuzzleSolver
                     if (currentPath.Contains(nextNode))
                         continue;
 
-                    var edgeScore = EdgeScore(edge, currentPath); // Compute the edge's score
+                    var edgeScore = EdgeScore(edge, currentPath);
                     var newScore = currentScore + edgeScore;
 
-                    var newPath = currentPath.ToList();
-                    newPath.Add(nextNode);
+                    var newPath = new List<(int, int)>(currentPath) { nextNode };
 
-                    var newEstimatedCost = ManhattanDistance(nextNode, End);
-                    var priority = newScore + newEstimatedCost;
+                    // Check if we've already visited this node with a lower score
+                    if (visitedScores.TryGetValue(nextNode, out var existingScore) && existingScore <= newScore)
+                        continue;
+
+                    // Update the visited score for this node
+                    visitedScores[nextNode] = newScore;
+
+                    var heuristic = ManhattanDistance(nextNode, End);
 
                     // Add this new state to the priority queue
-                    priorityQueue.Enqueue((newScore, nextNode, newPath), priority);
+                    priorityQueue.Enqueue((newScore, nextNode, newPath), newScore + heuristic);
                 }
             }
         }
