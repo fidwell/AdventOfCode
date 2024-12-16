@@ -10,7 +10,7 @@ public class Puzzle16Solver : IPuzzleSolver
 
     private (int, int) Start;
     private (int, int) End;
-    private Dictionary<(int, int), List<Edge>> EdgeAdjacencyList = new();
+    private readonly Dictionary<(int, int), List<Edge>> EdgeAdjacencyList = [];
 
     public string SolvePartOne(string input)
     {
@@ -21,11 +21,13 @@ public class Puzzle16Solver : IPuzzleSolver
 
         var nodes = GetMapNodes(matrix);
         GetMapEdges(matrix, nodes);
-        var (path, score) = BestPath();
+        var (path, _) = BestPath();
 
         if (ShouldPrint)
             Print(matrix, path);
-        return score.ToString();
+
+        // To do: "Calculated" score is wrong, so we have to recalculate it
+        return PathScore(path).ToString();
     }
 
     public string SolvePartTwo(string input) => throw new NotImplementedException();
@@ -85,9 +87,9 @@ public class Puzzle16Solver : IPuzzleSolver
                 if (spacesBetween.All(s => matrix.CharAt(s, firstNode.Item2) != '#'))
                 {
                     if (!EdgeAdjacencyList.ContainsKey(firstNode))
-                        EdgeAdjacencyList[firstNode] = new();
+                        EdgeAdjacencyList[firstNode] = [];
                     if (!EdgeAdjacencyList.ContainsKey(firstNodeRight))
-                        EdgeAdjacencyList[firstNodeRight] = new();
+                        EdgeAdjacencyList[firstNodeRight] = [];
                     EdgeAdjacencyList[firstNode].Add(new Edge(firstNode, firstNodeRight));
                     EdgeAdjacencyList[firstNodeRight].Add(new Edge(firstNode, firstNodeRight));
                 }
@@ -101,9 +103,9 @@ public class Puzzle16Solver : IPuzzleSolver
                 if (spacesBetween.All(s => matrix.CharAt(firstNode.Item1, s) != '#'))
                 {
                     if (!EdgeAdjacencyList.ContainsKey(firstNode))
-                        EdgeAdjacencyList[firstNode] = new();
+                        EdgeAdjacencyList[firstNode] = [];
                     if (!EdgeAdjacencyList.ContainsKey(firstNodeDown))
-                        EdgeAdjacencyList[firstNodeDown] = new();
+                        EdgeAdjacencyList[firstNodeDown] = [];
                     EdgeAdjacencyList[firstNode].Add(new Edge(firstNode, firstNodeDown));
                     EdgeAdjacencyList[firstNodeDown].Add(new Edge(firstNode, firstNodeDown));
                 }
@@ -116,54 +118,52 @@ public class Puzzle16Solver : IPuzzleSolver
         var currentMinimumScore = int.MaxValue;
         var bestPath = new List<(int, int)>();
 
-        var visitedEdges = new HashSet<Edge>();
-        var currentPath = new List<(int, int)>();
-        DepthFirstSearch(Start, 0);
+        var priorityQueue = new SortedSet<(int score, (int, int) node, List<(int, int)> path)>(
+            Comparer<(int, (int, int), List<(int, int)>)>.Create((a, b) => a.Item1 != b.Item1 ? a.Item1.CompareTo(b.Item1) : a.Item2.CompareTo(b.Item2))
+        );
+        var visitedScores = new Dictionary<(int, int), int>();
 
-        void DepthFirstSearch((int, int) current, int currentScore)
+        priorityQueue.Add((0, Start, new List<(int, int)> { Start }));
+
+        while(priorityQueue.Count > 0)
         {
-            currentPath.Add(current);
+            var (currentScore, currentNode, currentPath) = priorityQueue.Min;
+            priorityQueue.Remove(priorityQueue.Min);
 
-            if (currentScore >= currentMinimumScore)
+            if (visitedScores.TryGetValue(currentNode, out var bestScoreAtNode) && currentScore >= bestScoreAtNode)
+                continue;
+
+            visitedScores[currentNode] = currentScore;
+
+            if (currentNode == End)
             {
-                currentPath.RemoveAt(currentPath.Count - 1);
-                return;
+                bestPath = currentPath;
+                currentMinimumScore = currentScore;
+                break;
             }
 
-            if (current == End)
+            foreach (var edge in EdgeAdjacencyList[currentNode])
             {
-                if (currentScore < currentMinimumScore)
+                if (edge.HasEndAt(currentNode))
                 {
-                    currentMinimumScore = currentScore;
-                    bestPath = new List<(int, int)>(currentPath);
-                }
-
-                currentPath.RemoveAt(currentPath.Count - 1);
-                return;
-            }
-            else
-            {
-                foreach (var edge in EdgeAdjacencyList[current])
-                {
-                    if (edge.HasEndAt(current))
+                    var nextNode = edge.OtherEndFrom(currentNode);
+                    var edgeScore = EdgeScore(edge, currentPath);
+                    var heuristic = ManhattanDistance(nextNode, End);
+                    var newScore = currentScore + edgeScore;
+                    if (newScore < currentMinimumScore)
                     {
-                        var next = edge.OtherEndFrom(current);
-
-                        // ensure not already visited
-                        if (visitedEdges.Add(edge))
-                        {
-                            var edgeScore = EdgeScore(edge, currentPath);
-                            DepthFirstSearch(next, currentScore + edgeScore);
-                            visitedEdges.Remove(edge);
-                        }
+                        var newPath = new List<(int, int)>(currentPath) { nextNode };
+                        priorityQueue.Add((newScore + heuristic, nextNode, newPath));
                     }
                 }
             }
-            currentPath.RemoveAt(currentPath.Count - 1);
         }
 
         return (bestPath, currentMinimumScore);
     }
+
+    private static int ManhattanDistance((int x, int y) current, (int x, int y) end) =>
+        Math.Abs(current.x - end.x) + Math.Abs(current.y - end.y);
 
     private static int EdgeScore(Edge edge, List<(int, int)> currentPath)
     {
@@ -176,6 +176,27 @@ public class Puzzle16Solver : IPuzzleSolver
             score += 1000;
         }
 
+        return score;
+    }
+
+    private int PathScore(List<(int, int)> path)
+    {
+        var score = 0;
+        var isFacingLeftOrRight = true; // starting condition given in the puzzle
+        for (var i = 0; i < path.Count - 1; i++)
+        {
+            var from = path[i];
+            var to = path[i + 1];
+            var edge = EdgeAdjacencyList[from].First(e => e.NodeLU == to || e.NodeRD == to);
+
+            if (edge.IsHorizontal != isFacingLeftOrRight)
+            {
+                // we must turn
+                score += 1000;
+                isFacingLeftOrRight = !isFacingLeftOrRight;
+            }
+            score += edge.Length;
+        }
         return score;
     }
 
@@ -204,7 +225,7 @@ public class Puzzle16Solver : IPuzzleSolver
                 }
                 else
                 {
-                    Console.Write(matrix.CharAt(x, y));
+                    Console.Write(matrix.CharAt(x, y) == '#' ? '.' : ' ');
                 }
             }
             Console.WriteLine();

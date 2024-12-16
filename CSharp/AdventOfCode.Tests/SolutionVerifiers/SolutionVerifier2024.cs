@@ -125,9 +125,9 @@ public class SolutionVerifier2024 : SolutionVerifier
     public void Solve_2024_15(int part, bool useExample, string expected) =>
         Solve(new Puzzle15Solver(), 15, part, useExample, expected);
 
-    [DataTestMethod]//, Timeout(Timeout)]
+    [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "7036", DisplayName = "2024.16.1-example")]
-    [DataRow(1, false, "", DisplayName = "2024.16.1-problem")]
+    [DataRow(1, false, "107468", DisplayName = "2024.16.1-problem")]
     [DataRow(2, true, "", DisplayName = "2024.16.2-example")]
     [DataRow(2, false, "", DisplayName = "2024.16.2-problem")]
     public void Solve_2024_16(int part, bool useExample, string expected) =>
