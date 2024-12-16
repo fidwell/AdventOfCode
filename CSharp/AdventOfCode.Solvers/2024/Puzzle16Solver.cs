@@ -16,7 +16,7 @@ public class Puzzle16Solver : IPuzzleSolver
     public string SolvePartOne(string input)
     {
         SetUp(input);
-        var (paths, score) = BestPaths(Matrix.Height < 100 ? 7036 : 107468);
+        var (paths, score) = BestPaths(0);
 
         // To do: "Calculated" score is wrong, so we have to recalculate it
         var realScore = PathScore(paths[0]);
@@ -146,53 +146,26 @@ public class Puzzle16Solver : IPuzzleSolver
         var currentMinimumScore = int.MaxValue;
         var bestPaths = new List<List<(int, int)>>();
 
-        var priorityQueue = new SortedSet<(int score, (int, int) node, List<(int, int)> path)>(
-            Comparer<(int, (int, int), List<(int, int)>)>.Create((a, b) =>
-            {
-                // Compare by score first
-                int scoreComparison = a.Item1.CompareTo(b.Item1);
-                if (scoreComparison != 0) return scoreComparison;
-
-                // Then by node
-                int nodeComparison = a.Item2.CompareTo(b.Item2);
-                if (nodeComparison != 0) return nodeComparison;
-
-                // Finally, compare paths to ensure uniqueness
-                // Compare path lengths first
-                int pathLengthComparison = a.Item3.Count.CompareTo(b.Item3.Count);
-                if (pathLengthComparison != 0) return pathLengthComparison;
-
-                // Compare lexicographically by path elements
-                for (int i = 0; i < a.Item3.Count; i++)
-                {
-                    int elementComparison = a.Item3[i].CompareTo(b.Item3[i]);
-                    if (elementComparison != 0) return elementComparison;
-                }
-
-                return 0; // Equal paths
-            })
-        );
+        var priorityQueue = new PriorityQueue<(int score, (int, int) node, List<(int, int)> path), int>();
+        priorityQueue.Enqueue((0, Start, new List<(int, int)> { Start }), 0);
 
         // Track visited states (score and path history for each node)
-        var visitedScores = new Dictionary<(int, int), List<(int score, List<(int, int)> path)>>();
-
-        // Start with the initial position
-        priorityQueue.Add((0, Start, new List<(int, int)> { Start }));
+        //var visitedScores = new Dictionary<(int, int), List<(int score, List<(int, int)> path)>>();
 
         while (priorityQueue.Count > 0)
         {
-            var (currentScore, currentNode, currentPath) = priorityQueue.Min;
-            priorityQueue.Remove(priorityQueue.Min);
+            var (currentScore, currentNode, currentPath) = priorityQueue.Dequeue();
 
             // Stop processing paths that exceed the expected best score
-            if (currentScore > expectedBestValue)
+            if (expectedBestValue > 0 && currentScore > expectedBestValue)
                 continue;
 
             // Check visitedScores to avoid redundant processing
-            if (!visitedScores.ContainsKey(currentNode))
-                visitedScores[currentNode] = new List<(int score, List<(int, int)> path)>();
+            //if (!visitedScores.ContainsKey(currentNode))
+            //    visitedScores[currentNode] = new List<(int score, List<(int, int)> path)>();
 
             // If this state (score and path) has been visited, skip it
+            /*
             bool isRedundant = visitedScores[currentNode].Any(state =>
                 state.score <= currentScore && state.path.SequenceEqual(currentPath));
 
@@ -201,9 +174,10 @@ public class Puzzle16Solver : IPuzzleSolver
                 Console.WriteLine($"Skipping redundant path to {currentNode} with score {currentScore}");
                 continue;
             }
+            */
 
             // Update visitedScores with this new state
-            visitedScores[currentNode].Add((currentScore, currentPath));
+            //visitedScores[currentNode].Add((currentScore, currentPath));
 
             // If we reach the end, update the best paths
             if (currentNode == End)
@@ -214,6 +188,9 @@ public class Puzzle16Solver : IPuzzleSolver
                     currentMinimumScore = currentScore;
                     bestPaths.Clear();
                     bestPaths.Add(currentPath);
+
+                    if (expectedBestValue == 0) // part 1
+                        return ([currentPath], currentScore);
                 }
                 else if (currentScore == currentMinimumScore)
                 {
@@ -237,16 +214,23 @@ public class Puzzle16Solver : IPuzzleSolver
                     var edgeScore = EdgeScore(edge, currentPath); // Compute the edge's score
                     var newScore = currentScore + edgeScore;
 
-                    var newPath = new List<(int, int)>(currentPath) { nextNode };
+                    var newPath = currentPath.ToList();
+                    newPath.Add(nextNode);
+
+                    var newEstimatedCost = ManhattanDistance(nextNode, End);
+                    var priority = newScore + newEstimatedCost;
 
                     // Add this new state to the priority queue
-                    priorityQueue.Add((newScore, nextNode, newPath));
+                    priorityQueue.Enqueue((newScore, nextNode, newPath), priority);
                 }
             }
         }
 
         return (bestPaths, currentMinimumScore);
     }
+
+    private static int ManhattanDistance((int, int) a, (int, int) b) =>
+        Math.Abs(a.Item1 - b.Item1) + Math.Abs(a.Item2 - b.Item2);
 
     private static int EdgeScore(Edge edge, List<(int, int)> currentPath)
     {
