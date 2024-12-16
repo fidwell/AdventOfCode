@@ -4,9 +4,13 @@ namespace AdventOfCode.Solvers._2024;
 
 public class Puzzle16Solver : IPuzzleSolver
 {
+    // Disabled for benchmarking.
+    // Toggle on if you want to see the output!
+    const bool ShouldPrint = true;
+
     private (int, int) Start;
     private (int, int) End;
-    private List<Leg> Edges = [];
+    private List<Edge> Edges = [];
 
     public string SolvePartOne(string input)
     {
@@ -16,10 +20,12 @@ public class Puzzle16Solver : IPuzzleSolver
         End = (matrix.Width - 2, 1);
 
         var nodes = GetMapNodes(matrix);
-        Edges = GetMapLegs(matrix, nodes);
-        var paths = AllPaths();
-        var scores = paths.Select(PathScore);
-        return scores.Min().ToString();
+        Edges = GetMapEdges(matrix, nodes);
+        var (path, score) = BestPath();
+
+        if (ShouldPrint)
+            Print(matrix, path);
+        return score.ToString();
     }
 
     public string SolvePartTwo(string input) => throw new NotImplementedException();
@@ -65,64 +71,82 @@ public class Puzzle16Solver : IPuzzleSolver
         return nodes;
     }
 
-    private static List<Leg> GetMapLegs(CharacterMatrix matrix, List<(int, int)> nodes)
+    private static List<Edge> GetMapEdges(CharacterMatrix matrix, List<(int, int)> nodes)
     {
-        var legs = new List<Leg>();
+        var edges = new List<Edge>();
         for (var i = 0; i < nodes.Count; i++)
         {
             var firstNode = nodes[i];
             // Search down and left for nodes
             var firstNodeRight = nodes.FirstOrDefault(n => n.Item1 > firstNode.Item1 && n.Item2 == firstNode.Item2);
-            if (firstNodeRight != (0, 0))
+            if (firstNodeRight != (0, 0) &&
+                firstNodeRight.Item1 > firstNode.Item1) // probably redundant, but just in case
             {
                 var spacesBetween = Enumerable.Range(firstNode.Item1, firstNodeRight.Item1 - firstNode.Item1);
-                if (spacesBetween.All(s => matrix.CharAt(s, firstNode.Item2) == '.'))
+                if (spacesBetween.All(s => matrix.CharAt(s, firstNode.Item2) != '#'))
                 {
-                    legs.Add(new Leg(firstNode, firstNodeRight));
+                    edges.Add(new Edge(firstNode, firstNodeRight));
                 }
             }
 
             var firstNodeDown = nodes.FirstOrDefault(n => n.Item1 == firstNode.Item1 && n.Item2 > firstNode.Item2);
-            if (firstNodeDown != (0, 0))
+            if (firstNodeDown != (0, 0) &&
+                firstNodeDown.Item2 > firstNode.Item2) // probably redundant, but just in case
             {
                 var spacesBetween = Enumerable.Range(firstNode.Item2, firstNodeDown.Item2 - firstNode.Item2);
-                if (spacesBetween.All(s => matrix.CharAt(firstNode.Item1, s) == '.'))
+                if (spacesBetween.All(s => matrix.CharAt(firstNode.Item1, s) != '#'))
                 {
-                    legs.Add(new Leg(firstNode, firstNodeDown));
+                    edges.Add(new Edge(firstNode, firstNodeDown));
                 }
             }
         }
-        return legs;
+        return edges;
     }
 
-    private List<List<(int, int)>> AllPaths()
+    private (List<(int, int)>, int) BestPath()
     {
-        var allPaths = new List<List<(int, int)>>();
-        var visitedLegs = new List<Leg>();
-        var currentPath = new List<(int, int)>();
-        DepthFirstSearch(Start);
+        var currentMinimumScore = int.MaxValue;
+        var bestPath = new List<(int, int)>();
 
-        void DepthFirstSearch((int, int) current)
+        var visitedEdges = new HashSet<Edge>();
+        var currentPath = new List<(int, int)>();
+        DepthFirstSearch(Start, 0);
+
+        void DepthFirstSearch((int, int) current, int currentScore)
         {
             currentPath.Add(current);
 
+            if (currentScore >= currentMinimumScore)
+            {
+                currentPath.RemoveAt(currentPath.Count - 1);
+                return;
+            }
+
             if (current == End)
             {
-                allPaths.Add(new List<(int, int)>(currentPath));
+                if (currentScore < currentMinimumScore)
+                {
+                    currentMinimumScore = currentScore;
+                    bestPath = new List<(int, int)>(currentPath);
+                }
+
+                currentPath.RemoveAt(currentPath.Count - 1);
+                return;
             }
             else
             {
-                foreach (var leg in Edges)
+                foreach (var edge in Edges)
                 {
-                    if (leg.HasEndAt(current))
+                    if (edge.HasEndAt(current))
                     {
-                        var next = leg.OtherEndFrom(current);
+                        var next = edge.OtherEndFrom(current);
+
                         // ensure not already visited
-                        if (!visitedLegs.Any(l => l.Equals(current, next)))
+                        if (visitedEdges.Add(edge))
                         {
-                            visitedLegs.Add(leg);
-                            DepthFirstSearch(next);
-                            visitedLegs.Remove(leg);
+                            var edgeScore = EdgeScore(edge, currentPath);
+                            DepthFirstSearch(next, currentScore + edgeScore);
+                            visitedEdges.Remove(edge);
                         }
                     }
                 }
@@ -130,31 +154,24 @@ public class Puzzle16Solver : IPuzzleSolver
             currentPath.RemoveAt(currentPath.Count - 1);
         }
 
-        return allPaths;
+        return (bestPath, currentMinimumScore);
     }
 
-    private int PathScore(List<(int, int)> path)
+    private static int EdgeScore(Edge edge, List<(int, int)> currentPath)
     {
-        var score = 0;
-        var isFacingLeftOrRight = true; // starting condition given in the puzzle
-        for (var i = 0; i < path.Count - 1; i++)
-        {
-            var from = path[i];
-            var to = path[i + 1];
-            var edge = Edges.Single(e => e.Equals(from, to));
+        var score = edge.Length;
+        var isFacingLeftOrRight = currentPath.Count < 2 ||
+                                  currentPath[^1].Item1 != currentPath[^2].Item1;
 
-            if (edge.IsHorizontal != isFacingLeftOrRight)
-            {
-                // we must turn
-                score += 1000;
-                isFacingLeftOrRight = !isFacingLeftOrRight;
-            }
-            score += edge.Length;
+        if (edge.IsHorizontal != isFacingLeftOrRight)
+        {
+            score += 1000;
         }
+
         return score;
     }
 
-    private record Leg((int, int) NodeLU, (int, int) NodeRD)
+    private record Edge((int, int) NodeLU, (int, int) NodeRD)
     {
         public bool Equals((int, int) a, (int, int) b) =>
             a == NodeLU && b == NodeRD ||
@@ -165,5 +182,25 @@ public class Puzzle16Solver : IPuzzleSolver
         public int Length => IsHorizontal
             ? NodeRD.Item1 - NodeLU.Item1
             : NodeRD.Item2 - NodeLU.Item2;
+    }
+
+    private static void Print(CharacterMatrix matrix, List<(int, int)> path)
+    {
+        for (var y = 0; y < matrix.Height; y++)
+        {
+            for (var x = 0; x < matrix.Width; x++)
+            {
+                if (path.Contains((x, y)))
+                {
+                    Console.Write('O');
+                }
+                else
+                {
+                    Console.Write(matrix.CharAt(x, y));
+                }
+            }
+            Console.WriteLine();
+        }
+        Console.WriteLine();
     }
 }
