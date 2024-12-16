@@ -19,7 +19,7 @@ public class Puzzle16Solver : IPuzzleSolver
         var (path, _) = BestPath();
 
         if (ShouldPrint)
-            Print(path);
+            Print(AllCoordsInPath(path));
 
         // To do: "Calculated" score is wrong, so we have to recalculate it
         return PathScore(path).ToString();
@@ -220,15 +220,33 @@ public class Puzzle16Solver : IPuzzleSolver
         public int Length => IsHorizontal
             ? NodeRD.Item1 - NodeLU.Item1
             : NodeRD.Item2 - NodeLU.Item2;
+
+        public IEnumerable<(int, int)> AllCoordinates =>
+            IsHorizontal
+                ? Enumerable.Range(NodeLU.Item1, NodeRD.Item1 - NodeLU.Item1 + 1)
+                    .Select(x => (x, NodeLU.Item2))
+                : Enumerable.Range(NodeLU.Item2, NodeRD.Item2 - NodeLU.Item2 + 1)
+                    .Select(y => (NodeLU.Item1, y));
     }
 
-    private void Print(List<(int, int)> path)
+    private HashSet<(int, int)> AllCoordsInPath(IEnumerable<(int, int)> nodes)
+    {
+        var allEdges = EdgeAdjacencyList
+            .SelectMany(ea => ea.Value).Distinct();
+        var edgesInPaths = allEdges.Where(e =>
+            nodes.Contains(e.NodeLU) &&
+            nodes.Contains(e.NodeRD));
+        var allCoordinatesInAllEdges = edgesInPaths.SelectMany(e => e.AllCoordinates);
+        return allCoordinatesInAllEdges.ToHashSet();
+    }
+
+    private void Print(IEnumerable<(int, int)> coords)
     {
         for (var y = 0; y < Matrix.Height; y++)
         {
             for (var x = 0; x < Matrix.Width; x++)
             {
-                if (path.Contains((x, y)))
+                if (coords.Contains((x, y)))
                 {
                     Console.Write('O');
                 }
