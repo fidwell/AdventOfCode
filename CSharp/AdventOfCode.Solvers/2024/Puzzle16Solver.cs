@@ -8,43 +8,52 @@ public class Puzzle16Solver : IPuzzleSolver
     // Toggle on if you want to see the output!
     const bool ShouldPrint = true;
 
+    private CharacterMatrix Matrix = new();
     private (int, int) Start;
     private (int, int) End;
     private readonly Dictionary<(int, int), List<Edge>> EdgeAdjacencyList = [];
 
     public string SolvePartOne(string input)
     {
-        var matrix = new CharacterMatrix(input);
-
-        Start = (1, matrix.Height - 2);
-        End = (matrix.Width - 2, 1);
-
-        var nodes = GetMapNodes(matrix);
-        GetMapEdges(matrix, nodes);
+        SetUp(input);
         var (path, _) = BestPath();
 
         if (ShouldPrint)
-            Print(matrix, path);
+            Print(path);
 
         // To do: "Calculated" score is wrong, so we have to recalculate it
         return PathScore(path).ToString();
     }
 
-    public string SolvePartTwo(string input) => throw new NotImplementedException();
+    public string SolvePartTwo(string input)
+    {
+        SetUp(input);
+        throw new NotImplementedException();
+    }
 
-    private static List<(int, int)> GetMapNodes(CharacterMatrix matrix)
+    private void SetUp(string input)
+    {
+        Matrix = new CharacterMatrix(input);
+        Start = (1, Matrix.Height - 2);
+        End = (Matrix.Width - 2, 1);
+
+        var nodes = GetMapNodes();
+        GetMapEdges(nodes);
+    }
+
+    private List<(int, int)> GetMapNodes()
     {
         var nodes = new List<(int, int)>();
         // The border is always a solid wall.
-        for (var y = 1; y < matrix.Height - 1; y++)
+        for (var y = 1; y < Matrix.Height - 1; y++)
         {
-            for (var x = 1; x < matrix.Width - 1; x++)
+            for (var x = 1; x < Matrix.Width - 1; x++)
             {
-                var charHere = matrix.CharAt(x, y);
+                var charHere = Matrix.CharAt(x, y);
                 if (charHere != '#')
                 {
-                    var neighbors = matrix.CoordinatesOfNeighbors((x, y), allEight: false)
-                        .Where(cn => matrix.CharAt(cn) != '#');
+                    var neighbors = Matrix.CoordinatesOfNeighbors((x, y), allEight: false)
+                        .Where(cn => Matrix.CharAt(cn) != '#');
                     var neighborCount = neighbors.Count();
                     switch (neighborCount)
                     {
@@ -73,7 +82,7 @@ public class Puzzle16Solver : IPuzzleSolver
         return nodes;
     }
 
-    private void GetMapEdges(CharacterMatrix matrix, List<(int, int)> nodes)
+    private void GetMapEdges(List<(int, int)> nodes)
     {
         for (var i = 0; i < nodes.Count; i++)
         {
@@ -84,7 +93,7 @@ public class Puzzle16Solver : IPuzzleSolver
                 firstNodeRight.Item1 > firstNode.Item1) // probably redundant, but just in case
             {
                 var spacesBetween = Enumerable.Range(firstNode.Item1, firstNodeRight.Item1 - firstNode.Item1);
-                if (spacesBetween.All(s => matrix.CharAt(s, firstNode.Item2) != '#'))
+                if (spacesBetween.All(s => Matrix.CharAt(s, firstNode.Item2) != '#'))
                 {
                     if (!EdgeAdjacencyList.ContainsKey(firstNode))
                         EdgeAdjacencyList[firstNode] = [];
@@ -100,7 +109,7 @@ public class Puzzle16Solver : IPuzzleSolver
                 firstNodeDown.Item2 > firstNode.Item2) // probably redundant, but just in case
             {
                 var spacesBetween = Enumerable.Range(firstNode.Item2, firstNodeDown.Item2 - firstNode.Item2);
-                if (spacesBetween.All(s => matrix.CharAt(firstNode.Item1, s) != '#'))
+                if (spacesBetween.All(s => Matrix.CharAt(firstNode.Item1, s) != '#'))
                 {
                     if (!EdgeAdjacencyList.ContainsKey(firstNode))
                         EdgeAdjacencyList[firstNode] = [];
@@ -213,11 +222,11 @@ public class Puzzle16Solver : IPuzzleSolver
             : NodeRD.Item2 - NodeLU.Item2;
     }
 
-    private static void Print(CharacterMatrix matrix, List<(int, int)> path)
+    private void Print(List<(int, int)> path)
     {
-        for (var y = 0; y < matrix.Height; y++)
+        for (var y = 0; y < Matrix.Height; y++)
         {
-            for (var x = 0; x < matrix.Width; x++)
+            for (var x = 0; x < Matrix.Width; x++)
             {
                 if (path.Contains((x, y)))
                 {
@@ -225,7 +234,7 @@ public class Puzzle16Solver : IPuzzleSolver
                 }
                 else
                 {
-                    Console.Write(matrix.CharAt(x, y) == '#' ? '.' : ' ');
+                    Console.Write(Matrix.CharAt(x, y) == '#' ? '.' : ' ');
                 }
             }
             Console.WriteLine();

@@ -60,6 +60,17 @@ public class CharacterMatrix
         }
     }
 
+    /// <summary>
+    /// Creates an empty character matrix.
+    /// Keeps C# nullabilty warnings happy.
+    /// </summary>
+    public CharacterMatrix()
+    {
+        Width = 0;
+        Height = 0;
+        _data = new char[0, 0];
+    }
+
     public string DisplayString =>
         string.Join(
             Environment.NewLine,
