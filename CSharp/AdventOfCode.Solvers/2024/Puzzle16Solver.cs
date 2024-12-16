@@ -10,7 +10,7 @@ public class Puzzle16Solver : IPuzzleSolver
 
     private (int, int) Start;
     private (int, int) End;
-    private List<Edge> Edges = [];
+    private Dictionary<(int, int), List<Edge>> EdgeAdjacencyList = new();
 
     public string SolvePartOne(string input)
     {
@@ -20,7 +20,7 @@ public class Puzzle16Solver : IPuzzleSolver
         End = (matrix.Width - 2, 1);
 
         var nodes = GetMapNodes(matrix);
-        Edges = GetMapEdges(matrix, nodes);
+        GetMapEdges(matrix, nodes);
         var (path, score) = BestPath();
 
         if (ShouldPrint)
@@ -71,9 +71,8 @@ public class Puzzle16Solver : IPuzzleSolver
         return nodes;
     }
 
-    private static List<Edge> GetMapEdges(CharacterMatrix matrix, List<(int, int)> nodes)
+    private void GetMapEdges(CharacterMatrix matrix, List<(int, int)> nodes)
     {
-        var edges = new List<Edge>();
         for (var i = 0; i < nodes.Count; i++)
         {
             var firstNode = nodes[i];
@@ -85,7 +84,12 @@ public class Puzzle16Solver : IPuzzleSolver
                 var spacesBetween = Enumerable.Range(firstNode.Item1, firstNodeRight.Item1 - firstNode.Item1);
                 if (spacesBetween.All(s => matrix.CharAt(s, firstNode.Item2) != '#'))
                 {
-                    edges.Add(new Edge(firstNode, firstNodeRight));
+                    if (!EdgeAdjacencyList.ContainsKey(firstNode))
+                        EdgeAdjacencyList[firstNode] = new();
+                    if (!EdgeAdjacencyList.ContainsKey(firstNodeRight))
+                        EdgeAdjacencyList[firstNodeRight] = new();
+                    EdgeAdjacencyList[firstNode].Add(new Edge(firstNode, firstNodeRight));
+                    EdgeAdjacencyList[firstNodeRight].Add(new Edge(firstNode, firstNodeRight));
                 }
             }
 
@@ -96,11 +100,15 @@ public class Puzzle16Solver : IPuzzleSolver
                 var spacesBetween = Enumerable.Range(firstNode.Item2, firstNodeDown.Item2 - firstNode.Item2);
                 if (spacesBetween.All(s => matrix.CharAt(firstNode.Item1, s) != '#'))
                 {
-                    edges.Add(new Edge(firstNode, firstNodeDown));
+                    if (!EdgeAdjacencyList.ContainsKey(firstNode))
+                        EdgeAdjacencyList[firstNode] = new();
+                    if (!EdgeAdjacencyList.ContainsKey(firstNodeDown))
+                        EdgeAdjacencyList[firstNodeDown] = new();
+                    EdgeAdjacencyList[firstNode].Add(new Edge(firstNode, firstNodeDown));
+                    EdgeAdjacencyList[firstNodeDown].Add(new Edge(firstNode, firstNodeDown));
                 }
             }
         }
-        return edges;
     }
 
     private (List<(int, int)>, int) BestPath()
@@ -135,7 +143,7 @@ public class Puzzle16Solver : IPuzzleSolver
             }
             else
             {
-                foreach (var edge in Edges)
+                foreach (var edge in EdgeAdjacencyList[current])
                 {
                     if (edge.HasEndAt(current))
                     {
