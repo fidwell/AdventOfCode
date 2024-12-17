@@ -113,10 +113,10 @@ public class CharacterMatrix
     /// <param name="start">The starting coordinate of the desired string.</param>
     /// <param name="length">The length of the desired string.</param>
     /// <returns>A string starting at a given index, of a given length.</returns>
-    public string StringAt(Coord start, int length)
+    public string StringAt(Coord2d start, int length)
     {
-        var row = RowAt(start.Item2);
-        return new string(Enumerable.Range(start.Item1, length).Select(i => row[i]).ToArray());
+        var row = RowAt(start.Y);
+        return new string(Enumerable.Range(start.X, length).Select(i => row[i]).ToArray());
     }
 
     /// <summary>
@@ -150,7 +150,7 @@ public class CharacterMatrix
         for (var y = 0; y < Height; y++)
         {
             var matchesOnLine = matchingPattern.Matches(RowAt(y));
-            result.AddRange(matchesOnLine.Select(m => new Word((m.Index, y), m.Length, m.Value)));
+            result.AddRange(matchesOnLine.Select(m => new Word(new Coord2d(m.Index, y), m.Length, m.Value)));
         }
         return result;
     }
@@ -190,6 +190,13 @@ public class CharacterMatrix
     /// <param name="coordinates">The coordinates of the character to replace.</param>
     /// <param name="value">The new value of the character.</param>
     public void SetCharacter(Coord coordinates, char value) => SetCharacter(coordinates.Item1, coordinates.Item2, value);
+
+    /// <summary>
+    /// Replaces the character value at the given index.
+    /// </summary>
+    /// <param name="coordinates">The coordinates of the character to replace.</param>
+    /// <param name="value">The new value of the character.</param>
+    public void SetCharacter(Coord2d coordinates, char value) => SetCharacter(coordinates.X, coordinates.Y, value);
 
     /// <summary>
     /// Replaces the character value at the given index.
@@ -236,17 +243,6 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="coordinate">The coordinate to check.</param>
     /// <returns>Whether the coordinate is in-bounds for the matrix.</returns>
-    public bool IsInBounds(Coord coordinate) =>
-        coordinate.Item1 >= 0 &&
-        coordinate.Item2 >= 0 &&
-        coordinate.Item1 < Width &&
-        coordinate.Item2 < Height;
-
-    /// <summary>
-    /// Determines whether a given coordinate is in-bounds for the matrix.
-    /// </summary>
-    /// <param name="coordinate">The coordinate to check.</param>
-    /// <returns>Whether the coordinate is in-bounds for the matrix.</returns>
     public bool IsInBounds(Coord2d coordinate) =>
         coordinate.X >= 0 &&
         coordinate.Y >= 0 &&
@@ -259,7 +255,7 @@ public class CharacterMatrix
     /// <param name="word">The word in question.</param>
     /// <returns>A list of the coordinate values of each character in that word.</returns>
     private static IEnumerable<Coord> CoordinatesOfWord(Word word) =>
-        Enumerable.Range(0, word.Length).Select(x => (word.StartCoordinate.Item1 + x, word.StartCoordinate.Item2));
+        Enumerable.Range(0, word.Length).Select(x => (word.StartCoordinate.X + x, word.StartCoordinate.Y));
 
     /// <summary>
     /// Find the coordinates of characters surrounding a group
@@ -309,9 +305,9 @@ public class CharacterMatrix
     public IEnumerable<Coord2d> CoordinatesOfNeighbors(Coord2d coordinate, bool allEight = true, bool allowWrapping = false) =>
         CoordinatesOfNeighbors((coordinate.X, coordinate.Y), allEight, allowWrapping).Select(c => new Coord2d(c));
 
-    public class Word(Coord startCoordinate, int length, string value)
+    public class Word(Coord2d startCoordinate, int length, string value)
     {
-        public Coord StartCoordinate { get; } = startCoordinate;
+        public Coord2d StartCoordinate { get; } = startCoordinate;
         public int Length { get; } = length;
         public string Value { get; } = value;
     }

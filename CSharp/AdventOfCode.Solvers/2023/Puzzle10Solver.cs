@@ -16,7 +16,7 @@ public class Puzzle10Solver : IPuzzleSolver
         var (matrix, _, coordinatesOfLoop) = GetData(input);
 
         // Replace non-loop characters
-        foreach (var coordinate in matrix.AllCoordinates)
+        foreach (var coordinate in matrix.AllCoordinates2)
         {
             if (!coordinatesOfLoop.Contains(coordinate))
             {
@@ -24,15 +24,15 @@ public class Puzzle10Solver : IPuzzleSolver
             }
         }
 
-        return matrix.AllCoordinates
+        return matrix.AllCoordinates2
             .Count(ix => !coordinatesOfLoop.Contains(ix) && IsInsideLoop(matrix, ix))
             .ToString();
     }
 
-    private static (CharacterMatrix, (int, int), IEnumerable<(int, int)>) GetData(string input)
+    private static (CharacterMatrix, Coord2d, IEnumerable<Coord2d>) GetData(string input)
     {
         var matrix = new CharacterMatrix(input);
-        var startingPosition = matrix.FindAllCharacters('S').Single();
+        var startingPosition = matrix.FindAllCharacters2('S').Single();
 
         // works for my inputs :)
         var useSample = matrix.Width < 30;
@@ -41,24 +41,24 @@ public class Puzzle10Solver : IPuzzleSolver
         return (matrix, startingPosition, coordinatesOfLoop);
     }
 
-    private static IEnumerable<(int, int)> CoordinatesOfLoop(CharacterMatrix matrix, (int, int) startingPosition)
+    private static IEnumerable<Coord2d> CoordinatesOfLoop(CharacterMatrix matrix, Coord2d startingPosition)
     {
-        IList<(int, int)> visitedCoordinates = [startingPosition];
+        IList<Coord2d> visitedCoordinates = [startingPosition];
         var currentDirection = Direction.Down;
 
         do
         {
-            var (nextPosition, nextDirection) = Travel(matrix, visitedCoordinates.Last(), currentDirection);
-            visitedCoordinates.Add(nextPosition);
-            currentDirection = nextDirection;
+            var nextPose = Travel(matrix, visitedCoordinates.Last(), currentDirection);
+            visitedCoordinates.Add(nextPose.Location);
+            currentDirection = nextPose.Direction;
         } while (visitedCoordinates.Last() != visitedCoordinates.First());
 
         return visitedCoordinates.Skip(1);
     }
 
-    private static bool IsInsideLoop(CharacterMatrix matrix, (int, int) startingCoordinate) =>
-        startingCoordinate.Item1 > 0 &&
-            matrix.StringAt((0, startingCoordinate.Item2), startingCoordinate.Item1)
+    private static bool IsInsideLoop(CharacterMatrix matrix, Coord2d startingCoordinate) =>
+        startingCoordinate.X > 0 &&
+            matrix.StringAt(new Coord2d(0, startingCoordinate.Y), startingCoordinate.X)
                 .Replace(".", "")
                 .Replace("-", "")
                 .Replace("L7", "|")
@@ -67,28 +67,28 @@ public class Puzzle10Solver : IPuzzleSolver
                 .Replace("FJ", "|")
                 .Length % 2 == 1;
 
-    private static ((int, int), Direction) Travel(CharacterMatrix data, (int, int) coordinate, Direction currentDirection)
+    private static Pose Travel(CharacterMatrix data, Coord2d coordinate, Direction currentDirection)
     {
         return data.CharAt(coordinate) switch
         {
             '|' => currentDirection == Direction.Up
-                ? ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up)
-                : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
+                ? new Pose(coordinate.X, coordinate.Y - 1, Direction.Up)
+                : new Pose(coordinate.X, coordinate.Y + 1, Direction.Down),
             '-' => currentDirection == Direction.Right
-                ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
-                : ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left),
+                ? new Pose(coordinate.X + 1, coordinate.Y, Direction.Right)
+                : new Pose(coordinate.X - 1, coordinate.Y, Direction.Left),
             'F' => currentDirection == Direction.Up
-                ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
-                : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
+                ? new Pose(coordinate.X + 1, coordinate.Y, Direction.Right)
+                : new Pose(coordinate.X, coordinate.Y + 1, Direction.Down),
             '7' => currentDirection == Direction.Up
-                ? ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left)
-                : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
+                ? new Pose(coordinate.X - 1, coordinate.Y, Direction.Left)
+                : new Pose(coordinate.X, coordinate.Y + 1, Direction.Down),
             'J' => currentDirection == Direction.Down
-                ? ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left)
-                : ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up),
+                ? new Pose(coordinate.X - 1, coordinate.Y, Direction.Left)
+                : new Pose(coordinate.X, coordinate.Y - 1, Direction.Up),
             'L' => currentDirection == Direction.Down
-                ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
-                : ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up),
+                ? new Pose(coordinate.X + 1, coordinate.Y, Direction.Right)
+                : new Pose(coordinate.X, coordinate.Y - 1, Direction.Up),
             _ => throw new Exception("Didn't consider some case"),
         };
     }

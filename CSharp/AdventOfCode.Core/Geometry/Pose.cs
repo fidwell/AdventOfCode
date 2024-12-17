@@ -11,6 +11,12 @@ public record Pose
         Direction = Direction.Undefined;
     }
 
+    public Pose(int x, int y, Direction direction)
+    {
+        Location = new Coord2d(x, y);
+        Direction = direction;
+    }
+
     public Pose(Coord2d location, Direction direction)
     {
         Location = location;
