@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode.Core.MathUtilities;
 
-public class Ray3d
+public record Ray3d
 {
     public Point3d Position0;
     public Point3d Velocity;
@@ -21,7 +21,7 @@ public class Ray3d
     }
 
     public Ray3d Minus(Point3d adjustment) =>
-        new Ray3d(Position0, new Point3d(
+        new(Position0, new Point3d(
             Velocity.X - adjustment.X,
             Velocity.Y - adjustment.Y,
             Velocity.Z - adjustment.Z));
