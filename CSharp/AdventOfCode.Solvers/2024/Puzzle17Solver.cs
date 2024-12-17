@@ -16,8 +16,29 @@ public class Puzzle17Solver : IPuzzleSolver
     {
         var lines = input.SplitByNewline();
         var instructions = new List<int>(Regexes.Digit().Matches(lines[3]).Select(m => int.Parse(m.Value)));
+        return GetBestQuine(instructions, 0, 0)?.ToString() ?? "No value found";
+    }
 
-        return "Not found yet";
+    private static ulong? GetBestQuine(List<int> instructions, int pointerFromEnd, ulong aSoFar)
+    {
+        for (var nextA = 0; nextA < 8; nextA++)
+        {
+            var newA = aSoFar * 8 + (ulong)nextA;
+            var result = Run(instructions, newA);
+            if (instructions.Skip(instructions.Count - pointerFromEnd - 1)
+                .SequenceEqual(result.Skip(result.Count - pointerFromEnd - 1)))
+            {
+                if (pointerFromEnd == instructions.Count - 1)
+                    return newA;
+
+                var subBest = GetBestQuine(instructions, pointerFromEnd + 1, newA);
+                if (subBest.HasValue)
+                {
+                    return subBest.Value;
+                }
+            }
+        }
+        return null;
     }
 
     private static List<int> Run(List<int> instructions, ulong a)
@@ -79,7 +100,7 @@ public class Puzzle17Solver : IPuzzleSolver
     private static int ComboOperand(int operand, ulong a, int b, int c) => operand switch
     {
         0 or 1 or 2 or 3 => operand,
-        4 => (int)a, // probably safe
+        4 => (int)a,
         5 => b,
         6 => c,
         _ => throw new NotSupportedException(),
