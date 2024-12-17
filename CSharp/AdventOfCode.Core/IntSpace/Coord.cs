@@ -24,4 +24,10 @@ public record Coord2d
 
     public static Coord2d operator -(Coord2d a, Coord2d b) =>
         new(a.X - b.X, a.Y - b.Y);
+
+    public static bool operator ==(Coord2d a, Coord b) =>
+        a.X == b.Item1 && a.Y == b.Item2;
+
+    public static bool operator !=(Coord2d a, Coord b) =>
+        a.X != b.Item1 || a.Y != b.Item2;
 }

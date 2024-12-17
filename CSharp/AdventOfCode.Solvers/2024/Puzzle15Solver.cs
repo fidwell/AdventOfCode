@@ -29,9 +29,9 @@ public class Puzzle15Solver : IPuzzleSolver
 
     private class Warehouse
     {
-        public (int, int) Robot { get; private set; }
-        public List<(int, int)> Boxes { get; } = [];
-        public List<(int, int)> Walls { get; } = [];
+        public Coord2d Robot { get; private set; }
+        public List<Coord2d> Boxes { get; } = [];
+        public List<Coord2d> Walls { get; } = [];
         public string RobotInstructions { get; private set; } = string.Empty;
         public bool AreBoxesWide { get; }
         private readonly int _size;
@@ -51,19 +51,19 @@ public class Puzzle15Solver : IPuzzleSolver
                     for (var x = 0; x < line.Length; x++)
                     {
                         if (line[x] == '@')
-                            Robot = (AreBoxesWide ? x * 2 : x, y);
+                            Robot = new(AreBoxesWide ? x * 2 : x, y);
                         else if (line[x] == 'O')
-                            Boxes.Add((AreBoxesWide ? x * 2 : x, y));
+                            Boxes.Add(new(AreBoxesWide ? x * 2 : x, y));
                         else if (line[x] == '#')
                         {
                             if (AreBoxesWide)
                             {
-                                Walls.Add((x * 2, y));
-                                Walls.Add((x * 2 + 1, y));
+                                Walls.Add(new(x * 2, y));
+                                Walls.Add(new(x * 2 + 1, y));
                             }
                             else
                             {
-                                Walls.Add((x, y));
+                                Walls.Add(new(x, y));
                             }
                         }
                     }
@@ -98,7 +98,7 @@ public class Puzzle15Solver : IPuzzleSolver
             _step++;
         }
 
-        private BoxDependency? CreateDependencyTree((int, int) target, Direction direction)
+        private BoxDependency? CreateDependencyTree(Coord2d target, Direction direction)
         {
             var firstBox = Boxes.Where(b => b == target || (AreBoxesWide && b == target.Go(Direction.Left)));
             if (!firstBox.Any())
@@ -109,10 +109,10 @@ public class Puzzle15Solver : IPuzzleSolver
             return IterateDependency(firstBox.Single(), direction);
         }
 
-        private BoxDependency IterateDependency((int, int) box, Direction direction) =>
+        private BoxDependency IterateDependency(Coord2d box, Direction direction) =>
             new(box, (direction == Direction.Down || direction == Direction.Up
                 ? AreBoxesWide
-                    ? new List<(int, int)>
+                    ? new List<Coord2d>
                     {
                         box.Go(direction).Go(Direction.Left),
                         box.Go(direction),
@@ -122,20 +122,20 @@ public class Puzzle15Solver : IPuzzleSolver
                 : Boxes.Where(b => b == box.Go(direction, AreBoxesWide ? 2 : 1)))
                 .Select(b => IterateDependency(b, direction)));
 
-        public int BoxLocationSum => Boxes.Sum(b => b.Item1 + 100 * b.Item2);
+        public int BoxLocationSum => Boxes.Sum(b => b.X + 100 * b.Y);
 
-        private class BoxDependency((int, int) root, IEnumerable<BoxDependency> branches)
+        private class BoxDependency(Coord2d root, IEnumerable<BoxDependency> branches)
         {
-            public (int, int) Root { get; } = root;
+            public Coord2d Root { get; } = root;
             public List<BoxDependency> Branches { get; } = branches.ToList();
 
-            public bool CanMove(List<(int, int)> walls, Direction direction, bool areBoxesWide) =>
+            public bool CanMove(List<Coord2d> walls, Direction direction, bool areBoxesWide) =>
                 !walls.Any(w =>
                     w == Root.Go(direction) ||
                     (areBoxesWide && w == Root.Go(Direction.Right).Go(direction))) &&
                 Branches.All(b => b.CanMove(walls, direction, areBoxesWide));
 
-            public void Move(List<(int, int)> boxes, Direction direction)
+            public void Move(List<Coord2d> boxes, Direction direction)
             {
                 // if another boxed pushed this one, there
                 // was an overlapping tree structure, but
@@ -161,9 +161,9 @@ public class Puzzle15Solver : IPuzzleSolver
             {
                 for (var x = 0; x < _size * (AreBoxesWide ? 2 : 1); x++)
                 {
-                    if (Walls.Contains((x, y)))
+                    if (Walls.Contains(new(x, y)))
                         Console.Write('#');
-                    else if (Boxes.Contains((x, y)))
+                    else if (Boxes.Contains(new(x, y)))
                     {
                         if (AreBoxesWide)
                         {
