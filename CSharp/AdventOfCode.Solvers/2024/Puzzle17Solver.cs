@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -8,10 +7,44 @@ public class Puzzle17Solver : IPuzzleSolver
     public string SolvePartOne(string input)
     {
         var lines = input.SplitByNewline();
-        var registerA = int.Parse(Regexes.NonNegativeInteger().Match(lines[0]).Value);
-        var registerB = int.Parse(Regexes.NonNegativeInteger().Match(lines[1]).Value);
-        var registerC = int.Parse(Regexes.NonNegativeInteger().Match(lines[2]).Value);
-        var instructions = new List<int>(Regex.Matches(lines[3], @"(\d)").Select(m => int.Parse(m.Value)));
+        var instructions = new List<int>(Regexes.Digit().Matches(lines[3]).Select(m => int.Parse(m.Value)));
+        var registerA = ulong.Parse(Regexes.NonNegativeInteger().Match(lines[0]).Value);
+        return string.Join(",", Run(instructions, registerA));
+    }
+
+    public string SolvePartTwo(string input)
+    {
+        var lines = input.SplitByNewline();
+        var instructions = new List<int>(Regexes.Digit().Matches(lines[3]).Select(m => int.Parse(m.Value)));
+        return GetBestQuine(instructions, 0, 0)?.ToString() ?? "No value found";
+    }
+
+    private static ulong? GetBestQuine(List<int> instructions, int pointerFromEnd, ulong aSoFar)
+    {
+        for (var nextA = 0; nextA < 8; nextA++)
+        {
+            var newA = aSoFar * 8 + (ulong)nextA;
+            var result = Run(instructions, newA);
+            if (instructions.Skip(instructions.Count - pointerFromEnd - 1)
+                .SequenceEqual(result.Skip(result.Count - pointerFromEnd - 1)))
+            {
+                if (pointerFromEnd == instructions.Count - 1)
+                    return newA;
+
+                var subBest = GetBestQuine(instructions, pointerFromEnd + 1, newA);
+                if (subBest.HasValue)
+                {
+                    return subBest.Value;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static List<int> Run(List<int> instructions, ulong a)
+    {
+        var b = 0;
+        var c = 0;
         var instructionPointer = 0;
         var outputs = new List<int>();
 
@@ -24,32 +57,32 @@ public class Puzzle17Solver : IPuzzleSolver
             switch (opcode)
             {
                 case 0: // adv: division
-                    registerA = (int)(registerA / Math.Pow(2, ComboOperand(operand)));
+                    a >>= ComboOperand(operand, a, b, c);
                     break;
                 case 1: // bxl: bitwise xor
-                    registerB ^= operand;
+                    b ^= operand;
                     break;
                 case 2: // bst
-                    registerB = ComboOperand(operand) % 8;
+                    b = ComboOperand(operand, a, b, c) & 0b111;
                     break;
                 case 3: // jnz
-                    if (registerA != 0)
+                    if (a != 0)
                     {
                         instructionPointer = instructions[instructionPointer + 1];
                         jumped = true;
                     }
                     break;
                 case 4: // bxc
-                    registerB ^= registerC;
+                    b ^= c;
                     break;
                 case 5: // out
-                    outputs.Add(ComboOperand(operand) % 8);
+                    outputs.Add(ComboOperand(operand, a, b, c) & 0b111);
                     break;
                 case 6: // bdv
-                    registerB = (int)(registerA / Math.Pow(2, ComboOperand(operand)));
+                    b = (int)(a >> ComboOperand(operand, a, b, c));
                     break;
                 case 7: // cdv
-                    registerC = (int)(registerA / Math.Pow(2, ComboOperand(operand)));
+                    c = (int)(a >> ComboOperand(operand, a, b, c));
                     break;
                 default:
                     throw new NotSupportedException();
@@ -61,20 +94,15 @@ public class Puzzle17Solver : IPuzzleSolver
             }
         }
 
-        int ComboOperand(int operand) => operand switch
-        {
-            0 or 1 or 2 or 3 => operand,
-            4 => registerA,
-            5 => registerB,
-            6 => registerC,
-            _ => throw new NotSupportedException(),
-        };
-
-        return string.Join(",", outputs);
+        return outputs;
     }
 
-    public string SolvePartTwo(string input)
+    private static int ComboOperand(int operand, ulong a, int b, int c) => operand switch
     {
-        throw new NotImplementedException();
-    }
+        0 or 1 or 2 or 3 => operand,
+        4 => (int)a,
+        5 => b,
+        6 => c,
+        _ => throw new NotSupportedException(),
+    };
 }

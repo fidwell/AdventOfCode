@@ -1,4 +1,6 @@
 ﻿using AdventOfCode.ConsoleApp;
+using AdventOfCode.Core.Input;
+using AdventOfCode.Solvers;
 
 internal class Program
 {
@@ -23,7 +25,7 @@ internal class Program
 
         cliArgs.TryGetValue("session", out string? session);
 
-        int? year = null, day = null;
+        int? year = null, day = null, part = null;
         if (cliArgs.TryGetValue("year", out string? yearStr))
         {
             year = TryParseNullable(yearStr);
@@ -31,6 +33,10 @@ internal class Program
         if (cliArgs.TryGetValue("day", out string? dayStr))
         {
             day = TryParseNullable(dayStr);
+        }
+        if (cliArgs.TryGetValue("part", out string? partStr))
+        {
+            part = TryParseNullable(partStr);
         }
 
         switch (action)
@@ -55,6 +61,15 @@ internal class Program
 
                 Benchmarker.Run(year.Value);
                 break;
+            case "run":
+                if (!year.HasValue || !day.HasValue)
+                {
+                    ConsoleWriter.Error("Year and day not specified.");
+                    return;
+                }
+
+                RunSolver(year.Value, day.Value, null);
+                break;
             default:
                 ConsoleWriter.Error("Invalid program argument.");
                 break;
@@ -73,6 +88,35 @@ internal class Program
         }
 
         return cliArgs;
+    }
+
+    private static void RunSolver(int year, int day, int? part)
+    {
+        var types = typeof(IPuzzleSolver).Assembly.GetTypes()
+            .Where(t => t.FullName == $"AdventOfCode.Solvers._{year}.Puzzle{day.ToString().PadLeft(2, '0')}Solver");
+        var solver = (IPuzzleSolver?)Activator.CreateInstance(types.First());
+
+        if (solver is null)
+        {
+            ConsoleWriter.Error($"Can't create a solver for {year} puzzle {day}.");
+            return;
+        }
+
+        if (part.HasValue)
+        {
+            var input = DataReader.GetData(year, day, part.Value, false);
+            var result = part.Value == 1
+                ? solver.SolvePartOne(input)
+                : solver.SolvePartTwo(input);
+            ConsoleWriter.Answer(part.Value, result);
+        }
+        else
+        {
+            var input1 = DataReader.GetData(year, day, 1, false);
+            ConsoleWriter.Answer(1, solver.SolvePartOne(input1));
+            var input2 = DataReader.GetData(year, day, 2, false);
+            ConsoleWriter.Answer(2, solver.SolvePartTwo(input2));
+        }
     }
 
     private static async Task DownloadToday(string session)
