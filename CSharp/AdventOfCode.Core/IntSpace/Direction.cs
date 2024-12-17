@@ -11,6 +11,16 @@ public enum Direction : byte
 
 public static class DirectionExtensions
 {
+    public static Coord2d Go(this Coord2d start, Direction direction, int amount = 1) =>
+        direction switch
+        {
+            Direction.Right => new(start.X + amount, start.Y),
+            Direction.Down => new(start.X, start.Y + amount),
+            Direction.Left => new(start.X - amount, start.Y),
+            Direction.Up => new(start.X, start.Y - amount),
+            _ => start
+        };
+
     public static Coord Go(this Coord start, Direction direction, int amount = 1) =>
         direction switch
         {

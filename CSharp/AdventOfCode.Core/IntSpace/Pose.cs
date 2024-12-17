@@ -2,10 +2,10 @@
 
 public record Pose
 {
-    public Coord Location { get; set; }
+    public Coord2d Location { get; set; }
     public Direction Direction { get; init; }
 
-    public Pose(Coord location, Direction direction)
+    public Pose(Coord2d location, Direction direction)
     {
         Location = location;
         Direction = direction;

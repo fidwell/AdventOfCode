@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using AdventOfCode.Core.ArrayUtilities;
+using AdventOfCode.Core.IntSpace;
 
 namespace AdventOfCode.Core.StringUtilities;
 
@@ -99,6 +100,14 @@ public class CharacterMatrix
         CharAt(coord.Item1, coord.Item2, allowOutOfBounds);
 
     /// <summary>
+    /// Returns the single character value at a given coordinate.
+    /// </summary>
+    /// <param name="coord">The coordinate.</param>
+    /// <returns>The character at this position in the matrix.</returns>
+    public char CharAt(Coord2d coord, bool allowOutOfBounds = false) =>
+        CharAt(coord.X, coord.Y, allowOutOfBounds);
+
+    /// <summary>
     /// Returns a string starting at a given index, of a given length.
     /// </summary>
     /// <param name="start">The starting coordinate of the desired string.</param>
@@ -118,8 +127,8 @@ public class CharacterMatrix
     public IEnumerable<Coord> FindAllCharacters(char matchingChar) =>
         AllCoordinates.Where(c => _data[c.Item1, c.Item2] == matchingChar);
 
-    public Coord SingleMatch(char matchingChar) =>
-        AllCoordinates.Single(c => matchingChar == _data[c.Item1, c.Item2]);
+    public Coord2d SingleMatch(char matchingChar) =>
+        AllCoordinates2.Single(c => matchingChar == _data[c.X, c.Y]);
 
     /// <summary>
     /// Finds "words" in the data that match the specified regular expression.
@@ -210,6 +219,11 @@ public class CharacterMatrix
     public IEnumerable<Coord> AllCoordinates => ArrayExtensions.AllPoints(Width, Height);
 
     /// <summary>
+    /// Returns a collection of all x,y pairs that are valid for this matrix.
+    /// </summary>
+    public IEnumerable<Coord2d> AllCoordinates2 => ArrayExtensions.AllPoints(Width, Height).Select(c => new Coord2d(c));
+
+    /// <summary>
     /// Determines whether a given coordinate is in-bounds for the matrix.
     /// </summary>
     /// <param name="coordinate">The coordinate to check.</param>
@@ -219,6 +233,17 @@ public class CharacterMatrix
         coordinate.Item2 >= 0 &&
         coordinate.Item1 < Width &&
         coordinate.Item2 < Height;
+
+    /// <summary>
+    /// Determines whether a given coordinate is in-bounds for the matrix.
+    /// </summary>
+    /// <param name="coordinate">The coordinate to check.</param>
+    /// <returns>Whether the coordinate is in-bounds for the matrix.</returns>
+    public bool IsInBounds(Coord2d coordinate) =>
+        coordinate.X >= 0 &&
+        coordinate.Y >= 0 &&
+        coordinate.X < Width &&
+        coordinate.Y < Height;
 
     /// <summary>
     /// Finds the coordinate values of all characters in a word.
