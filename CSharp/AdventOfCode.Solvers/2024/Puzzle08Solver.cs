@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Core.ArrayUtilities;
+using AdventOfCode.Core.IntSpace;
 using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
@@ -17,17 +18,17 @@ public class Puzzle08Solver : IPuzzleSolver
     }
 
     private static IEnumerable<IEnumerable<Antenna>> GetAntennas(CharacterMatrix map) =>
-        map.AllCoordinates
-            .Select(c => new Antenna(c.Item1, c.Item2, map.CharAt(c)))
+        map.AllCoordinates2
+            .Select(c => new Antenna(c, map.CharAt(c)))
             .Where(a => a.Type != '.').GroupBy(a => a.Type).Select(g => g);
 
-    private static IEnumerable<(int, int)> NodesCausedByAntennas(
+    private static IEnumerable<Coord2d> NodesCausedByAntennas(
         CharacterMatrix map, IEnumerable<Antenna> group, bool includeHarmonics)
     {
         var allPairs = ArrayExtensions.Pairs(group.ToArray());
         foreach (var pair in allPairs)
         {
-            var diff = pair[0] - pair[1];
+            var diff = pair[0].Coord - pair[1].Coord;
 
             var fromNode1 = pair[0].Coord;
             if (includeHarmonics)
@@ -35,7 +36,7 @@ public class Puzzle08Solver : IPuzzleSolver
 
             do
             {
-                fromNode1 = Add(fromNode1, diff);
+                fromNode1 = fromNode1 + diff;
                 if (map.IsInBounds(fromNode1))
                     yield return fromNode1;
                 else
@@ -48,7 +49,7 @@ public class Puzzle08Solver : IPuzzleSolver
 
             do
             {
-                fromNode2 = Subtract(fromNode2, diff);
+                fromNode2 = fromNode2 - diff;
                 if (map.IsInBounds(fromNode2))
                     yield return fromNode2;
                 else
@@ -57,17 +58,5 @@ public class Puzzle08Solver : IPuzzleSolver
         }
     }
 
-    private static (int, int) Add((int, int) a, (int, int) b) =>
-        (a.Item1 + b.Item1, a.Item2 + b.Item2);
-
-    private static (int, int) Subtract((int, int) a, (int, int) b) =>
-        (a.Item1 - b.Item1, a.Item2 - b.Item2);
-
-    private record Antenna(int X, int Y, char Type)
-    {
-        public (int, int) Coord => (X, Y);
-
-        public static (int, int) operator -(Antenna a, Antenna b) =>
-            (a.X - b.X, a.Y - b.Y);
-    }
+    private record Antenna(Coord2d Coord, char Type);
 }

@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.IntSpace;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -10,7 +11,7 @@ public class Puzzle10Solver : IPuzzleSolver
     private static string Solve(string input, bool getDistinct)
     {
         var map = new CharacterMatrix(input);
-        return map.FindAllCharacters('0')
+        return map.FindAllCharacters2('0')
             .Sum(s =>
             {
                 var paths = NinesReachedFromHere(map, s, '0');
@@ -18,7 +19,7 @@ public class Puzzle10Solver : IPuzzleSolver
             }).ToString();
     }
 
-    private static IEnumerable<(int, int)> NinesReachedFromHere(CharacterMatrix map, (int, int) coord, char charHere)
+    private static IEnumerable<Coord2d> NinesReachedFromHere(CharacterMatrix map, Coord2d coord, char charHere)
     {
         if (charHere == '9')
             return [coord];

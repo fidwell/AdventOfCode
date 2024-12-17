@@ -127,6 +127,14 @@ public class CharacterMatrix
     public IEnumerable<Coord> FindAllCharacters(char matchingChar) =>
         AllCoordinates.Where(c => _data[c.Item1, c.Item2] == matchingChar);
 
+    /// <summary>
+    /// Returns the coordinates of all instances of the specified characeter.
+    /// </summary>
+    /// <param name="matchingChar">The character to search for.</param>
+    /// <returns>All coordinates that match that character.</returns>
+    public IEnumerable<Coord2d> FindAllCharacters2(char matchingChar) =>
+        AllCoordinates2.Where(c => _data[c.X, c.Y] == matchingChar);
+
     public Coord2d SingleMatch(char matchingChar) =>
         AllCoordinates2.Single(c => matchingChar == _data[c.X, c.Y]);
 
