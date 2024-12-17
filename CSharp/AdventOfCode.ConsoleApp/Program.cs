@@ -1,4 +1,6 @@
 ﻿using AdventOfCode.ConsoleApp;
+using AdventOfCode.Core.Input;
+using AdventOfCode.Solvers._2024;
 
 internal class Program
 {
@@ -54,6 +56,11 @@ internal class Program
                 }
 
                 Benchmarker.Run(year.Value);
+                break;
+            case "run":
+                var solver = new Puzzle17Solver();
+                var input = DataReader.GetData(2024, 17, 2, false);
+                solver.SolvePartTwo(input);
                 break;
             default:
                 ConsoleWriter.Error("Invalid program argument.");
