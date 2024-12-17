@@ -1,5 +1,5 @@
 ﻿using System.Collections.Immutable;
-using AdventOfCode.Core.IntSpace;
+using AdventOfCode.Core.Geometry;
 using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;

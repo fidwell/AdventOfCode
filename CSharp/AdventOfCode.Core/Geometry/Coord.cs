@@ -1,6 +1,6 @@
 ﻿global using Coord = (int, int);
 
-namespace AdventOfCode.Core.IntSpace;
+namespace AdventOfCode.Core.Geometry;
 
 public readonly record struct Coord2d
 {

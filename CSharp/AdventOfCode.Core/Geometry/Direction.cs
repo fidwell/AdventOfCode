@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode.Core.IntSpace;
+﻿namespace AdventOfCode.Core.Geometry;
 
 public enum Direction : byte
 {

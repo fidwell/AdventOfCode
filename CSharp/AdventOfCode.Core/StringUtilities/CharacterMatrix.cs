@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using AdventOfCode.Core.ArrayUtilities;
-using AdventOfCode.Core.IntSpace;
+using AdventOfCode.Core.Geometry;
 
 namespace AdventOfCode.Core.StringUtilities;
 

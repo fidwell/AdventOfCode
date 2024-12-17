@@ -1,8 +1,8 @@
 ﻿using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core.IntSpace;
+namespace AdventOfCode.Core.Geometry;
 
-public static class IntSpaceAlgorithms
+public static class GeometryAlgorithms
 {
     /// <summary>
     /// Returns a list of coordinates in a CharacterMatrix where the values are in a continuous
