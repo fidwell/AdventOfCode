@@ -5,6 +5,12 @@ public record Pose
     public Coord2d Location { get; set; }
     public Direction Direction { get; init; }
 
+    public Pose()
+    {
+        Location = new Coord2d();
+        Direction = Direction.Undefined;
+    }
+
     public Pose(Coord2d location, Direction direction)
     {
         Location = location;

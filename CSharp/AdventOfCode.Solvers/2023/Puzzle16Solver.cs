@@ -6,7 +6,7 @@ namespace AdventOfCode.Solvers._2023;
 public class Puzzle16Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input) =>
-        EnergizedCellsStartingAt(new CharacterMatrix(input), (-1, 0), Direction.Right).ToString();
+        EnergizedCellsStartingAt(new CharacterMatrix(input), new Coord2d(-1, 0), Direction.Right).ToString();
 
     public string SolvePartTwo(string input)
     {
@@ -15,13 +15,13 @@ public class Puzzle16Solver : IPuzzleSolver
 
         for (var x = 0; x < matrix.Width; x++)
         {
-            var solutionFromTop = EnergizedCellsStartingAt(matrix, (x, -1), Direction.Down);
+            var solutionFromTop = EnergizedCellsStartingAt(matrix, new Coord2d(x, -1), Direction.Down);
             if (solutionFromTop > maxSolution)
             {
                 maxSolution = solutionFromTop;
             }
 
-            var solutionFromBottom = EnergizedCellsStartingAt(matrix, (x, matrix.Height), Direction.Up);
+            var solutionFromBottom = EnergizedCellsStartingAt(matrix, new Coord2d(x, matrix.Height), Direction.Up);
             if (solutionFromBottom > maxSolution)
             {
                 maxSolution = solutionFromBottom;
@@ -30,13 +30,13 @@ public class Puzzle16Solver : IPuzzleSolver
 
         for (var y = 0; y < matrix.Height; y++)
         {
-            var solutionFromLeft = EnergizedCellsStartingAt(matrix, (-1, y), Direction.Right);
+            var solutionFromLeft = EnergizedCellsStartingAt(matrix, new Coord2d(-1, y), Direction.Right);
             if (solutionFromLeft > maxSolution)
             {
                 maxSolution = solutionFromLeft;
             }
 
-            var solutionFromRight = EnergizedCellsStartingAt(matrix, (matrix.Width, y), Direction.Left);
+            var solutionFromRight = EnergizedCellsStartingAt(matrix, new Coord2d(matrix.Width, y), Direction.Left);
             if (solutionFromRight > maxSolution)
             {
                 maxSolution = solutionFromRight;
@@ -46,16 +46,16 @@ public class Puzzle16Solver : IPuzzleSolver
         return maxSolution.ToString();
     }
 
-    private class Beam((int, int) location, Direction direction)
+    private class Beam(Coord2d location, Direction direction)
     {
-        public (int, int) Location { get; set; } = location;
+        public Coord2d Location { get; set; } = location;
         public Direction Direction { get; set; } = direction;
         public bool ShouldDestroy { get; set; } = false;
 
-        public override int GetHashCode() => (Location.Item1 * 110 + Location.Item2) * 5 + (int)Direction;
+        public override int GetHashCode() => (Location.X * 110 + Location.Y) * 5 + (int)Direction;
     }
 
-    private static int EnergizedCellsStartingAt(CharacterMatrix matrix, (int, int) start, Direction dir0)
+    private static int EnergizedCellsStartingAt(CharacterMatrix matrix, Coord2d start, Direction dir0)
     {
         var cache = new List<int>();
         var beams = new List<Beam>

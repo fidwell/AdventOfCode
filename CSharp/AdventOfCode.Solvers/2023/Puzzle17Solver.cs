@@ -11,7 +11,7 @@ public class Puzzle17Solver : IPuzzleSolver
     private static int Solve(CharacterMatrix matrix, int minSteps, int maxSteps)
     {
         var queue = new PriorityQueue<State, int>();
-        queue.Enqueue(new State(0, (0, 0), Direction.Undefined), 0);
+        queue.Enqueue(new State(0, new Pose()), 0);
         var cache = new HashSet<State>();
         var destination = (matrix.Width - 1, matrix.Height - 1);
 
@@ -19,7 +19,7 @@ public class Puzzle17Solver : IPuzzleSolver
         {
             var state = queue.Dequeue();
 
-            if (state.Location == destination)
+            if (state.Pose.Location == destination)
                 return state.Heat;
 
             if (cache.Contains(state))
@@ -27,10 +27,10 @@ public class Puzzle17Solver : IPuzzleSolver
 
             cache.Add(state);
 
-            var possibleNexts = DirectionExtensions.All.Where(d => d != state.Direction && d != state.Direction.Opposite());
+            var possibleNexts = DirectionExtensions.All.Where(d => d != state.Pose.Direction && d != state.Pose.Direction.Opposite());
             foreach (var next in possibleNexts)
             {
-                var loc0 = state.Location;
+                var loc0 = state.Pose.Location;
                 var heat0 = state.Heat;
 
                 for (var i = 1; i <= maxSteps; i++)
@@ -42,7 +42,7 @@ public class Puzzle17Solver : IPuzzleSolver
                         heat0 += matrix.CharAt(loc0) - '0';
                         if (i >= minSteps)
                         {
-                            queue.Enqueue(new State(heat0, loc0, next), heat0);
+                            queue.Enqueue(new State(heat0, new Pose(loc0, next)), heat0);
                         }
                     }
                 }
@@ -52,15 +52,14 @@ public class Puzzle17Solver : IPuzzleSolver
         throw new Exception("Couldn't complete execution.");
     }
 
-    private class State(int heat, (int, int) location, Direction direction)
+    private class State(int heat, Pose pose)
     {
         public int Heat = heat;
-        public (int, int) Location = location;
-        public Direction Direction = direction;
+        public Pose Pose = pose;
 
         public override bool Equals(object? obj) =>
-            obj is State other && other.Location == Location && Direction == other.Direction;
+            obj is State other && other.Pose == Pose;
 
-        public override int GetHashCode() => HashCode.Combine(Location, Direction);
+        public override int GetHashCode() => Pose.GetHashCode();
     }
 }
