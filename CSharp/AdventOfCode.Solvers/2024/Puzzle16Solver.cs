@@ -1,5 +1,5 @@
 ﻿using System.Collections.Immutable;
-using AdventOfCode.Core.ArrayUtilities;
+using AdventOfCode.Core.IntSpace;
 using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
@@ -40,10 +40,10 @@ public class Puzzle16Solver : IPuzzleSolver
 
         var bestScore = int.MaxValue;
         var bestPaths = new List<List<(int, int)>>();
-        var minScores = new Dictionary<ReindeerState, int>();
+        var minScores = new Dictionary<Pose, int>();
 
         var queue = new PriorityQueue<State, int>();
-        queue.Enqueue(new State(new ReindeerState(start, Direction.Right), 0, []), 0);
+        queue.Enqueue(new State(new Pose(start, Direction.Right), 0, []), 0);
 
         while (queue.Count > 0)
         {
@@ -51,7 +51,7 @@ public class Puzzle16Solver : IPuzzleSolver
             if (state.Score > bestScore)
                 continue;
 
-            if (state.ReindeerState.Location == end)
+            if (state.Pose.Location == end)
             {
                 if (state.Score < bestScore)
                 {
@@ -65,11 +65,11 @@ public class Puzzle16Solver : IPuzzleSolver
                 continue;
             }
 
-            if (matrix.CharAt(state.ReindeerState.Location.Go(state.ReindeerState.Direction)) != '#')
+            if (matrix.CharAt(state.Pose.Location.Go(state.Pose.Direction)) != '#')
                 Enqueue(state.Forward());
-            if (matrix.CharAt(state.ReindeerState.Location.Go(state.ReindeerState.Direction.RotateLeft())) != '#')
+            if (matrix.CharAt(state.Pose.Location.Go(state.Pose.Direction.RotateLeft())) != '#')
                 Enqueue(state.TurnLeft());
-            if (matrix.CharAt(state.ReindeerState.Location.Go(state.ReindeerState.Direction.RotateRight())) != '#')
+            if (matrix.CharAt(state.Pose.Location.Go(state.Pose.Direction.RotateRight())) != '#')
                 Enqueue(state.TurnRight());
         }
 
@@ -77,32 +77,25 @@ public class Puzzle16Solver : IPuzzleSolver
 
         void Enqueue(State state)
         {
-            if (!minScores.TryGetValue(state.ReindeerState, out int value) || value >= state.Score)
+            if (!minScores.TryGetValue(state.Pose, out int value) || value >= state.Score)
             {
                 value = state.Score;
-                minScores[state.ReindeerState] = value;
+                minScores[state.Pose] = value;
                 queue.Enqueue(state, value);
             }
         }
     }
 
-    private readonly record struct State(ReindeerState ReindeerState, int Score, List<(int, int)> Path)
+    private readonly record struct State(Pose Pose, int Score, List<(int, int)> Path)
     {
         public readonly State Forward() =>
-            new(ReindeerState.Forward(), Score + 1, [.. Path, ReindeerState.Location.Go(ReindeerState.Direction)]);
+            new(Pose.Forward(), Score + 1, [.. Path, Pose.Location.Go(Pose.Direction)]);
 
         public readonly State TurnLeft() =>
-            new(ReindeerState.TurnLeft(), Score + 1000, Path);
+            new(Pose.TurnLeft(), Score + 1000, Path);
 
         public readonly State TurnRight() =>
-            new(ReindeerState.TurnRight(), Score + 1000, Path);
-    }
-
-    private record struct ReindeerState((int, int) Location, Direction Direction)
-    {
-        public readonly ReindeerState Forward() => new(Location.Go(Direction), Direction);
-        public readonly ReindeerState TurnLeft() => new(Location, Direction.RotateLeft());
-        public readonly ReindeerState TurnRight() => new(Location, Direction.RotateRight());
+            new(Pose.TurnRight(), Score + 1000, Path);
     }
 
     private static void Print(CharacterMatrix matrix, IEnumerable<(int, int)> coords)

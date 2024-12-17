@@ -1,6 +1,5 @@
-﻿using AdventOfCode.Core.ArrayUtilities;
+﻿using AdventOfCode.Core.IntSpace;
 using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
