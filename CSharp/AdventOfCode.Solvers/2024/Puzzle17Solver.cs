@@ -1,65 +1,41 @@
-﻿using System.Text.RegularExpressions;
-using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
 public class Puzzle17Solver : IPuzzleSolver
 {
-    public string SolvePartOne(string input)
-    {
-        var lines = input.SplitByNewline();
-        var registerA = int.Parse(Regexes.NonNegativeInteger().Match(lines[0]).Value);
-        var instructions = new List<int>(Regex.Matches(lines[3], @"(\d)").Select(m => int.Parse(m.Value)));
-        var computer = new Computer((ulong)registerA, instructions);
-        return string.Join(",", computer.Run());
-    }
+    public string SolvePartOne(string input) => string.Join(",", new Computer(input).Run());
 
     public string SolvePartTwo(string input)
     {
-        var lines = input.SplitByNewline();
-        var instructions = new List<int>(Regex.Matches(lines[3], @"(\d)").Select(m => int.Parse(m.Value)));
-
-        var min = 35416039467418UL;//(ulong)(Math.Pow(2, 44) + Math.Pow(2, 45)) * 3 / 5;
-        var max = (ulong)Math.Pow(2, 48);
-
-        for (var regA = min; regA < max; regA += 98304)
-        {
-            var computer = new Computer(regA, instructions);
-            var result = computer.Run();
-
-            if (instructions.SequenceEqual(result))
-            {
-                return regA.ToString();
-            }
-
-            var prefixLen = 10;
-            if (instructions.Count == result.Count &&
-                instructions.Take(prefixLen).SequenceEqual(result.Take(prefixLen)))
-            {
-                var asList = string.Join(",", result);
-                Console.WriteLine($"{regA},{asList}");
-            }
-        }
-
-        return "No solution found";
+        var computer = new Computer(input);
+        // todo
+        return computer.RegisterA.ToString();
     }
 
-    private class Computer(ulong regA, List<int> instructions)
+    private class Computer
     {
-        public ulong RegisterA { get; private set; } = regA;
+        public ulong RegisterA { get; private set; }
         public ulong RegisterB { get; private set; } = 0;
         public ulong RegisterC { get; private set; } = 0;
-        public List<int> Instructions { get; private set; } = instructions;
+        public List<int> Instructions { get; private set; }
+
+        public Computer(string input)
+        {
+            var lines = input.SplitByNewline();
+            RegisterA = ulong.Parse(Regexes.NonNegativeInteger().Match(lines[0]).Value);
+            Instructions = new List<int>(Regexes.Digit().Matches(lines[3]).Select(m => int.Parse(m.Value)));
+        }
 
         public List<int> Run()
         {
             var instructionPointer = 0;
             var outputs = new List<int>();
 
-            while (instructionPointer < instructions.Count)
+            while (instructionPointer < Instructions.Count)
             {
-                var opcode = instructions[instructionPointer];
-                var operand = (ulong)instructions[instructionPointer + 1];
+                var opcode = Instructions[instructionPointer];
+                var operand = (ulong)Instructions[instructionPointer + 1];
                 var jumped = false;
 
                 switch (opcode)
@@ -76,7 +52,7 @@ public class Puzzle17Solver : IPuzzleSolver
                     case 3: // jnz
                         if (RegisterA != 0)
                         {
-                            instructionPointer = instructions[instructionPointer + 1];
+                            instructionPointer = Instructions[instructionPointer + 1];
                             jumped = true;
                         }
                         break;
@@ -102,7 +78,6 @@ public class Puzzle17Solver : IPuzzleSolver
                 }
             }
 
-            //Console.WriteLine($"{outputs.Count} numbers output");
             return outputs;
         }
 
