@@ -2,12 +2,12 @@
 
 namespace AdventOfCode.Solvers._2024;
 
-public partial class Puzzle03Solver : IPuzzleSolver
+public partial class Puzzle03Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         MulCommand().Matches(input).Select(DoMul).Sum().ToString();
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var matches =
             MulCommand().Matches(input)

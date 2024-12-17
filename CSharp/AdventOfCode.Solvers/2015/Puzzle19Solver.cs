@@ -3,12 +3,12 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2015;
 
-public partial class Puzzle19Solver : IPuzzleSolver
+public partial class Puzzle19Solver : PuzzleSolver
 {
     private readonly List<Replacement> Replacements = [];
     private string[] Target = [];
 
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         ParseInput(input);
 
@@ -26,7 +26,7 @@ public partial class Puzzle19Solver : IPuzzleSolver
         return distinctMolecules.Count.ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         throw new NotImplementedException();
     }

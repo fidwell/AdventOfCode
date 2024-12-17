@@ -2,11 +2,11 @@
 
 namespace AdventOfCode.Solvers._2015;
 
-public class Puzzle17Solver : IPuzzleSolver
+public class Puzzle17Solver : PuzzleSolver
 {
     private static readonly List<List<int>> Combinations = [];
 
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         Combinations.Clear();
 
@@ -21,7 +21,7 @@ public class Puzzle17Solver : IPuzzleSolver
     // pasting them into a spreadsheet, and simply counting
     // how many possible combinations were only 3 items long.
     // Here's how we can do it programmatically if we want.
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         _ = SolvePartOne(input);
         var minLength = Combinations.Min(c => c.Count);

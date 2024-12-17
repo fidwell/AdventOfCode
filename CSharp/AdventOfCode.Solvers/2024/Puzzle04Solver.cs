@@ -2,11 +2,11 @@
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle04Solver : IPuzzleSolver
+public class Puzzle04Solver : PuzzleSolver
 {
     const string xmas = "XMAS";
 
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var wordSearch = new CharacterMatrix(input);
         var count = 0;
@@ -20,7 +20,7 @@ public class Puzzle04Solver : IPuzzleSolver
         return count.ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var wordSearch = new CharacterMatrix(input);
         var count = 0;

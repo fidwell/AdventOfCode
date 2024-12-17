@@ -3,15 +3,15 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle13Solver : IPuzzleSolver
+public class Puzzle13Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         GetMatrixes(input)
         .Select(m => ValueOf(m, 0))
         .Sum()
         .ToString();
 
-    public string SolvePartTwo(string input) =>
+    public override string SolvePartTwo(string input) =>
         GetMatrixes(input)
         .Select(m => ValueOf(m, 1))
         .Sum()

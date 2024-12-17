@@ -3,14 +3,14 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle02Solver : IPuzzleSolver
+public class Puzzle02Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         input.AsListOfIntArrays()
             .Count(IsSafe)
             .ToString();
 
-    public string SolvePartTwo(string input) =>
+    public override string SolvePartTwo(string input) =>
         input.AsListOfIntArrays()
             .Count(r => IsSafe(r) || IsSafeIfDampened(r))
             .ToString();

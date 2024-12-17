@@ -2,9 +2,9 @@
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle17Solver : IPuzzleSolver
+public class Puzzle17Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var lines = input.SplitByNewline();
         var instructions = new List<int>(Regexes.Digit().Matches(lines[3]).Select(m => int.Parse(m.Value)));
@@ -12,7 +12,7 @@ public class Puzzle17Solver : IPuzzleSolver
         return string.Join(",", Run(instructions, registerA));
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var lines = input.SplitByNewline();
         var instructions = new List<int>(Regexes.Digit().Matches(lines[3]).Select(m => int.Parse(m.Value)));

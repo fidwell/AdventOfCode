@@ -3,16 +3,16 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
-public partial class Puzzle12Solver : IPuzzleSolver
+public partial class Puzzle12Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         Number()
         .Matches(input)
         .Select(m => m.Captures[0])
         .Select(m => int.Parse(m.Value))
         .Sum().ToString();
 
-    public string SolvePartTwo(string input) =>
+    public override string SolvePartTwo(string input) =>
         SumObject(JsonDocument.Parse(input).RootElement).ToString();
 
     public static int SumObject(JsonElement element)

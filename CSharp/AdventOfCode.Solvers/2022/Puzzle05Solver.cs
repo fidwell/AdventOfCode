@@ -2,9 +2,9 @@
 
 namespace AdventOfCode.Solvers._2022;
 
-public class Puzzle05Solver : IPuzzleSolver
+public class Puzzle05Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var (stacks, moves) = SetUp(input);
 
@@ -19,7 +19,7 @@ public class Puzzle05Solver : IPuzzleSolver
         return new string(stacks.Select(s => s.Pop()).ToArray());
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var (stacks, moves) = SetUp(input);
 

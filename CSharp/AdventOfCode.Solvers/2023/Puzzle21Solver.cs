@@ -2,16 +2,16 @@
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle21Solver : IPuzzleSolver
+public class Puzzle21Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var matrix = new CharacterMatrix(input);
         var target = matrix.Width < 20 ? 6 : 64;
         return Solve(matrix, target, false).ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var matrix = new CharacterMatrix(input);
         var target = matrix.Width < 20 ? 100 : 26_501_365;

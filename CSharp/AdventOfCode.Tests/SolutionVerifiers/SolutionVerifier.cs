@@ -11,7 +11,7 @@ public abstract class SolutionVerifier(int year)
     protected const int MaxTimeout = 15000;
     protected readonly int Year = year;
 
-    protected void Solve(IPuzzleSolver solver, int puzzle, int part, bool useExample, string expected)
+    protected void Solve(PuzzleSolver solver, int puzzle, int part, bool useExample, string expected)
     {
         var input = DataReader.GetData(Year, puzzle, part, useExample);
         var result = part == 1

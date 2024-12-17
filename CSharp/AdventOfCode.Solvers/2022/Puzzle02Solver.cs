@@ -2,16 +2,16 @@
 
 namespace AdventOfCode.Solvers._2022;
 
-public class Puzzle02Solver : IPuzzleSolver
+public class Puzzle02Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         input.SplitByNewline()
             .Select(l => new { opp = ToRps(l[0]), me = ToRps(l[2]) })
             .Select(l => Score(l.me, Decide(l.me, l.opp)))
             .Sum()
             .ToString();
 
-    public string SolvePartTwo(string input) =>
+    public override string SolvePartTwo(string input) =>
         input.SplitByNewline()
             .Select(l => new { opp = ToRps(l[0]), outcome = ToOutcome(l[2]) })
             .Select(l => Score(WhatIPlayed(l.opp, l.outcome), l.outcome))

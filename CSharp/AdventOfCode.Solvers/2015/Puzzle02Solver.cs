@@ -2,9 +2,9 @@
 
 namespace AdventOfCode.Solvers._2015;
 
-public class Puzzle02Solver : IPuzzleSolver
+public class Puzzle02Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var presents = input.SplitByNewline()
             .Select(line => line.Split('x').Select(int.Parse).ToList());
@@ -21,7 +21,7 @@ public class Puzzle02Solver : IPuzzleSolver
         return sum.ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var presents = input.SplitByNewline()
             .Select(line => line.Split('x').Select(int.Parse).ToList());

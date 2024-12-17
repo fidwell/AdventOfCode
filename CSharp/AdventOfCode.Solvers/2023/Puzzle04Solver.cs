@@ -2,14 +2,14 @@
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle04Solver : IPuzzleSolver
+public class Puzzle04Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         GetCards(input)
         .Sum(c => c.Score)
         .ToString();
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var cards = GetCards(input).ToList();
         cards.ForEach(card =>

@@ -3,12 +3,12 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle18Solver : IPuzzleSolver
+public class Puzzle18Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         Solve(input.SplitByNewline().Select(l => new Instruction(l, true))).ToString();
 
-    public string SolvePartTwo(string input) =>
+    public override string SolvePartTwo(string input) =>
         Solve(input.SplitByNewline().Select(l => new Instruction(l, false)).ToList()).ToString();
 
     private static long Solve(IEnumerable<Instruction> instructions) =>

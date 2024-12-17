@@ -2,16 +2,16 @@
 
 namespace AdventOfCode.Solvers._2015;
 
-public partial class Puzzle14Solver : IPuzzleSolver
+public partial class Puzzle14Solver : PuzzleSolver
 {
     const int RaceDuration = 2503;
 
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         GetReindeer(input)
         .Max(r => r.DistanceAfterFlying(RaceDuration))
         .ToString();
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var reindeer = GetReindeer(input).ToList();
         for (var t = 1; t <= RaceDuration; t++)

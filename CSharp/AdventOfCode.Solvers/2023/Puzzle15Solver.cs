@@ -3,15 +3,15 @@ using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
-public partial class Puzzle15Solver : IPuzzleSolver
+public partial class Puzzle15Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         input.Split(',')
         .Select(Hash)
         .Sum()
         .ToString();
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var boxes = Enumerable.Range(0, 256).Select(i => new List<Lens>()).ToArray();
 

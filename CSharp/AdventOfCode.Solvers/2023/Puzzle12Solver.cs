@@ -2,18 +2,18 @@
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle12Solver : IPuzzleSolver
+public class Puzzle12Solver : PuzzleSolver
 {
     private readonly Dictionary<string, long> _cache = [];
 
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         input
         .SplitByNewline()
         .Select(l => PossibleArrangementCount(l, 1))
         .Sum()
         .ToString();
 
-    public string SolvePartTwo(string input) =>
+    public override string SolvePartTwo(string input) =>
         input
         .SplitByNewline()
         .Select(l => PossibleArrangementCount(l, 5))

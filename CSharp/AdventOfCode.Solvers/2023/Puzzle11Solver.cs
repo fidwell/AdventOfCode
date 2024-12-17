@@ -4,12 +4,12 @@ using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle11Solver : IPuzzleSolver
+public class Puzzle11Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
         => Solve(input, 1);
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
         => Solve(input, 999999);
 
     private static string Solve(string input, long gapSize)

@@ -2,14 +2,14 @@
 
 namespace AdventOfCode.Solvers._2015;
 
-public class Puzzle06Solver : IPuzzleSolver
+public class Puzzle06Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) => Solve(input,
+    public override string SolvePartOne(string input) => Solve(input,
         x => 1,
         x => 0,
         x => x == 1 ? 0u : 1);
 
-    public string SolvePartTwo(string input) => Solve(input,
+    public override string SolvePartTwo(string input) => Solve(input,
         x => x + 1,
         x => x > 0 ? x - 1 : 0,
         x => x + 2);

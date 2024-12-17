@@ -3,9 +3,9 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public partial class Puzzle24Solver : IPuzzleSolver
+public partial class Puzzle24Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var lines = input.SplitByNewline();
 
@@ -35,7 +35,7 @@ public partial class Puzzle24Solver : IPuzzleSolver
         return count.ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var lines = input.SplitByNewline();
         var hailstones = lines

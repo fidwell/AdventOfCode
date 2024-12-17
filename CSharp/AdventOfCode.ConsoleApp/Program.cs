@@ -92,9 +92,9 @@ internal class Program
 
     private static void RunSolver(int year, int day, int? part)
     {
-        var types = typeof(IPuzzleSolver).Assembly.GetTypes()
+        var types = typeof(PuzzleSolver).Assembly.GetTypes()
             .Where(t => t.FullName == $"AdventOfCode.Solvers._{year}.Puzzle{day.ToString().PadLeft(2, '0')}Solver");
-        var solver = (IPuzzleSolver?)Activator.CreateInstance(types.First());
+        var solver = (PuzzleSolver?)Activator.CreateInstance(types.First());
 
         if (solver is null)
         {
@@ -102,8 +102,10 @@ internal class Program
             return;
         }
 
+        solver.ShouldPrint = true;
         if (part.HasValue)
         {
+            ConsoleWriter.Info($"Solving part {part}...");
             var input = DataReader.GetData(year, day, part.Value, false);
             var result = part.Value == 1
                 ? solver.SolvePartOne(input)
@@ -112,8 +114,10 @@ internal class Program
         }
         else
         {
+            ConsoleWriter.Info($"Solving part 1...");
             var input1 = DataReader.GetData(year, day, 1, false);
             ConsoleWriter.Answer(1, solver.SolvePartOne(input1));
+            ConsoleWriter.Info($"Solving part 2...");
             var input2 = DataReader.GetData(year, day, 2, false);
             ConsoleWriter.Answer(2, solver.SolvePartTwo(input2));
         }

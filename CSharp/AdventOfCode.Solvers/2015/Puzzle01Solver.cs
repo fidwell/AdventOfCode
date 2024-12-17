@@ -1,11 +1,11 @@
 ﻿namespace AdventOfCode.Solvers._2015;
 
-public class Puzzle01Solver : IPuzzleSolver
+public class Puzzle01Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         (2 * input.Count(c => c == '(') - input.Length).ToString();
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var floor = 0;
 

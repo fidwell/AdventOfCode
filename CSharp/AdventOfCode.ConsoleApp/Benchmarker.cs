@@ -11,9 +11,9 @@ internal static class Benchmarker
     {
         Console.WriteLine($"Running benchmarks for year {year}...");
 
-        var solvers = typeof(IPuzzleSolver).Assembly.GetTypes()
-            .Where(t => t.Namespace == $"AdventOfCode.Solvers._{year}" && typeof(IPuzzleSolver).IsAssignableFrom(t))
-            .Select(t => (IPuzzleSolver?)Activator.CreateInstance(t)) ?? [];
+        var solvers = typeof(PuzzleSolver).Assembly.GetTypes()
+            .Where(t => t.Namespace == $"AdventOfCode.Solvers._{year}" && typeof(PuzzleSolver).IsAssignableFrom(t))
+            .Select(t => (PuzzleSolver?)Activator.CreateInstance(t)) ?? [];
 
         if (!solvers.Any())
         {
