@@ -291,6 +291,16 @@ public class CharacterMatrix
         }
     }
 
+    /// <summary>
+    /// Find the coordinate values of the (up to) eight characters
+    /// surrounding the character at the given index. Will
+    /// omit values if the coordinate is at the edges of the matrix.
+    /// </summary>
+    /// <param name="coordinate">The index to search around.</param>
+    /// <returns>Coordinates of all characters surrounding the input character index.</returns>
+    public IEnumerable<Coord2d> CoordinatesOfNeighbors(Coord2d coordinate, bool allEight = true, bool allowWrapping = false) =>
+        CoordinatesOfNeighbors((coordinate.X, coordinate.Y), allEight, allowWrapping).Select(c => new Coord2d(c));
+
     public class Word(Coord startCoordinate, int length, string value)
     {
         public Coord StartCoordinate { get; } = startCoordinate;

@@ -2,7 +2,7 @@
 
 namespace AdventOfCode.Core.IntSpace;
 
-public record Coord2d
+public readonly record struct Coord2d
 {
     public int X { get; init; }
     public int Y { get; init; }

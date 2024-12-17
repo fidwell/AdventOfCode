@@ -11,10 +11,10 @@ public static class IntSpaceAlgorithms
     /// <param name="matrix">The character matrix to search.</param>
     /// <param name="start">The coordinate from which to start the fill.</param>
     /// <returns>All coordinates in a continuous region from the start.</returns>
-    public static List<Coord> FloodFill(CharacterMatrix matrix, Coord start)
+    public static List<Coord2d> FloodFill(CharacterMatrix matrix, Coord2d start)
     {
-        var result = new HashSet<Coord>();
-        var queue = new Queue<Coord>();
+        var result = new HashSet<Coord2d>();
+        var queue = new Queue<Coord2d>();
         queue.Enqueue(start);
         var targetChar = matrix.CharAt(start);
 
@@ -27,6 +27,6 @@ public static class IntSpaceAlgorithms
                     queue.Enqueue(neighbor);
             }
         }
-        return [.. result.OrderBy(c => c)];
+        return [.. result];
     }
 }

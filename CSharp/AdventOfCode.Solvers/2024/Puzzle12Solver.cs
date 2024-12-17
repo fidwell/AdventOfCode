@@ -6,7 +6,7 @@ namespace AdventOfCode.Solvers._2024;
 public class Puzzle12Solver : IPuzzleSolver
 {
     public string SolvePartOne(string input) => Solve(input, (r, m) => r.Area * r.Perimeter(m));
-    public string SolvePartTwo(string input) => Solve(input, (r, _) => r.Area  * r.CornerCount());
+    public string SolvePartTwo(string input) => Solve(input, (r, _) => r.Area * r.CornerCount());
 
     private static string Solve(string input, Func<Region, CharacterMatrix, int> priceFunc)
     {
@@ -14,7 +14,7 @@ public class Puzzle12Solver : IPuzzleSolver
 
         List<Region> plots = [];
 
-        var coordsToRegionize = new List<(int, int)>(map.AllCoordinates);
+        var coordsToRegionize = new List<Coord2d>(map.AllCoordinates2);
 
         while (coordsToRegionize.Count != 0)
         {
@@ -27,10 +27,10 @@ public class Puzzle12Solver : IPuzzleSolver
         return plots.Sum(p => priceFunc(p, map)).ToString();
     }
 
-    private class Region(char identifier, List<(int, int)> locations)
+    private class Region(char identifier, List<Coord2d> locations)
     {
         public char Identifier { get; set; } = identifier;
-        public List<(int, int)> Locations { get; } = locations;
+        public List<Coord2d> Locations { get; } = locations;
 
         public int Area => Locations.Count;
 
@@ -39,10 +39,10 @@ public class Puzzle12Solver : IPuzzleSolver
             var sum = 0;
             foreach (var a in Locations)
             {
-                var hasTopBorder = a.Item2 == 0 || !Locations.Any(b => a.Item1 == b.Item1 && a.Item2 == b.Item2 + 1);
-                var hasBottomBorder = a.Item2 == map.Height - 1 || !Locations.Any(b => a.Item1 == b.Item1 && a.Item2 == b.Item2 - 1);
-                var hasRightBorder = a.Item1 == map.Width - 1 || !Locations.Any(b => a.Item1 == b.Item1 - 1 && a.Item2 == b.Item2);
-                var hasLeftBorder = a.Item1 == 0 || !Locations.Any(b => a.Item1 == b.Item1 + 1 && a.Item2 == b.Item2);
+                var hasTopBorder = a.Y == 0 || !Locations.Any(b => a.X == b.X && a.Y == b.Y + 1);
+                var hasBottomBorder = a.Y == map.Height - 1 || !Locations.Any(b => a.X == b.X && a.Y == b.Y - 1);
+                var hasRightBorder = a.X == map.Width - 1 || !Locations.Any(b => a.X == b.X - 1 && a.Y == b.Y);
+                var hasLeftBorder = a.X == 0 || !Locations.Any(b => a.X == b.X + 1 && a.Y == b.Y);
                 sum +=
                     (hasTopBorder ? 1 : 0) +
                     (hasBottomBorder ? 1 : 0) +
@@ -58,14 +58,14 @@ public class Puzzle12Solver : IPuzzleSolver
 
             foreach (var c in Locations)
             {
-                var e = Locations.Contains((c.Item1 + 1, c.Item2));
-                var s = Locations.Contains((c.Item1, c.Item2 + 1));
-                var w = Locations.Contains((c.Item1 - 1, c.Item2));
-                var n = Locations.Contains((c.Item1, c.Item2 - 1));
-                var se = Locations.Contains((c.Item1 + 1, c.Item2 + 1));
-                var sw = Locations.Contains((c.Item1 - 1, c.Item2 + 1));
-                var nw = Locations.Contains((c.Item1 - 1, c.Item2 - 1));
-                var ne = Locations.Contains((c.Item1 + 1, c.Item2 - 1));
+                var e = Locations.Any(l => l.X == c.X + 1 && l.Y == c.Y);
+                var s = Locations.Any(l => l.X == c.X && l.Y == c.Y + 1);
+                var w = Locations.Any(l => l.X == c.X - 1 && l.Y == c.Y);
+                var n = Locations.Any(l => l.X == c.X && l.Y == c.Y - 1);
+                var se = Locations.Any(l => l.X == c.X + 1 && l.Y == c.Y + 1);
+                var sw = Locations.Any(l => l.X == c.X - 1 && l.Y == c.Y + 1);
+                var nw = Locations.Any(l => l.X == c.X - 1 && l.Y == c.Y - 1);
+                var ne = Locations.Any(l => l.X == c.X + 1 && l.Y == c.Y - 1);
 
                 if (!e && !n || e && n && !ne)
                     sum++;
