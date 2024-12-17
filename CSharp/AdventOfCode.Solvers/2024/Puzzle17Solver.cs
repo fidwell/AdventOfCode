@@ -16,8 +16,8 @@ public class Puzzle17Solver : IPuzzleSolver
     private class Computer
     {
         public ulong RegisterA { get; private set; }
-        public ulong RegisterB { get; private set; } = 0;
-        public ulong RegisterC { get; private set; } = 0;
+        public int RegisterB { get; private set; } = 0;
+        public int RegisterC { get; private set; } = 0;
         public List<int> Instructions { get; private set; }
 
         public Computer(string input)
@@ -35,19 +35,19 @@ public class Puzzle17Solver : IPuzzleSolver
             while (instructionPointer < Instructions.Count)
             {
                 var opcode = Instructions[instructionPointer];
-                var operand = (ulong)Instructions[instructionPointer + 1];
+                var operand = Instructions[instructionPointer + 1];
                 var jumped = false;
 
                 switch (opcode)
                 {
                     case 0: // adv: division
-                        RegisterA = (ulong)(RegisterA / Math.Pow(2, ComboOperand(operand)));
+                        RegisterA >>= ComboOperand(operand);
                         break;
                     case 1: // bxl: bitwise xor
                         RegisterB ^= operand;
                         break;
                     case 2: // bst
-                        RegisterB = ComboOperand(operand) % 8UL;
+                        RegisterB = ComboOperand(operand) & 0b111;
                         break;
                     case 3: // jnz
                         if (RegisterA != 0)
@@ -60,13 +60,13 @@ public class Puzzle17Solver : IPuzzleSolver
                         RegisterB ^= RegisterC;
                         break;
                     case 5: // out
-                        outputs.Add((int)(ComboOperand(operand) % 8UL));
+                        outputs.Add(ComboOperand(operand) & 0b111);
                         break;
                     case 6: // bdv
-                        RegisterB = (ulong)(RegisterA / Math.Pow(2, ComboOperand(operand)));
+                        RegisterB = (int)(RegisterA >> ComboOperand(operand));
                         break;
                     case 7: // cdv
-                        RegisterC = (ulong)(RegisterA / Math.Pow(2, ComboOperand(operand)));
+                        RegisterC = (int)(RegisterA >> ComboOperand(operand));
                         break;
                     default:
                         throw new NotSupportedException();
@@ -87,10 +87,10 @@ public class Puzzle17Solver : IPuzzleSolver
             return string.Join(",", Instructions).Equals(result);
         }
 
-        private ulong ComboOperand(ulong operand) => operand switch
+        private int ComboOperand(int operand) => operand switch
         {
             0 or 1 or 2 or 3 => operand,
-            4 => RegisterA,
+            4 => (int)RegisterA, // probably safe
             5 => RegisterB,
             6 => RegisterC,
             _ => throw new NotSupportedException(),
