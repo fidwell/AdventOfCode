@@ -19,7 +19,7 @@ public class Puzzle02Solver : IPuzzleSolver
 
     private bool IsSafeIfDampened(int[] levels)
     {
-        for (int i = 0; i < levels.Length; i++)
+        for (var i = 0; i < levels.Length; i++)
         {
             if (IsSafe(levels.CopyExcept(i)))
                 return true;

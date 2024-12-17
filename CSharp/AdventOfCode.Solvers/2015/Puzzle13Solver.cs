@@ -24,7 +24,7 @@ public partial class Puzzle13Solver : IPuzzleSolver
     private static int TotalHappinessChange(List<string> arrangement, IEnumerable<HappinessDefinition> rules, bool wrap)
     {
         var amount = 0;
-        for (int i = 0; i < arrangement.Count; i++)
+        for (var i = 0; i < arrangement.Count; i++)
         {
             var toLeft = i - 1;
             var toRight = i + 1;

@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode.Core.ArrayUtilities;
+﻿namespace AdventOfCode.Core.IntSpace;
 
 public enum Direction : byte
 {
@@ -11,7 +11,7 @@ public enum Direction : byte
 
 public static class DirectionExtensions
 {
-    public static (int, int) Go(this (int, int) start, Direction direction, int amount = 1) =>
+    public static Coord Go(this Coord start, Direction direction, int amount = 1) =>
         direction switch
         {
             Direction.Right => (start.Item1 + amount, start.Item2),

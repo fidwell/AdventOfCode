@@ -44,7 +44,7 @@ public static class ArrayExtensions
         }
     }
 
-    public static IEnumerable<(int, int)> AllPoints(int xCount, int yCount) =>
+    public static IEnumerable<Coord> AllPoints(int xCount, int yCount) =>
         Enumerable.Range(0, yCount).SelectMany(y => Enumerable.Range(0, xCount).Select(x => (x, y)));
 
     /// <summary>

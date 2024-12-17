@@ -95,7 +95,7 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="coord">The coordinate.</param>
     /// <returns>The character at this position in the matrix.</returns>
-    public char CharAt((int, int) coord, bool allowOutOfBounds = false) =>
+    public char CharAt(Coord coord, bool allowOutOfBounds = false) =>
         CharAt(coord.Item1, coord.Item2, allowOutOfBounds);
 
     /// <summary>
@@ -104,7 +104,7 @@ public class CharacterMatrix
     /// <param name="start">The starting coordinate of the desired string.</param>
     /// <param name="length">The length of the desired string.</param>
     /// <returns>A string starting at a given index, of a given length.</returns>
-    public string StringAt((int, int) start, int length)
+    public string StringAt(Coord start, int length)
     {
         var row = RowAt(start.Item2);
         return new string(Enumerable.Range(start.Item1, length).Select(i => row[i]).ToArray());
@@ -115,10 +115,10 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="matchingChar">The character to search for.</param>
     /// <returns>All coordinates that match that character.</returns>
-    public IEnumerable<(int, int)> FindAllCharacters(char matchingChar) =>
+    public IEnumerable<Coord> FindAllCharacters(char matchingChar) =>
         AllCoordinates.Where(c => _data[c.Item1, c.Item2] == matchingChar);
 
-    public (int, int) SingleMatch(char matchingChar) =>
+    public Coord SingleMatch(char matchingChar) =>
         AllCoordinates.Single(c => matchingChar == _data[c.Item1, c.Item2]);
 
     /// <summary>
@@ -145,7 +145,7 @@ public class CharacterMatrix
     /// <param name="index">The index of the starting character.</param>
     /// <param name="length">The length of the word.</param>
     /// <returns>Coordinate of all characters surrounding the input word.</returns>
-    public IEnumerable<(int, int)> CoordinatesOfNeighbors(Word word) => CoordinatesOfNeighbors(CoordinatesOfWord(word));
+    public IEnumerable<Coord> CoordinatesOfNeighbors(Word word) => CoordinatesOfNeighbors(CoordinatesOfWord(word));
 
     /// <summary>
     /// Get a string representing the characters in the given row.
@@ -172,7 +172,7 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="coordinates">The coordinates of the character to replace.</param>
     /// <param name="value">The new value of the character.</param>
-    public void SetCharacter((int, int) coordinates, char value) => SetCharacter(coordinates.Item1, coordinates.Item2, value);
+    public void SetCharacter(Coord coordinates, char value) => SetCharacter(coordinates.Item1, coordinates.Item2, value);
 
     /// <summary>
     /// Replaces the character value at the given index.
@@ -207,14 +207,14 @@ public class CharacterMatrix
     /// <summary>
     /// Returns a collection of all x,y pairs that are valid for this matrix.
     /// </summary>
-    public IEnumerable<(int, int)> AllCoordinates => ArrayExtensions.AllPoints(Width, Height);
+    public IEnumerable<Coord> AllCoordinates => ArrayExtensions.AllPoints(Width, Height);
 
     /// <summary>
     /// Determines whether a given coordinate is in-bounds for the matrix.
     /// </summary>
     /// <param name="coordinate">The coordinate to check.</param>
     /// <returns>Whether the coordinate is in-bounds for the matrix.</returns>
-    public bool IsInBounds((int, int) coordinate) =>
+    public bool IsInBounds(Coord coordinate) =>
         coordinate.Item1 >= 0 &&
         coordinate.Item2 >= 0 &&
         coordinate.Item1 < Width &&
@@ -225,7 +225,7 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="word">The word in question.</param>
     /// <returns>A list of the coordinate values of each character in that word.</returns>
-    private static IEnumerable<(int, int)> CoordinatesOfWord(Word word) =>
+    private static IEnumerable<Coord> CoordinatesOfWord(Word word) =>
         Enumerable.Range(0, word.Length).Select(x => (word.StartCoordinate.Item1 + x, word.StartCoordinate.Item2));
 
     /// <summary>
@@ -234,7 +234,7 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="coordinates">All coordinates of characters.</param>
     /// <returns>Coordinates of all characters surrounding the input character coordinates.</returns>
-    private IEnumerable<(int, int)> CoordinatesOfNeighbors(IEnumerable<(int, int)> coordinates) => coordinates
+    private IEnumerable<Coord> CoordinatesOfNeighbors(IEnumerable<Coord> coordinates) => coordinates
         .SelectMany(c => CoordinatesOfNeighbors(c))
         .Where(c => !coordinates.Contains(c))
         .Distinct();
@@ -246,7 +246,7 @@ public class CharacterMatrix
     /// </summary>
     /// <param name="coordinate">The index to search around.</param>
     /// <returns>Coordinates of all characters surrounding the input character index.</returns>
-    public IEnumerable<(int, int)> CoordinatesOfNeighbors((int, int) coordinate, bool allEight = true, bool allowWrapping = false)
+    public IEnumerable<Coord> CoordinatesOfNeighbors(Coord coordinate, bool allEight = true, bool allowWrapping = false)
     {
         var (x, y) = coordinate;
 
@@ -266,9 +266,9 @@ public class CharacterMatrix
         }
     }
 
-    public class Word((int, int) startCoordinate, int length, string value)
+    public class Word(Coord startCoordinate, int length, string value)
     {
-        public (int, int) StartCoordinate { get; } = startCoordinate;
+        public Coord StartCoordinate { get; } = startCoordinate;
         public int Length { get; } = length;
         public string Value { get; } = value;
     }

@@ -1,4 +1,4 @@
-﻿using AdventOfCode.Core.ArrayUtilities;
+﻿using AdventOfCode.Core.IntSpace;
 using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
@@ -157,9 +157,9 @@ public class Puzzle15Solver : IPuzzleSolver
             Console.WriteLine(_step);
             if (_step > 0)
                 Console.WriteLine(RobotInstructions[_step - 1]);
-            for (int y = 0; y < _size; y++)
+            for (var y = 0; y < _size; y++)
             {
-                for (int x = 0; x < _size * (AreBoxesWide ? 2 : 1); x++)
+                for (var x = 0; x < _size * (AreBoxesWide ? 2 : 1); x++)
                 {
                     if (Walls.Contains((x, y)))
                         Console.Write('#');

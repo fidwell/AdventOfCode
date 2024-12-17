@@ -1,4 +1,4 @@
-﻿using AdventOfCode.Core;
+﻿using AdventOfCode.Core.IntSpace;
 using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
@@ -19,7 +19,7 @@ public class Puzzle12Solver : IPuzzleSolver
         while (coordsToRegionize.Count != 0)
         {
             var start = coordsToRegionize[0];
-            var coords = TileMath.FloodFill(map, start);
+            var coords = IntSpaceAlgorithms.FloodFill(map, start);
             plots.Add(new Region(map.CharAt(coords[0]), coords));
             coordsToRegionize.RemoveAll(coords.Contains);
         }
