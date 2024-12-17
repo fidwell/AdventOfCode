@@ -8,7 +8,7 @@ public class Puzzle06Solver : IPuzzleSolver
     public string SolvePartOne(string input)
     {
         var map = new CharacterMatrix(input);
-        return GetRoute(map, map.SingleMatch('^'), Direction.Up).Item1.DistinctBy(x => x.Coord).Count().ToString();
+        return GetRoute(map, map.SingleMatch('^'), Direction.Up).Item1.DistinctBy(x => x.Location).Count().ToString();
     }
 
     public string SolvePartTwo(string input)
@@ -16,28 +16,28 @@ public class Puzzle06Solver : IPuzzleSolver
         var map = new CharacterMatrix(input);
         var originalRoute = GetRoute(map, map.SingleMatch('^'), Direction.Up).Item1;
         return originalRoute
-            .Select(x => x.Coord)
+            .Select(x => x.Location)
             .Distinct()
             .Where(x => x != map.SingleMatch('^'))
             .Count(obstacle =>
             {
-                var start = originalRoute.First(c => c.Coord.Go(c.Direction) == obstacle);
-                return GetRoute(map, start.Coord, start.Direction, obstacle).Item2;
+                var start = originalRoute.First(c => c.Location.Go(c.Direction) == obstacle);
+                return GetRoute(map, start.Location, start.Direction, obstacle).Item2;
             })
             .ToString();
     }
 
-    private static (HashSet<State>, bool) GetRoute(
+    private static (HashSet<Pose>, bool) GetRoute(
         CharacterMatrix map,
         (int, int) coord,
         Direction direction,
         (int, int)? extraObstacle = null)
     {
-        HashSet<State> visitedLocations = [];
+        HashSet<Pose> visitedLocations = [];
 
         while (map.IsInBounds(coord))
         {
-            var state = new State(coord.Item1, coord.Item2, direction);
+            var state = new Pose(coord, direction);
 
             if (!visitedLocations.Add(state))
                 return ([], true);
@@ -57,10 +57,5 @@ public class Puzzle06Solver : IPuzzleSolver
         }
 
         return (visitedLocations, false);
-    }
-
-    private record State(int X, int Y, Direction Direction)
-    {
-        public (int, int) Coord => (X, Y);
     }
 }

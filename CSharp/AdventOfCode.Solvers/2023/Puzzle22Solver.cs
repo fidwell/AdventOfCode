@@ -1,5 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -146,7 +146,7 @@ public class Puzzle22Solver : IPuzzleSolver
         }
     }
 
-    private class Point3d
+    private record Point3d
     {
         public readonly int X;
         public readonly int Y;
