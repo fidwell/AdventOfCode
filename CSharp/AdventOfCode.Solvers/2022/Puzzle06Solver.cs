@@ -10,7 +10,7 @@ public class Puzzle06Solver : IPuzzleSolver
 
     private static int Solve(string input, int size)
     {
-        for (int i = 0; i < input.Length - size; i++)
+        for (var i = 0; i < input.Length - size; i++)
         {
             var substring = input.Substring(i, size);
             if (substring.ToCharArray().Distinct().Count() == size)

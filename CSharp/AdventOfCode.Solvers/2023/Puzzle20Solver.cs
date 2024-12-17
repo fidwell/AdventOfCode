@@ -8,7 +8,7 @@ public class Puzzle20Solver : IPuzzleSolver
     public string SolvePartOne(string input)
     {
         var system = new ModuleSystem(input);
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
         {
             system.PushButton();
         }

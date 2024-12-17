@@ -75,7 +75,7 @@ public class Puzzle09Solver : IPuzzleSolver
     {
         for (var j = memory.Count - 1; j > 1; j -= 2)
         {
-            for (int i = 1; i < j; i += 2)
+            for (var i = 1; i < j; i += 2)
             {
                 var used = memory[j];
                 var empty = memory[i];
