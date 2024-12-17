@@ -60,7 +60,7 @@ internal class Program
             case "run":
                 var solver = new Puzzle17Solver();
                 var input = DataReader.GetData(2024, 17, 2, false);
-                solver.SolvePartTwo(input);
+                Console.WriteLine(solver.SolvePartTwo(input));
                 break;
             default:
                 ConsoleWriter.Error("Invalid program argument.");
