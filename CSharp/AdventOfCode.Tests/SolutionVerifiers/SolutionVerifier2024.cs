@@ -132,4 +132,12 @@ public class SolutionVerifier2024 : SolutionVerifier
     [DataRow(2, false, "533", DisplayName = "2024.16.2-problem")]
     public void Solve_2024_16(int part, bool useExample, string expected) =>
         Solve(new Puzzle16Solver(), 16, part, useExample, expected);
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, true, "4,6,3,5,6,3,5,2,1,0", DisplayName = "2024.17.1-example")]
+    [DataRow(1, false, "2,7,6,5,6,0,2,3,1", DisplayName = "2024.17.1-problem")]
+    [DataRow(2, true, "", DisplayName = "2024.17.2-example")]
+    [DataRow(2, false, "", DisplayName = "2024.17.2-problem")]
+    public void Solve_2024_17(int part, bool useExample, string expected) =>
+        Solve(new Puzzle17Solver(), 17, part, useExample, expected);
 }
