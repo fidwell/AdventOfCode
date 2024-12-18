@@ -69,7 +69,7 @@ internal class Program
                     return;
                 }
 
-                RunSolver(year.Value, day.Value, null, cliArgs.ContainsKey("verbose"));
+                RunSolver(year.Value, day.Value, part, cliArgs.ContainsKey("example"), cliArgs.ContainsKey("verbose"));
                 break;
             default:
                 ConsoleWriter.Error("Invalid program argument.");
@@ -96,7 +96,7 @@ internal class Program
         return cliArgs;
     }
 
-    private static void RunSolver(int year, int day, int? part, bool printOutput)
+    private static void RunSolver(int year, int day, int? part, bool useExample, bool printOutput)
     {
         var types = typeof(PuzzleSolver).Assembly.GetTypes()
             .Where(t => t.FullName == $"AdventOfCode.Solvers._{year}.Puzzle{day.ToString().PadLeft(2, '0')}Solver");
@@ -112,7 +112,7 @@ internal class Program
         if (part.HasValue)
         {
             ConsoleWriter.Info($"Solving part {part}...");
-            var input = DataReader.GetData(year, day, part.Value, false);
+            var input = DataReader.GetData(year, day, part.Value, useExample);
             var result = part.Value == 1
                 ? solver.SolvePartOne(input)
                 : solver.SolvePartTwo(input);
@@ -121,10 +121,10 @@ internal class Program
         else
         {
             ConsoleWriter.Info($"Solving part 1...");
-            var input1 = DataReader.GetData(year, day, 1, false);
+            var input1 = DataReader.GetData(year, day, 1, useExample);
             ConsoleWriter.Answer(1, solver.SolvePartOne(input1));
             ConsoleWriter.Info($"Solving part 2...");
-            var input2 = DataReader.GetData(year, day, 2, false);
+            var input2 = DataReader.GetData(year, day, 2, useExample);
             ConsoleWriter.Answer(2, solver.SolvePartTwo(input2));
         }
     }
