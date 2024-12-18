@@ -3,12 +3,12 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle16Solver : IPuzzleSolver
+public class Puzzle16Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         EnergizedCellsStartingAt(new CharacterMatrix(input), new Coord2d(-1, 0), Direction.Right).ToString();
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var matrix = new CharacterMatrix(input);
         var maxSolution = 0;

@@ -3,16 +3,12 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle15Solver : IPuzzleSolver
+public class Puzzle15Solver : PuzzleSolver
 {
-    // Disabled for benchmarking and performance.
-    // Toggle on if you want to see the output!
-    const bool ShouldPrint = false;
+    public override string SolvePartOne(string input) => Solve(input, false);
+    public override string SolvePartTwo(string input) => Solve(input, true);
 
-    public string SolvePartOne(string input) => Solve(input, false);
-    public string SolvePartTwo(string input) => Solve(input, true);
-
-    private static string Solve(string input, bool isPartTwo)
+    private string Solve(string input, bool isPartTwo)
     {
         var warehouse = new Warehouse(input, isPartTwo);
         while (!warehouse.IsDone)

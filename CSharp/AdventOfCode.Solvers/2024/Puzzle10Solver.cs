@@ -3,10 +3,10 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle10Solver : IPuzzleSolver
+public class Puzzle10Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) => Solve(input, true);
-    public string SolvePartTwo(string input) => Solve(input, false);
+    public override string SolvePartOne(string input) => Solve(input, true);
+    public override string SolvePartTwo(string input) => Solve(input, false);
 
     private static string Solve(string input, bool getDistinct)
     {

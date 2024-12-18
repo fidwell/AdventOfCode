@@ -3,9 +3,9 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle23Solver : IPuzzleSolver
+public class Puzzle23Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var matrix = new CharacterMatrix(input);
         var periodChars = matrix.FindAllCharacters2('.');
@@ -17,7 +17,7 @@ public class Puzzle23Solver : IPuzzleSolver
         return PathTotalLengths(graph, allPaths).Max().ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var matrix = new CharacterMatrix(input);
         var periodChars = matrix.FindAllCharacters2('.');

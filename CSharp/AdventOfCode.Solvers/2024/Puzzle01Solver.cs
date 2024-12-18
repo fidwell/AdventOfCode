@@ -2,15 +2,15 @@
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle01Solver : IPuzzleSolver
+public class Puzzle01Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var (leftNums, rightNums) = ParseInput(input);
         return leftNums.Zip(rightNums, (a, b) => Math.Abs(a - b)).Sum().ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var (leftNums, rightNums) = ParseInput(input);
         return leftNums.Sum(l => l * rightNums.Count(r => r == l)).ToString();

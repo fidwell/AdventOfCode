@@ -3,11 +3,11 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle01Solver() : IPuzzleSolver
+public class Puzzle01Solver() : PuzzleSolver
 {
-    public string SolvePartOne(string input) => Solve(input, false);
+    public override string SolvePartOne(string input) => Solve(input, false);
 
-    public string SolvePartTwo(string input) => Solve(input, true);
+    public override string SolvePartTwo(string input) => Solve(input, true);
 
     private static string Solve(string input, bool allowWords)
         => input.SplitByNewline()

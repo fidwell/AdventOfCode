@@ -1,10 +1,10 @@
 ﻿namespace AdventOfCode.Solvers._2015;
 
-public class Puzzle03Solver : IPuzzleSolver
+public class Puzzle03Solver : PuzzleSolver
 {
-	public string SolvePartOne(string input) => Deliver(input).Count.ToString();
+	public override string SolvePartOne(string input) => Deliver(input).Count.ToString();
 
-	public string SolvePartTwo(string input)
+	public override string SolvePartTwo(string input)
 	{
 		var santaDirs = input.Where((c, i) => i % 2 == 0).ToArray();
 		var robotDirs = input.Where((c, i) => i % 2 == 1).ToArray();

@@ -3,15 +3,15 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle06Solver : IPuzzleSolver
+public class Puzzle06Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var map = new CharacterMatrix(input);
         return GetRoute(map, map.SingleMatch('^'), Direction.Up).Item1.DistinctBy(x => x.Location).Count().ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var map = new CharacterMatrix(input);
         var originalRoute = GetRoute(map, map.SingleMatch('^'), Direction.Up).Item1;

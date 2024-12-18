@@ -4,13 +4,9 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle16Solver : IPuzzleSolver
+public class Puzzle16Solver : PuzzleSolver
 {
-    // Disabled for benchmarking and performance.
-    // Toggle on if you want to see the output!
-    const bool ShouldPrint = false;
-
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var matrix = new CharacterMatrix(input);
         var result = Solve(matrix);
@@ -21,7 +17,7 @@ public class Puzzle16Solver : IPuzzleSolver
         return result.Item1.ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var matrix = new CharacterMatrix(input);
         var results = Solve(matrix);

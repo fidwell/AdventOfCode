@@ -3,9 +3,9 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle19Solver : IPuzzleSolver
+public class Puzzle19Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var workflows = new Dictionary<string, IEnumerable<WorkflowRule>>();
         var parts = new List<Part>();
@@ -50,7 +50,7 @@ public class Puzzle19Solver : IPuzzleSolver
         return acceptedPartSum.ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var workflows = new Dictionary<string, IEnumerable<WorkflowRule>>();
 

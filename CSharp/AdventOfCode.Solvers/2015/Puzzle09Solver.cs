@@ -4,15 +4,15 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
-public partial class Puzzle09Solver : IPuzzleSolver
+public partial class Puzzle09Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var (edges, nodes) = BuildGraph(input);
         return RouteDistances(edges, nodes).Min().ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var (edges, nodes) = BuildGraph(input);
         return RouteDistances(edges, nodes).Max().ToString();

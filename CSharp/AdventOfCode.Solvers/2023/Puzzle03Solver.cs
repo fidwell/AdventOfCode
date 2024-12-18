@@ -3,11 +3,11 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle03Solver : IPuzzleSolver
+public class Puzzle03Solver : PuzzleSolver
 {
     private static readonly Regex NumberRegex = new(@"\d+", RegexOptions.Compiled);
 
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var matrix = new CharacterMatrix(input);
         return matrix
@@ -18,7 +18,7 @@ public class Puzzle03Solver : IPuzzleSolver
             .ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var matrix = new CharacterMatrix(input);
         var numbers = matrix.FindAllWords(NumberRegex);

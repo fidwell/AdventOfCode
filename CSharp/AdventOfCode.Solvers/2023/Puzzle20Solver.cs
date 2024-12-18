@@ -3,9 +3,9 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle20Solver : IPuzzleSolver
+public class Puzzle20Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var system = new ModuleSystem(input);
         for (var i = 0; i < 1000; i++)
@@ -15,7 +15,7 @@ public class Puzzle20Solver : IPuzzleSolver
         return (system.HighPulseCount * system.LowPulseCount).ToString();
     }
 
-    public string SolvePartTwo(string input) =>
+    public override string SolvePartTwo(string input) =>
         new ModuleSystem(input).FindRx().ToString();
 
     private class ModuleSystem

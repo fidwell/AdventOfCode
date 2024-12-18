@@ -3,7 +3,7 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2015;
 
-public partial class Puzzle16Solver : IPuzzleSolver
+public partial class Puzzle16Solver : PuzzleSolver
 {
     private static readonly Dictionary<string, int> Analysis = new()
     {
@@ -19,11 +19,11 @@ public partial class Puzzle16Solver : IPuzzleSolver
         { "perfumes", 1 }
     };
 
-    public string SolvePartOne(string input) => input.SplitByNewline()
+    public override string SolvePartOne(string input) => input.SplitByNewline()
         .Select(MapAunt)
         .Single(a => IsMatch(a.Item2, false)).Item1.ToString();
 
-    public string SolvePartTwo(string input) => input.SplitByNewline()
+    public override string SolvePartTwo(string input) => input.SplitByNewline()
         .Select(MapAunt)
         .Single(a => IsMatch(a.Item2, true)).Item1.ToString();
 

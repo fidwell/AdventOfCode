@@ -3,13 +3,13 @@ using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle14Solver : IPuzzleSolver
+public class Puzzle14Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         LoadNorth(Tilt(new CharacterMatrix(input), Direction.North))
         .ToString();
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var state = new CharacterMatrix(input);
         var foundStates = new Dictionary<string, int>();

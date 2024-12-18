@@ -2,9 +2,9 @@
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle06Solver : IPuzzleSolver
+public class Puzzle06Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var data = input.SplitByNewline();
         var times = data[0].Split(": ")[1].SplitAndTrim(' ');
@@ -15,7 +15,7 @@ public class Puzzle06Solver : IPuzzleSolver
             .ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var data = input.SplitByNewline();
         var time = data[0].Split(": ")[1].Replace(" ", "");

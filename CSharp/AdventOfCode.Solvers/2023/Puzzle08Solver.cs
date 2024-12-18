@@ -3,18 +3,18 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle08Solver : IPuzzleSolver
+public class Puzzle08Solver : PuzzleSolver
 {
     private char[] _instructions = [];
     private IEnumerable<Node> _nodes = [];
 
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         Init(input);
         return Travel(_nodes.First(n => n.Name == "AAA"), n => n.Name == "ZZZ").ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         Init(input);
         var startingNodes = _nodes.Where(n => n.Name[2] == 'A');

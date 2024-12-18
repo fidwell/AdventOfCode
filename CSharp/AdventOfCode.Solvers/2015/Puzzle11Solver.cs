@@ -2,9 +2,9 @@
 
 namespace AdventOfCode.Solvers._2015;
 
-public class Puzzle11Solver : IPuzzleSolver
+public class Puzzle11Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         do
         {
@@ -13,7 +13,7 @@ public class Puzzle11Solver : IPuzzleSolver
         return input;
     }
 
-    public string SolvePartTwo(string input) =>
+    public override string SolvePartTwo(string input) =>
         SolvePartOne(SolvePartOne(input));
 
     private static bool IsValidPassword(string input) =>

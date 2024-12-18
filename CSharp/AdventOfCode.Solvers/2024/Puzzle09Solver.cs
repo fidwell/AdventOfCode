@@ -1,8 +1,8 @@
 ﻿namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle09Solver : IPuzzleSolver
+public class Puzzle09Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         input = input.ReplaceLineEndings("");
         var idFromLeft = input.Length / 2;
@@ -51,7 +51,7 @@ public class Puzzle09Solver : IPuzzleSolver
         return total.ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var memory = LoadMemory(input);
         Defrag(memory);

@@ -2,10 +2,10 @@
 
 namespace AdventOfCode.Solvers._2015;
 
-public class Puzzle10Solver : IPuzzleSolver
+public class Puzzle10Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) => Solve(input, 40);
-    public string SolvePartTwo(string input) => Solve(input, 50);
+    public override string SolvePartOne(string input) => Solve(input, 40);
+    public override string SolvePartTwo(string input) => Solve(input, 50);
 
     private static string Solve(string input, int iterations)
     {

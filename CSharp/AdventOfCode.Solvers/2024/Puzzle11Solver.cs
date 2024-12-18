@@ -1,9 +1,9 @@
 ﻿namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle11Solver : IPuzzleSolver
+public class Puzzle11Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) => Solve(input, 25);
-    public string SolvePartTwo(string input) => Solve(input, 75);
+    public override string SolvePartOne(string input) => Solve(input, 25);
+    public override string SolvePartTwo(string input) => Solve(input, 75);
 
     private static string Solve(string input, int blinks)
     {

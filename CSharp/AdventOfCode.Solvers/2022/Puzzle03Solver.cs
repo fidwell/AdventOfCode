@@ -2,9 +2,9 @@
 
 namespace AdventOfCode.Solvers._2022;
 
-public class Puzzle03Solver : IPuzzleSolver
+public class Puzzle03Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         input.SplitByNewline()
             .Select(r => (r.Substring(0, r.Length / 2), r.Substring(r.Length / 2)))
             .Select(r => r.Item1.Intersect(r.Item2).Single())
@@ -12,7 +12,7 @@ public class Puzzle03Solver : IPuzzleSolver
             .Sum()
             .ToString();
 
-    public string SolvePartTwo(string input) =>
+    public override string SolvePartTwo(string input) =>
         input.SplitByNewline()
             .Select((v, i) => new { i, v })
             .GroupBy(x => x.i / 3)

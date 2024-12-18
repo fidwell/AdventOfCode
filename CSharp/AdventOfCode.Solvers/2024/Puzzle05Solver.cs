@@ -2,9 +2,9 @@
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle05Solver : IPuzzleSolver
+public class Puzzle05Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var (rules, updates) = ParseInput(input);
         return updates
@@ -13,7 +13,7 @@ public class Puzzle05Solver : IPuzzleSolver
             .Sum().ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var (rules, updates) = ParseInput(input);
         return updates.Where(u => rules.Any(r => !DoesUpdateSatisfyRule(u, r)))

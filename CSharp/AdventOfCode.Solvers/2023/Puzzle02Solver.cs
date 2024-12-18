@@ -2,7 +2,7 @@
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle02Solver() : IPuzzleSolver
+public class Puzzle02Solver() : PuzzleSolver
 {
     private readonly Dictionary<string, int> MaxCubes = new()
     {
@@ -11,14 +11,14 @@ public class Puzzle02Solver() : IPuzzleSolver
         { "blue", 14 }
     };
 
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         input.SplitByNewline()
             .Select(g => g.Substring(g.IndexOf(":") + 2))
             .Select((g, ix) => WasGroupPossible(g) ? (ix + 1) : 0)
             .Sum()
             .ToString();
 
-    public string SolvePartTwo(string input) =>
+    public override string SolvePartTwo(string input) =>
         input.SplitByNewline()
             .Select(g => g.Substring(g.IndexOf(":") + 2))
             .Select(SetPower)
