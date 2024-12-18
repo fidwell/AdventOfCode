@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using AdventOfCode.Solvers;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -15,19 +15,15 @@ public partial class Puzzle15Solver : PuzzleSolver
     {
         var boxes = Enumerable.Range(0, 256).Select(i => new List<Lens>()).ToArray();
 
-        var labelRegex = new Regex(@"[a-z]+", RegexOptions.Compiled);
-        var operationRegex = new Regex(@"[\-=]", RegexOptions.Compiled);
-        var digitRegex = new Regex(@"\d", RegexOptions.Compiled);
-
         foreach (var step in input.Split(","))
         {
-            var label = labelRegex.Match(step).Value;
+            var label = Label().Match(step).Value;
 
-            if (operationRegex.Match(step).Value[0] == '=')
+            if (Operation().Match(step).Value[0] == '=')
             {
                 var box = boxes[Hash(label)];
                 var existingLens = box.FirstOrDefault(l => l.Label == label);
-                var focalLengthStr = digitRegex.Match(step).Value;
+                var focalLengthStr = Regexes.Digit().Match(step).Value;
                 _ = int.TryParse(focalLengthStr, out int focalLength);
                 if (existingLens != null)
                 {
@@ -61,4 +57,10 @@ public partial class Puzzle15Solver : PuzzleSolver
         public string Label = label;
         public int FocalLength = focalLength;
     }
+
+    [GeneratedRegex(@"[a-z]+", RegexOptions.Compiled)]
+    private static partial Regex Label();
+
+    [GeneratedRegex(@"[\-=]", RegexOptions.Compiled)]
+    private static partial Regex Operation();
 }
