@@ -36,7 +36,7 @@ public class Puzzle01Solver() : PuzzleSolver
         { "two", "t2o" },
         { "three", "t3e" },
         { "four", "f4r" },
-        { "five", "f5" },
+        { "five", "f5e" },
         { "six", "s6x" },
         { "seven", "s7n" },
         { "eight", "e8t" },
