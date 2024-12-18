@@ -62,13 +62,14 @@ internal class Program
                 Benchmarker.Run(year.Value);
                 break;
             case "run":
+            case "solve":
                 if (!year.HasValue || !day.HasValue)
                 {
                     ConsoleWriter.Error("Year and day not specified.");
                     return;
                 }
 
-                RunSolver(year.Value, day.Value, null);
+                RunSolver(year.Value, day.Value, null, cliArgs.ContainsKey("verbose"));
                 break;
             default:
                 ConsoleWriter.Error("Invalid program argument.");
@@ -84,13 +85,18 @@ internal class Program
             if (args[i].StartsWith("--") && args.Length >= i)
             {
                 cliArgs.Add(args[i][2..], args[i + 1]);
+                i++;
+            }
+            else if (args[i].StartsWith('-'))
+            {
+                cliArgs.Add(args[i][1..], string.Empty);
             }
         }
 
         return cliArgs;
     }
 
-    private static void RunSolver(int year, int day, int? part)
+    private static void RunSolver(int year, int day, int? part, bool printOutput)
     {
         var types = typeof(PuzzleSolver).Assembly.GetTypes()
             .Where(t => t.FullName == $"AdventOfCode.Solvers._{year}.Puzzle{day.ToString().PadLeft(2, '0')}Solver");
@@ -102,7 +108,7 @@ internal class Program
             return;
         }
 
-        solver.ShouldPrint = true;
+        solver.ShouldPrint = printOutput;
         if (part.HasValue)
         {
             ConsoleWriter.Info($"Solving part {part}...");

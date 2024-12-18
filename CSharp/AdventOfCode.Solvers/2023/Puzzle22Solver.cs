@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -17,7 +16,7 @@ public class Puzzle22Solver : PuzzleSolver
         return bricks.Sum(b => bricks.Count - graph.IfRemoveNode(b.Id).Count(b => b != -1) - 1).ToString();
     }
 
-    private static (List<Brick>, Graph) Initialize(string input)
+    private (List<Brick>, Graph) Initialize(string input)
     {
         var bricks = input.SplitByNewline()
             .Select((l, i) => new Brick(l, i))
@@ -83,7 +82,7 @@ public class Puzzle22Solver : PuzzleSolver
             }
         }
         edgeDictionary.Add(-1, bottomBricks);
-        var graph = new Graph(edgeDictionary);
+        var graph = new Graph(edgeDictionary, ShouldPrint);
         return (bricks, graph);
     }
 
@@ -174,16 +173,19 @@ public class Puzzle22Solver : PuzzleSolver
 
         private HashSet<int> _nodesStillVisible;
 
-        public Graph(Dictionary<int, List<int>> edges)
+        public Graph(Dictionary<int, List<int>> edges, bool shouldPrint)
         {
             _edges = edges;
             _nodesStillVisible = [];
 
-            foreach (var parent in _edges)
+            if (shouldPrint)
             {
-                foreach (var child in parent.Value)
+                foreach (var parent in _edges)
                 {
-                    Trace.WriteLine($"{parent.Key} -> {child};");
+                    foreach (var child in parent.Value)
+                    {
+                        Console.WriteLine($"{parent.Key} -> {child};");
+                    }
                 }
             }
         }
