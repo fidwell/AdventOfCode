@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.Input;
+﻿using AdventOfCode.Core;
+using AdventOfCode.Core.Input;
 using AdventOfCode.Solvers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -13,6 +14,7 @@ public abstract class SolutionVerifier(int year)
 
     protected void Solve(PuzzleSolver solver, int puzzle, int part, bool useExample, string expected)
     {
+        MemoizationCache.Clear();
         var input = DataReader.GetData(Year, puzzle, part, useExample);
         var result = part == 1
             ? solver.SolvePartOne(input)
