@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.Memoization;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -12,22 +13,19 @@ public partial class Puzzle07Solver : PuzzleSolver
             .Where(e => e.CouldBeSolved(this, includeConcatenation))
             .Sum(e => (long)e.Answer).ToString();
 
-    protected enum Operation
+    public enum Operation
     {
         Add,
         Multiply,
         Concatenate
     }
 
-    protected readonly Dictionary<int, IEnumerable<Operation[]>> PermutationCache = [];
-
-    protected IEnumerable<Operation[]> GetPossibleOperationPermutations(int length, bool includeConcatenation)
+    [Memoize]
+    public IEnumerable<Operation[]> GetPossibleOperationPermutations(int length, bool includeConcatenation)
     {
-        if (length == 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(length));
-        }
-        else if (length == 1)
+        ArgumentOutOfRangeException.ThrowIfZero(length);
+
+        if (length == 1)
         {
             yield return [Operation.Add];
             yield return [Operation.Multiply];
@@ -36,16 +34,7 @@ public partial class Puzzle07Solver : PuzzleSolver
         }
         else
         {
-            IEnumerable<Operation[]> subArrays;
-            if (PermutationCache.ContainsKey(length - 1))
-            {
-                subArrays = PermutationCache[length - 1];
-            }
-            else
-            {
-                subArrays = GetPossibleOperationPermutations(length - 1, includeConcatenation);
-                PermutationCache.Add(length - 1, subArrays);
-            }
+            var subArrays = Memoizer.Execute<IEnumerable<Operation[]>>(this, nameof(GetPossibleOperationPermutations), length - 1, includeConcatenation);
 
             foreach (var subarray in subArrays)
             {
@@ -77,7 +66,7 @@ public partial class Puzzle07Solver : PuzzleSolver
             if (Operands.Length == 1)
                 return Operands[0] == Answer;
 
-            var operationPermutations = solver.GetPossibleOperationPermutations(Operands.Length - 1, includeConcatenation);
+            var operationPermutations = Memoizer.Execute<IEnumerable<Operation[]>>(solver, nameof(GetPossibleOperationPermutations), Operands.Length - 1, includeConcatenation);
 
             foreach (var permutation in operationPermutations)
             {
@@ -108,9 +97,7 @@ public partial class Puzzle07Solver : PuzzleSolver
                 }
 
                 if (answer == Operands[0])
-                {
                     return true;
-                }
             }
 
             return false;
