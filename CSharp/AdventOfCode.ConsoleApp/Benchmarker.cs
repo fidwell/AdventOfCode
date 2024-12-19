@@ -7,7 +7,7 @@ namespace AdventOfCode.ConsoleApp;
 
 internal static class Benchmarker
 {
-    internal static void Run(int year)
+    internal static async Task Run(int year, string session)
     {
         Console.WriteLine($"Running benchmarks for year {year}...");
 
@@ -40,9 +40,17 @@ internal static class Benchmarker
             }
             catch (FileNotFoundException)
             {
-                ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
-                ConsoleWriter.Write($"│  {dayNum,2} │ Could not run: no input file found.                          │");
-                continue;
+                try
+                {
+                    await Downloader.DownloadInput(year, dayNum, session, isVerbose: false);
+                    input = DataReader.GetData(year, dayNum, 0, false);
+                }
+                catch
+                {
+                    ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
+                    ConsoleWriter.Write($"│  {dayNum,2} │ Could not run: no input file found.                          │");
+                    continue;
+                }
             }
 
             ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");

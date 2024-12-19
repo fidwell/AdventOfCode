@@ -59,7 +59,7 @@ internal class Program
                     break;
                 }
 
-                Benchmarker.Run(year.Value);
+                await Benchmarker.Run(year.Value, session);
                 break;
             case "run":
             case "solve":
@@ -69,7 +69,7 @@ internal class Program
                     return;
                 }
 
-                RunSolver(year.Value, day.Value, part, cliArgs.ContainsKey("example"), cliArgs.ContainsKey("verbose"));
+                await RunSolver(year.Value, day.Value, part, cliArgs.ContainsKey("example"), cliArgs.ContainsKey("verbose"), session);
                 break;
             default:
                 ConsoleWriter.Error("Invalid program argument.");
@@ -96,7 +96,7 @@ internal class Program
         return cliArgs;
     }
 
-    private static void RunSolver(int year, int day, int? part, bool useExample, bool printOutput)
+    private static async Task RunSolver(int year, int day, int? part, bool useExample, bool printOutput, string session)
     {
         var types = typeof(PuzzleSolver).Assembly.GetTypes()
             .Where(t => t.FullName == $"AdventOfCode.Solvers._{year}.Puzzle{day.ToString().PadLeft(2, '0')}Solver");
@@ -112,7 +112,7 @@ internal class Program
         if (part.HasValue)
         {
             ConsoleWriter.Info($"Solving part {part}...");
-            var input = DataReader.GetData(year, day, part.Value, useExample);
+            var input = await GetData(year, day, part.Value, useExample, session);
             var result = part.Value == 1
                 ? solver.SolvePartOne(input)
                 : solver.SolvePartTwo(input);
@@ -121,10 +121,10 @@ internal class Program
         else
         {
             ConsoleWriter.Info($"Solving part 1...");
-            var input1 = DataReader.GetData(year, day, 1, useExample);
+            var input1 = await GetData(year, day, 1, useExample, session);
             ConsoleWriter.Answer(1, solver.SolvePartOne(input1));
             ConsoleWriter.Info($"Solving part 2...");
-            var input2 = DataReader.GetData(year, day, 2, useExample);
+            var input2 = await GetData(year, day, 2, useExample, session);
             ConsoleWriter.Answer(2, solver.SolvePartTwo(input2));
         }
     }
@@ -186,6 +186,26 @@ internal class Program
 
     private static int? TryParseNullable(string val) =>
         int.TryParse(val, out int outValue) ? outValue : null;
+
+    private static async Task<string> GetData(int year, int day, int part, bool useExample, string session)
+    {
+        try
+        {
+            return DataReader.GetData(year, day, part, useExample);
+        }
+        catch (FileNotFoundException)
+        {
+            try
+            {
+                await Downloader.DownloadInput(year, day, session);
+                return DataReader.GetData(year, day, part, useExample);
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+    }
 
     private static bool IsValidYear(int year) => year >= 2015 && year <= DateTime.Now.Year;
     private static bool IsValidDay(int day) => day >= 1 && day <= 25;
