@@ -9,44 +9,65 @@ public class Puzzle19Solver : PuzzleSolver
         var lines = input.SplitByNewline();
         var atoms = lines[0].Split(", ");
         var targets = lines.Skip(1);
-
-        var cache = atoms.ToDictionary(t => t, t => true);
-        return targets.Count(t => CanYouSolve(t, atoms, cache)).ToString();
+        var cache = Preprocess(atoms);
+        return targets.Count(t => SolutionCount(t, atoms, cache) > 0).ToString();
     }
 
     public override string SolvePartTwo(string input)
     {
-        throw new NotImplementedException();
+        var lines = input.SplitByNewline();
+        var atoms = lines[0].Split(", ").OrderBy(a => a.Length);
+        var targets = lines.Skip(1);
+        var cache = Preprocess(atoms);
+        return targets.Aggregate(0UL, (a, b) => a + SolutionCount(b, atoms, cache)).ToString();
     }
 
-    private static bool CanYouSolve(string target, IEnumerable<string> atoms, Dictionary<string, bool> cache)
+    private static Dictionary<string, ulong> Preprocess(IEnumerable<string> atoms)
     {
-        if (cache.TryGetValue(target, out bool cachedValue))
+        var cache = new Dictionary<string, ulong>();
+        foreach (var atom in atoms)
+        {
+            cache[atom] = 1 + SolutionCount(atom, atoms, cache, isPreprocessing: true);
+        }
+        return cache;
+    }
+
+    private static ulong SolutionCount(string target, IEnumerable<string> atoms, Dictionary<string, ulong> cache, bool isPreprocessing = false)
+    {
+        if (!isPreprocessing && cache.TryGetValue(target, out ulong cachedValue))
         {
             return cachedValue;
         }
 
         foreach (var atom in atoms)
         {
-            if (target == atom)
-            {
-                cache[atom] = true;
-                return true;
-            }
-
             if (target.StartsWith(atom))
             {
                 var substring = target[atom.Length..];
-                if (CanYouSolve(substring, atoms, cache))
+                var count = SolutionCount(substring, atoms, cache);
+
+                if (cache.TryGetValue(target, out ulong existing))
                 {
-                    cache[target] = true;
-                    return true;
+                    cache[target] = existing + count;
+                }
+                else
+                {
+                    Console.WriteLine($"{atom}|{substring}: {count}");
+                    cache[target] = count;
                 }
             }
         }
-
-        //Console.WriteLine($"Can't solve {target}");
-        cache[target] = false;
-        return false;
+        
+        if (cache.TryGetValue(target, out ulong value))
+        {
+            Console.WriteLine($"{cache[target]} ways to make {target}");
+            return value;
+        }
+        else
+        {
+            Console.WriteLine($"Can't make {target}");
+            cache[target] = 0;
+            return 0;
+        }
     }
 }
