@@ -1,5 +1,5 @@
-﻿using AdventOfCode.Core;
-using AdventOfCode.Core.Input;
+﻿using AdventOfCode.Core.Input;
+using AdventOfCode.Core.Memoization;
 using AdventOfCode.Solvers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

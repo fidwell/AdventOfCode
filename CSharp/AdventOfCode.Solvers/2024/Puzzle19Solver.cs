@@ -1,4 +1,4 @@
-﻿using AdventOfCode.Core;
+﻿using AdventOfCode.Core.Memoization;
 using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
