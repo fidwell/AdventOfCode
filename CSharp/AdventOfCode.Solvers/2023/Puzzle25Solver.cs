@@ -2,9 +2,9 @@
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle25Solver : IPuzzleSolver
+public class Puzzle25Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var lines = input.SplitByNewline();
         var edges = new List<(string, string)>();
@@ -24,7 +24,7 @@ public class Puzzle25Solver : IPuzzleSolver
             : CheeseIt(graph).ToString();
     }
 
-    public string SolvePartTwo(string input) => string.Empty;
+    public override string SolvePartTwo(string input) => string.Empty;
 
     private static int BruteForceIt(Graph graph)
     {

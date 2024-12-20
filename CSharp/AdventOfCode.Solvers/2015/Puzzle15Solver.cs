@@ -2,12 +2,12 @@
 
 namespace AdventOfCode.Solvers._2015;
 
-public class Puzzle15Solver : IPuzzleSolver
+public class Puzzle15Solver : PuzzleSolver
 {
     const int Target = 100;
 
-    public string SolvePartOne(string input) => Solve(input, false);
-    public string SolvePartTwo(string input) => Solve(input, true);
+    public override string SolvePartOne(string input) => Solve(input, false);
+    public override string SolvePartTwo(string input) => Solve(input, true);
 
     private static string Solve(string input, bool includeCalories)
     {

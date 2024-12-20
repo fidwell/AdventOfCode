@@ -4,6 +4,9 @@ namespace AdventOfCode.Core.StringUtilities;
 
 public static partial class Regexes
 {
+    [GeneratedRegex(@"(\d)")]
+    public static partial Regex Digit();
+
     [GeneratedRegex(@"(\d+)")]
     public static partial Regex NonNegativeInteger();
 

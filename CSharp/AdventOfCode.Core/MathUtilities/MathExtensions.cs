@@ -27,4 +27,12 @@ public static class MathExtensions
     /// <param name="divisor"></param>
     /// <returns></returns>
     public static int Modulo(int dividend, int divisor) => (dividend % divisor + divisor) % divisor;
+
+    /// <summary>
+    /// Todo - summarize
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
+    public static int ManhattanDistance((int, int) a, (int, int) b) => Math.Abs(b.Item1 - a.Item1) + Math.Abs(b.Item2 - a.Item2);
 }

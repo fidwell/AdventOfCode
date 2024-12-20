@@ -4,10 +4,10 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle05Solver : IPuzzleSolver
+public class Puzzle05Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) => Solve(true, input);
-    public string SolvePartTwo(string input) => Solve(false, input);
+    public override string SolvePartOne(string input) => Solve(true, input);
+    public override string SolvePartTwo(string input) => Solve(false, input);
 
     private static string Solve(bool isPartOne, string input) =>
         new Almanac(input, isPartOne)

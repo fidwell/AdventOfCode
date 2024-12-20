@@ -1,8 +1,8 @@
 ﻿using AdventOfCode.Core.StringUtilities;
 
-namespace AdventOfCode.Core;
+namespace AdventOfCode.Core.Geometry;
 
-public static class TileMath
+public static class GeometryAlgorithms
 {
     /// <summary>
     /// Returns a list of coordinates in a CharacterMatrix where the values are in a continuous
@@ -11,10 +11,10 @@ public static class TileMath
     /// <param name="matrix">The character matrix to search.</param>
     /// <param name="start">The coordinate from which to start the fill.</param>
     /// <returns>All coordinates in a continuous region from the start.</returns>
-    public static List<(int, int)> FloodFill(CharacterMatrix matrix, (int, int) start)
+    public static List<Coord> FloodFill(CharacterMatrix matrix, Coord start)
     {
-        var result = new HashSet<(int, int)>();
-        var queue = new Queue<(int, int)>();
+        var result = new HashSet<Coord>();
+        var queue = new Queue<Coord>();
         queue.Enqueue(start);
         var targetChar = matrix.CharAt(start);
 

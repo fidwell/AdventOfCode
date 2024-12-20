@@ -7,13 +7,13 @@ namespace AdventOfCode.ConsoleApp;
 
 internal static class Benchmarker
 {
-    internal static void Run(int year)
+    internal static async Task Run(int year, string session)
     {
         Console.WriteLine($"Running benchmarks for year {year}...");
 
-        var solvers = typeof(IPuzzleSolver).Assembly.GetTypes()
-            .Where(t => t.Namespace == $"AdventOfCode.Solvers._{year}" && typeof(IPuzzleSolver).IsAssignableFrom(t))
-            .Select(t => (IPuzzleSolver?)Activator.CreateInstance(t)) ?? [];
+        var solvers = typeof(PuzzleSolver).Assembly.GetTypes()
+            .Where(t => t.Namespace == $"AdventOfCode.Solvers._{year}" && typeof(PuzzleSolver).IsAssignableFrom(t))
+            .Select(t => (PuzzleSolver?)Activator.CreateInstance(t)) ?? [];
 
         if (!solvers.Any())
         {
@@ -40,9 +40,17 @@ internal static class Benchmarker
             }
             catch (FileNotFoundException)
             {
-                ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
-                ConsoleWriter.Write($"│  {dayNum,2} │ Could not run: no input file found.                          │");
-                continue;
+                try
+                {
+                    await Downloader.DownloadInput(year, dayNum, session, isVerbose: false);
+                    input = DataReader.GetData(year, dayNum, 0, false);
+                }
+                catch
+                {
+                    ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
+                    ConsoleWriter.Write($"│  {dayNum,2} │ Could not run: no input file found.                          │");
+                    continue;
+                }
             }
 
             ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");

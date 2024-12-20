@@ -1,18 +1,17 @@
-﻿using AdventOfCode.Core.ArrayUtilities;
+﻿using AdventOfCode.Core.Geometry;
 using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle10Solver : IPuzzleSolver
+public class Puzzle10Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var (_, _, coordinatesOfLoop) = GetData(input);
         return (coordinatesOfLoop.Count() / 2).ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var (matrix, _, coordinatesOfLoop) = GetData(input);
 

@@ -2,10 +2,10 @@
 
 namespace AdventOfCode.Solvers._2024;
 
-public partial class Puzzle07Solver : IPuzzleSolver
+public partial class Puzzle07Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) => Solve(input, false);
-    public string SolvePartTwo(string input) => Solve(input, true);
+    public override string SolvePartOne(string input) => Solve(input, false);
+    public override string SolvePartTwo(string input) => Solve(input, true);
 
     public string Solve(string input, bool includeConcatenation) =>
         input.SplitByNewline().Select(l => new Equation(l))

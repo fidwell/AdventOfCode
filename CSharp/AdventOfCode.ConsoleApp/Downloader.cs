@@ -5,13 +5,16 @@ namespace AdventOfCode.ConsoleApp;
 
 internal static class Downloader
 {
-    internal static async Task DownloadInput(int year, int day, string cookie)
+    internal static async Task DownloadInput(int year, int day, string cookie, bool isVerbose = true)
     {
         var inputDirectoryName = DataReader.GetInputDirectory();
         var filename = Path.Combine(inputDirectoryName, year.ToString(), $"puzzle{day.ToString().PadLeft(2, '0')}.txt");
         if (File.Exists(filename))
         {
-            ConsoleWriter.Error("File already exists.");
+            if (isVerbose)
+            {
+                ConsoleWriter.Error("File already exists.");
+            }
             return;
         }
 
@@ -30,27 +33,36 @@ internal static class Downloader
             using var stream = await response.Content.ReadAsStreamAsync();
             using var file = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
             await stream.CopyToAsync(file);
-            ConsoleWriter.Info("File successfully downloaded.");
+            if (isVerbose)
+            {
+                ConsoleWriter.Info("File successfully downloaded.");
+            }
         }
-        else
+        else if (isVerbose)
         {
             ConsoleWriter.Error($"Couldn't download file. {(int)response.StatusCode}: {response.ReasonPhrase}");
         }
     }
 
-    internal static bool SetUpDirectories(int year)
+    internal static bool SetUpDirectories(int year, bool isVerbose = true)
     {
         var inputDirectoryName = DataReader.GetInputDirectory();
         if (!Directory.Exists(inputDirectoryName))
         {
-            ConsoleWriter.Error("Couldn't find root input directory.");
+            if (isVerbose)
+            {
+                ConsoleWriter.Error("Couldn't find root input directory.");
+            }
             return false;
         }
 
         var thisYearDirectory = Path.Join(inputDirectoryName, year.ToString());
         if (!Directory.Exists(thisYearDirectory))
         {
-            ConsoleWriter.Info($"Creating new directory for {year}...");
+            if (isVerbose)
+            {
+                ConsoleWriter.Info($"Creating new directory for {year}...");
+            }
             Directory.CreateDirectory(thisYearDirectory);
         }
         return true;

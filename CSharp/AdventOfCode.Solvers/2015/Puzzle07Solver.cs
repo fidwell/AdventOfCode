@@ -4,14 +4,14 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
-public partial class Puzzle07Solver : IPuzzleSolver
+public partial class Puzzle07Solver : PuzzleSolver
 {
     private readonly Dictionary<string, ushort> _signals = [];
 
-    public string SolvePartOne(string input) =>
+    public override string SolvePartOne(string input) =>
         CalculateForWire("a", ParseGateDefinitions(input)).ToString();
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var gates = ParseGateDefinitions(input);
         var oldA = CalculateForWire("a", gates).ToString();

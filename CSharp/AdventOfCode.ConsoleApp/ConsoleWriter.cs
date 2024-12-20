@@ -18,6 +18,14 @@ internal static class ConsoleWriter
         Console.ForegroundColor = Default;
     }
 
+    internal static void Answer(int part, string answer)
+    {
+        Console.Write($"Part {part} answer: ");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine(answer);
+        Console.ForegroundColor = Default;
+    }
+
     internal static void Write(string message, ConsoleColor consoleColor = ConsoleColor.Gray)
     {
         Console.ForegroundColor = consoleColor;

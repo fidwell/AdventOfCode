@@ -4,9 +4,9 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
-public partial class Puzzle13Solver : IPuzzleSolver
+public partial class Puzzle13Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var feast = DefineFeast(input);
         var arrangements = feast.Names.Skip(1).ToList().AllPermutations()
@@ -14,7 +14,7 @@ public partial class Puzzle13Solver : IPuzzleSolver
         return arrangements.Max(a => TotalHappinessChange(a, feast.Rules, true)).ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var feast = DefineFeast(input);
         var arrangements = feast.Names.ToList().AllPermutations();
@@ -24,7 +24,7 @@ public partial class Puzzle13Solver : IPuzzleSolver
     private static int TotalHappinessChange(List<string> arrangement, IEnumerable<HappinessDefinition> rules, bool wrap)
     {
         var amount = 0;
-        for (int i = 0; i < arrangement.Count; i++)
+        for (var i = 0; i < arrangement.Count; i++)
         {
             var toLeft = i - 1;
             var toRight = i + 1;

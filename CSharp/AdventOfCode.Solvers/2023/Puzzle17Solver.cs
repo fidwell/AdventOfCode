@@ -1,13 +1,12 @@
-﻿using AdventOfCode.Core.ArrayUtilities;
+﻿using AdventOfCode.Core.Geometry;
 using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle17Solver : IPuzzleSolver
+public class Puzzle17Solver : PuzzleSolver
 {
-    public string SolvePartOne(string input) => Solve(new CharacterMatrix(input), 1, 3).ToString();
-    public string SolvePartTwo(string input) => Solve(new CharacterMatrix(input), 4, 10).ToString();
+    public override string SolvePartOne(string input) => Solve(new CharacterMatrix(input), 1, 3).ToString();
+    public override string SolvePartTwo(string input) => Solve(new CharacterMatrix(input), 4, 10).ToString();
 
     private static int Solve(CharacterMatrix matrix, int minSteps, int maxSteps)
     {

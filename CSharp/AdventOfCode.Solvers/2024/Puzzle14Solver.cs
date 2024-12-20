@@ -3,16 +3,12 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle14Solver : IPuzzleSolver
+public class Puzzle14Solver : PuzzleSolver
 {
     const int AreaWidth = 101;
     const int AreaHeight = 103;
 
-    // Disabled for benchmarking.
-    // Toggle on if you want to see the output!
-    const bool ShouldPrint = false;
-
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         var robots = SetUpRobots(input);
 
@@ -39,7 +35,7 @@ public class Puzzle14Solver : IPuzzleSolver
     // opposed to pseudo-randomly spread about the area.
     // So, find the time at which the variance of their
     // locations is "unnaturally" low.
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         var robots = SetUpRobots(input);
         var startingVariance = Variance(robots);

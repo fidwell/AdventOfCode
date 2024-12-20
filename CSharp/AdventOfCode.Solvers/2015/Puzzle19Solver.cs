@@ -3,13 +3,13 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2015;
 
-public partial class Puzzle19Solver : IPuzzleSolver
+public partial class Puzzle19Solver : PuzzleSolver
 {
     private readonly List<Replacement> Replacements = [];
     private string Target = "";
     private Random Random = new();
 
-    public string SolvePartOne(string input)
+    public override string SolvePartOne(string input)
     {
         ParseInput(input);
         var targetSplit = TargetMoleculePattern().Match(Target).Groups[1].Captures.Select(c => c.Value).ToArray();
@@ -28,7 +28,7 @@ public partial class Puzzle19Solver : IPuzzleSolver
         return distinctMolecules.Count.ToString();
     }
 
-    public string SolvePartTwo(string input)
+    public override string SolvePartTwo(string input)
     {
         ParseInput(input);
         for (var attempts = 0; attempts < 100; attempts++)

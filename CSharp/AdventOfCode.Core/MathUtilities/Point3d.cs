@@ -2,7 +2,7 @@
 
 namespace AdventOfCode.Core.MathUtilities;
 
-public class Point3d
+public record Point3d
 {
     public readonly double X;
     public readonly double Y;
@@ -25,9 +25,6 @@ public class Point3d
 
     public Point3d Plus(Point3d other) =>
         new(X + other.X, Y + other.Y, Z + other.Z);
-
-    public override bool Equals(object? obj) =>
-        obj is Point3d other && X == other.X && Y == other.Y && Z == other.Z;
 
     public override int GetHashCode() =>
         HashCode.Combine(X, Y, Z);
