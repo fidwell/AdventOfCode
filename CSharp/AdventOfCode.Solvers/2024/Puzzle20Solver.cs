@@ -8,30 +8,19 @@ public class Puzzle20Solver : PuzzleSolver
     public override string SolvePartOne(string input)
     {
         var maze = new CharacterMatrix(input);
-        var isExample = maze.Width == 15;
-        return Solve(maze, isExample ? 1 : 100, 2);
+        return Solve(maze, maze.Width == 15 ? 1 : 100, 2);
     }
 
     public override string SolvePartTwo(string input)
     {
         var maze = new CharacterMatrix(input);
-        var isExample = maze.Width == 15;
-        return Solve(maze, isExample ? 50 : 100, 20);
+        return Solve(maze, maze.Width == 15 ? 50 : 100, 20);
     }
 
-    public string Solve(CharacterMatrix maze, int targetSavings, int cheatMax)
+    public static string Solve(CharacterMatrix maze, int targetSavings, int cheatMax)
     {
         var stepCosts = CalculateStepCosts(maze);
-        var end = maze.SingleMatch('E');
-        var totalSteps = stepCosts[end.Item1, end.Item2];
-
-        if (ShouldPrint)
-        {
-            Console.WriteLine($"Without cheating, solved in {totalSteps} steps");
-        }
-
         var cheatsThatWouldSaveAtLeastXSteps = 0;
-        var savingsDict = new Dictionary<int, int>();
 
         // Find cheat start point
         for (var y = 1; y < maze.Height - 1; y++)
@@ -44,9 +33,9 @@ public class Puzzle20Solver : PuzzleSolver
                 var cheatStart = (x, y);
 
                 // Find cheat end point
-                for (var y0 = y - cheatMax - 5; y0 < y + cheatMax + 5; y0++)
+                for (var y0 = y - cheatMax; y0 <= y + cheatMax; y0++)
                 {
-                    for (var x0 = x - cheatMax - 5; x0 < x + cheatMax + 5; x0++)
+                    for (var x0 = x - cheatMax; x0 <= x + cheatMax; x0++)
                     {
                         if (x0 < 0 || y0 < 0 || x0 >= maze.Width - 1 || y0 >= maze.Height - 1)
                             continue;
@@ -66,24 +55,11 @@ public class Puzzle20Solver : PuzzleSolver
 
                         if (totalGain >= targetSavings)
                         {
-                            if (savingsDict.ContainsKey(totalGain))
-                            {
-                                savingsDict[totalGain]++;
-                            }
-                            else
-                            {
-                                savingsDict[totalGain] = 1;
-                            }
                             cheatsThatWouldSaveAtLeastXSteps++;
                         }
                     }
                 }
             }
-        }
-
-        foreach (var entry in savingsDict.OrderBy(d => d.Key))
-        {
-            Console.WriteLine($"There are {entry.Value} cheats that save {entry.Key} picoseconds.");
         }
 
         return cheatsThatWouldSaveAtLeastXSteps.ToString();
