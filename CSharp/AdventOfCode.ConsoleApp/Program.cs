@@ -111,21 +111,35 @@ internal class Program
         solver.ShouldPrint = printOutput;
         if (part.HasValue)
         {
-            ConsoleWriter.Info($"Solving part {part}...");
-            var input = await GetData(year, day, part.Value, useExample, session);
-            var result = part.Value == 1
-                ? solver.SolvePartOne(input)
-                : solver.SolvePartTwo(input);
-            ConsoleWriter.Answer(part.Value, result);
+            try
+            {
+                ConsoleWriter.Info($"Solving part {part}...");
+                var input = await GetData(year, day, part.Value, useExample, session);
+                var result = part.Value == 1
+                    ? solver.SolvePartOne(input)
+                    : solver.SolvePartTwo(input);
+                ConsoleWriter.Answer(part.Value, result);
+            }
+            catch (Exception e)
+            {
+                ConsoleWriter.Error(e.Message);
+            }
         }
         else
         {
-            ConsoleWriter.Info($"Solving part 1...");
-            var input1 = await GetData(year, day, 1, useExample, session);
-            ConsoleWriter.Answer(1, solver.SolvePartOne(input1));
-            ConsoleWriter.Info($"Solving part 2...");
-            var input2 = await GetData(year, day, 2, useExample, session);
-            ConsoleWriter.Answer(2, solver.SolvePartTwo(input2));
+            try
+            {
+                ConsoleWriter.Info($"Solving part 1...");
+                var input1 = await GetData(year, day, 1, useExample, session);
+                ConsoleWriter.Answer(1, solver.SolvePartOne(input1));
+                ConsoleWriter.Info($"Solving part 2...");
+                var input2 = await GetData(year, day, 2, useExample, session);
+                ConsoleWriter.Answer(2, solver.SolvePartTwo(input2));
+            }
+            catch (Exception e)
+            {
+                ConsoleWriter.Error(e.Message);
+            }
         }
     }
 
@@ -193,7 +207,7 @@ internal class Program
         {
             return DataReader.GetData(year, day, part, useExample);
         }
-        catch (FileNotFoundException)
+        catch (FileNotFoundException) when (!useExample)
         {
             try
             {

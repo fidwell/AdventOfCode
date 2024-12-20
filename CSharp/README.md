@@ -37,7 +37,15 @@ automatically. Run the application in a console with these arguments:
   - `download-today` to get today's puzzle input;
   - `download-day` to get an older day's input;
   - `download-year` to get a whole year's inputs at once;
-  - `benchmark` to run performance benchmarks for a given year.
+  - `benchmark` or `benchmarks` to run performance benchmarks for a given year.
+    The application will generate a fancy table with some statistics for each
+    solver.
+  - `run` or `solve` to run the solver for a specific year, day, and part.
+    - `--part` is optional; if omitted, the application will run both.
+    - `-example`: Set this flag if you want to test against the example input
+    and output, if it exists.
+    - `-verbose`: Set this flag to get extra printed console output, if
+      applicable.
 - `--year` and `--day`: Pretty self-explanatory.
 - `--session`: Your session token for the Advent of Code site. To get it, open
   your browser's dev tools, go to Storage (Firefox) or Application (Chrome),
