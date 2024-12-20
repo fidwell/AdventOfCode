@@ -8,10 +8,10 @@ public class Puzzle20Solver : PuzzleSolver
     public override string SolvePartOne(string input)
     {
         var maze = new CharacterMatrix(input);
-        var solution = Solve(maze);
+        var solution = CalculateStepCosts(maze);
         var end = maze.SingleMatch('E');
         var totalSteps = solution[end.Item1, end.Item2];
-        Console.WriteLine($"Without cheating, solved in {totalSteps} steps");
+        //Console.WriteLine($"Without cheating, solved in {totalSteps} steps");
         var isExample = maze.Width == 15;
 
         var cheatsThatWouldSaveAtLeast100Steps = 0;
@@ -35,7 +35,8 @@ public class Puzzle20Solver : PuzzleSolver
                     var difference = Math.Abs(n1am - n2am) - 2;
                     if (difference >= (isExample ? 1 : 100))
                     {
-                        Console.WriteLine($"With cheat at {(x, y)}, saved {difference} steps");
+                        if (isExample)
+                            Console.WriteLine($"With cheat at {(x, y)}, saved {difference} steps");
                         cheatsThatWouldSaveAtLeast100Steps++;
                     }
                 }
@@ -48,7 +49,7 @@ public class Puzzle20Solver : PuzzleSolver
     public override string SolvePartTwo(string input)
     {
         var maze = new CharacterMatrix(input);
-        var solution = Solve(maze);
+        var solution = CalculateStepCosts(maze);
         var end = maze.SingleMatch('E');
         var totalSteps = solution[end.Item1, end.Item2];
         Console.WriteLine($"Without cheating, solved in {totalSteps} steps");
@@ -112,53 +113,23 @@ public class Puzzle20Solver : PuzzleSolver
         return cheatsThatWouldSaveAtLeast100Steps.ToString();
     }
 
-    private static int[,] Solve(CharacterMatrix maze)
+    private static int[,] CalculateStepCosts(CharacterMatrix maze)
     {
         var start = maze.SingleMatch('S');
         var end = maze.SingleMatch('E');
+        var current = start;
+        var currentCost = 0;
 
-        var queue = new PriorityQueue<RaceState, int>();
-        var visited = new HashSet<RaceState>
+        var result = new int[maze.Width, maze.Height];
+        while (current != end)
         {
-            new(start, 0)
-        };
-
-        var stepsAtEachTile = new int[maze.Width, maze.Height];
-
-        queue.Enqueue(new RaceState(start, 0), 0);
-
-        while (queue.Count > 0)
-        {
-            var state = queue.Dequeue();
-            visited.Add(state);
-
-            stepsAtEachTile[state.Location.Item1, state.Location.Item2] = state.PathLength;
-
-            if (state.Location == end)
-                return stepsAtEachTile;
-
-            var neighbors = maze.CoordinatesOfNeighbors(state.Location, allEight: false);
-
-            IEnumerable<RaceState> possibleNextStates = [];
-
-            possibleNextStates = possibleNextStates.Concat(neighbors
-                .Where(n => maze.CharAt(n) != '#')
-                .Select(n => new RaceState(n, state.PathLength + 1)));
-
-            foreach (var nextState in possibleNextStates)
-            {
-                if (visited.Any(v => v.Location == nextState.Location && v.PathLength < nextState.PathLength))
-                    continue;
-
-                queue.Enqueue(nextState, state.PathLength + 1);
-            }
+            var next = maze.CoordinatesOfNeighbors(current, allEight: false)
+                .Single(n => maze.CharAt(n) != '#' && result[n.Item1, n.Item2] == 0 && n != start);
+            result[next.Item1, next.Item2] = ++currentCost;
+            current = next;
         }
-
-        Console.WriteLine("Couldn't solve the maze");
-        return stepsAtEachTile;
+        return result;
     }
-
-    private record struct RaceState((int, int) Location, int PathLength);
 
     private static void Print(CharacterMatrix maze, IEnumerable<(int, int)> path)
     {
