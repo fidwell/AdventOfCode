@@ -7,7 +7,7 @@ public partial class Puzzle19Solver : PuzzleSolver
 {
     private readonly List<Replacement> Replacements = [];
     private string Target = "";
-    private Random Random = new();
+    private readonly Random Random = new();
 
     public override string SolvePartOne(string input)
     {
@@ -71,24 +71,22 @@ public partial class Puzzle19Solver : PuzzleSolver
 
     private void ParseInput(string input)
     {
-        if (Replacements.Count == 0)
-        {
-            var replacementPattern = ReplacementDefinitionPattern();
+        Replacements.Clear();
+        var replacementPattern = ReplacementDefinitionPattern();
 
-            var lines = input.SplitByNewline();
-            for (var i = 0; i < lines.Length; i++)
+        var lines = input.SplitByNewline();
+        for (var i = 0; i < lines.Length; i++)
+        {
+            if (i < lines.Length - 1)
             {
-                if (i < lines.Length - 1)
-                {
-                    var match = replacementPattern.Match(lines[i]);
-                    var from = match.Groups[1].Value;
-                    var to = match.Groups[2].Value;
-                    Replacements.Add(new Replacement(from, to));
-                }
-                else
-                {
-                    Target = lines[i];
-                }
+                var match = replacementPattern.Match(lines[i]);
+                var from = match.Groups[1].Value;
+                var to = match.Groups[2].Value;
+                Replacements.Add(new Replacement(from, to));
+            }
+            else
+            {
+                Target = lines[i];
             }
         }
     }
