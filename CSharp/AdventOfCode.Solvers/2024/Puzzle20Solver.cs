@@ -12,6 +12,7 @@ public class Puzzle20Solver : PuzzleSolver
         var end = maze.SingleMatch('E');
         var totalSteps = solution[end.Item1, end.Item2];
         Console.WriteLine($"Without cheating, solved in {totalSteps} steps");
+        var isExample = maze.Width == 15;
 
         var cheatsThatWouldSaveAtLeast100Steps = 0;
 
@@ -32,7 +33,7 @@ public class Puzzle20Solver : PuzzleSolver
                     var n1am = solution[n1.Item1, n1.Item2];
                     var n2am = solution[n2.Item1, n2.Item2];
                     var difference = Math.Abs(n1am - n2am) - 2;
-                    if (difference >= 100)
+                    if (difference >= (isExample ? 1 : 100))
                     {
                         Console.WriteLine($"With cheat at {(x, y)}, saved {difference} steps");
                         cheatsThatWouldSaveAtLeast100Steps++;
