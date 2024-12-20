@@ -8,7 +8,9 @@ public class Puzzle20Solver : PuzzleSolver
     {
         var maze = new CharacterMatrix(input);
         var solution = Solve(maze, (-1, -1));
-        Console.WriteLine($"Without cheating, solved in {solution} steps");
+        var end = maze.SingleMatch('E');
+        var totalSteps = solution[end.Item1, end.Item2];
+        Console.WriteLine($"Without cheating, solved in {totalSteps} steps");
 
         var cheatsThatWouldSaveAtLeast100Steps = 0;
 
@@ -19,11 +21,21 @@ public class Puzzle20Solver : PuzzleSolver
                 if (maze.CharAt((x, y)) != '#')
                     continue;
 
-                var solutionC = Solve(maze, (x, y));
-                if (solutionC <= solution - 100)
+                var neighbors = maze.CoordinatesOfNeighbors((x, y), allEight: false)
+                    .Where(n => solution[n.Item1, n.Item2] > 0)
+                    .ToArray();
+                if (neighbors.Length == 2)
                 {
-                    Console.WriteLine($"With cheat at {(x, y)}, solved in {solutionC} steps; saved {solution - solutionC} steps");
-                    cheatsThatWouldSaveAtLeast100Steps++;
+                    var n1 = neighbors[0];
+                    var n2 = neighbors[1];
+                    var n1am = solution[n1.Item1, n1.Item2];
+                    var n2am = solution[n2.Item1, n2.Item2];
+                    var difference = Math.Abs(n1am - n2am) - 2;
+                    if (difference >= 100)
+                    {
+                        Console.WriteLine($"With cheat at {(x, y)}, saved {difference} steps");
+                        cheatsThatWouldSaveAtLeast100Steps++;
+                    }
                 }
             }
         }
@@ -36,7 +48,7 @@ public class Puzzle20Solver : PuzzleSolver
         throw new NotImplementedException();
     }
 
-    private static int Solve(CharacterMatrix maze, (int, int) cheat)
+    private static int[,] Solve(CharacterMatrix maze, (int, int) cheat)
     {
         var start = maze.SingleMatch('S');
         var end = maze.SingleMatch('E');
@@ -47,14 +59,19 @@ public class Puzzle20Solver : PuzzleSolver
             new(start, 0)
         };
 
+        var stepsAtEachTile = new int[maze.Width, maze.Height];
+
         queue.Enqueue(new RaceState(start, 0), 0);
 
         while (queue.Count > 0)
         {
             var state = queue.Dequeue();
             visited.Add(state);
+
+            stepsAtEachTile[state.Location.Item1, state.Location.Item2] = state.PathLength;
+
             if (state.Location == end)
-                return state.PathLength;
+                return stepsAtEachTile;
 
             var neighbors = maze.CoordinatesOfNeighbors(state.Location, allEight: false);
 
@@ -74,7 +91,7 @@ public class Puzzle20Solver : PuzzleSolver
         }
 
         Console.WriteLine("Couldn't solve the maze");
-        return 0;
+        return stepsAtEachTile;
     }
 
     private record struct RaceState((int, int) Location, int PathLength);
