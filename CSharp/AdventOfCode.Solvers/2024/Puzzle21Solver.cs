@@ -6,14 +6,14 @@ public class Puzzle21Solver : PuzzleSolver
 {
     public override string SolvePartOne(string input)
     {
+        DirpadCache.Clear();
         var answer = 0;
         var codes = input.SplitByNewline();
         foreach (var code in codes)
         {
             var numPart = int.Parse(Regexes.NonNegativeInteger().Match(code).Value);
-            var myDirections = GetDirections(code);
+            var myDirections = GetDirections(code, 2);
             var complexity = myDirections.Length * numPart;
-            Console.WriteLine($"Complexity for {code}: {myDirections.Length} * {numPart} = {complexity}");
             answer += complexity;
         }
         return answer.ToString();
@@ -21,15 +21,28 @@ public class Puzzle21Solver : PuzzleSolver
 
     public override string SolvePartTwo(string input)
     {
-        throw new NotImplementedException();
+        DirpadCache.Clear();
+        var answer = 0UL;
+        var codes = input.SplitByNewline();
+        foreach (var code in codes)
+        {
+            var numPart = int.Parse(Regexes.NonNegativeInteger().Match(code).Value);
+            var myDirections = GetDirections(code, 25);
+            var complexity = (ulong)myDirections.Length * (ulong)numPart;
+            Console.WriteLine($"Calculated for {code}: {complexity}");
+            answer += complexity;
+        }
+        return answer.ToString();
     }
 
-    private static string GetDirections(string code)
+    private string GetDirections(string code, int layers)
     {
-        var layer1 = GetNumpadDirections(code);
-        var layer2 = GetDirpadDirections(layer1);
-        var layer3 = GetDirpadDirections(layer2);
-        return layer3;
+        var result = GetNumpadDirections(code);
+        for (var i = 0; i < layers; i++)
+        {
+            result = GetDirpadDirections(result);
+        }
+        return result;
     }
 
     private static readonly Dictionary<(char, char), IEnumerable<char>> NumpadShortestPaths = new()
@@ -211,14 +224,21 @@ public class Puzzle21Solver : PuzzleSolver
         return new string(result.ToArray());
     }
 
-    private static string GetDirpadDirections(string code)
+    private readonly Dictionary<string, string> DirpadCache = [];
+
+    private string GetDirpadDirections(string code)
     {
+        if (DirpadCache.TryGetValue(code, out var cachedValue))
+            return cachedValue;
+
         IEnumerable<char> result = DirpadShortestPaths[('A', code[0])].Concat(['A']);
         for (var i = 0; i < code.Length - 1; i++)
         {
             var nextPath = DirpadShortestPaths[(code[i], code[i + 1])];
             result = result.Concat(nextPath).Concat(['A']);
         }
-        return new string(result.ToArray());
+        var resultString = new string(result.ToArray());
+        DirpadCache.Add(code, resultString);
+        return resultString;
     }
 }
