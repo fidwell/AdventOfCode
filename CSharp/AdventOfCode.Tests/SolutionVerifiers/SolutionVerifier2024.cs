@@ -167,7 +167,7 @@ public class SolutionVerifier2024 : SolutionVerifier
 
     [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "126384", DisplayName = "2024.21.1-example")]
-    [DataRow(1, false, "", DisplayName = "2024.21.1-problem")]
+    [DataRow(1, false, "182844", DisplayName = "2024.21.1-problem")]
     [DataRow(2, true, "", DisplayName = "2024.21.2-example")]
     [DataRow(2, false, "", DisplayName = "2024.21.2-problem")]
     public void Solve_2024_21(int part, bool useExample, string expected) =>
