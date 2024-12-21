@@ -4,45 +4,70 @@ namespace AdventOfCode.Solvers._2024;
 
 public class Puzzle21Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
-    {
-        DirpadCache.Clear();
-        var answer = 0;
-        var codes = input.SplitByNewline();
-        foreach (var code in codes)
-        {
-            var numPart = int.Parse(Regexes.NonNegativeInteger().Match(code).Value);
-            var myDirections = GetDirections(code, 2);
-            var complexity = myDirections.Length * numPart;
-            answer += complexity;
-        }
-        return answer.ToString();
-    }
+    public override string SolvePartOne(string input) => Solve(input, 2);
+    public override string SolvePartTwo(string input) => Solve(input, 25);
 
-    public override string SolvePartTwo(string input)
+    private static readonly char[] Activate = ['A'];
+    private static string Solve(string input, int layers)
     {
-        DirpadCache.Clear();
+        var dirButtons = new[] { '>', 'v', '<', '^', 'A' };
+        var dirPairs = dirButtons.SelectMany(a => dirButtons.Select(b => (a, b)));
+
+        // Start with "my" dir pad (pad 0).
+        var dirPad0 = dirPairs.ToDictionary(pair => pair, pair => 1UL);
+
+        // To find the cost of some path on for robot 1,
+        // find the path from X->Y. Then sum the costs
+        // for each step of that path from my keypad.
+        // (In the base case, they're all 0).
+        var dirPad1 = dirPairs.ToDictionary(pair => pair, pair =>
+        {
+            var path = Activate.Concat(DirpadShortestPaths[pair]).Concat(Activate);
+            var steps = path.Zip(path.Skip(1));
+            var costs = steps.Select(step => dirPad0[step]);
+            return costs.Aggregate(0UL, (sum, cost) => sum + cost);
+        });
+
+        // To find the cost of some path on for robot 2,
+        // find the path from X->Y. Then sum the costs
+        // for each step of that path from robot 1.
+
+        // I want to know the length of the shortest paths
+        // to go from resting on button X to pressing button Y.
+        var dirPad2 = dirPairs.ToDictionary(pair => pair, pair =>
+        {
+            var path = Activate.Concat(DirpadShortestPaths[pair]).Concat(Activate);
+            var steps = path.Zip(path.Skip(1));
+            var costs = steps.Select(step => dirPad1[step]);
+            return costs.Aggregate(0UL, (sum, cost) => sum + cost);
+        });
+
+        var numButtons = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A' };
+        var numPairs = numButtons.SelectMany(a => numButtons.Select(b => (a, b)));
+
+        var keyPad = numPairs.ToDictionary(pair => pair, pair =>
+        {
+            var path = Activate.Concat(NumpadShortestPaths[pair]).Concat(Activate);
+            var steps = path.Zip(path.Skip(1));
+            var costs = steps.Select(step => dirPad2[step]);
+            return costs.Aggregate(0UL, (sum, cost) => sum + cost);
+        });
+
+        var codes = input.SplitByNewline();
         var answer = 0UL;
-        var codes = input.SplitByNewline();
         foreach (var code in codes)
         {
-            var numPart = int.Parse(Regexes.NonNegativeInteger().Match(code).Value);
-            var myDirections = GetDirections(code, 25);
-            var complexity = (ulong)myDirections.Length * (ulong)numPart;
-            Console.WriteLine($"Calculated for {code}: {complexity}");
+            var path = Activate.Concat(code.ToCharArray());
+            var steps = path.Zip(path.Skip(1));
+            var costs = steps.Select(step => keyPad[step]);
+            var total = costs.Aggregate(0UL, (sum, cost) => sum + cost);
+
+            var numPart = ulong.Parse(Regexes.NonNegativeInteger().Match(code).Value);
+            var complexity = total * numPart;
             answer += complexity;
         }
-        return answer.ToString();
-    }
 
-    private string GetDirections(string code, int layers)
-    {
-        var result = GetNumpadDirections(code);
-        for (var i = 0; i < layers; i++)
-        {
-            result = GetDirpadDirections(result);
-        }
-        return result;
+        return answer.ToString();
     }
 
     private static readonly Dictionary<(char, char), IEnumerable<char>> NumpadShortestPaths = new()
@@ -212,33 +237,4 @@ public class Puzzle21Solver : PuzzleSolver
         { ('>', 'v'), ['<'] },
         { ('>', '>'), [] }
     };
-
-    private static string GetNumpadDirections(string code)
-    {
-        IEnumerable<char> result = NumpadShortestPaths[('A', code[0])].Concat(['A']);
-        for (var i = 0; i < code.Length - 1; i++)
-        {
-            var nextPath = NumpadShortestPaths[(code[i], code[i + 1])];
-            result = result.Concat(nextPath).Concat(['A']);
-        }
-        return new string(result.ToArray());
-    }
-
-    private readonly Dictionary<string, string> DirpadCache = [];
-
-    private string GetDirpadDirections(string code)
-    {
-        if (DirpadCache.TryGetValue(code, out var cachedValue))
-            return cachedValue;
-
-        IEnumerable<char> result = DirpadShortestPaths[('A', code[0])].Concat(['A']);
-        for (var i = 0; i < code.Length - 1; i++)
-        {
-            var nextPath = DirpadShortestPaths[(code[i], code[i + 1])];
-            result = result.Concat(nextPath).Concat(['A']);
-        }
-        var resultString = new string(result.ToArray());
-        DirpadCache.Add(code, resultString);
-        return resultString;
-    }
 }
