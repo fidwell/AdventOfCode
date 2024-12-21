@@ -34,5 +34,5 @@ public static class MathExtensions
     /// <param name="a"></param>
     /// <param name="b"></param>
     /// <returns></returns>
-    public static int ManhattanDistance((int, int) a, (int, int) b) => Math.Abs(b.Item1 - a.Item1) + Math.Abs(b.Item2 - a.Item2);
+    public static int ManhattanDistance(this (int, int) a, (int, int) b) => Math.Abs(b.Item1 - a.Item1) + Math.Abs(b.Item2 - a.Item2);
 }

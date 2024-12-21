@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.MathUtilities;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -99,8 +100,7 @@ public class Puzzle18Solver : PuzzleSolver
 
                 visited.Add((nx, ny));
                 parent[(nx, ny)] = (x, y);
-                var manhattanDistance = (end.Item1 - nx) + (end.Item2 - ny);
-                var priority = length + 1 + manhattanDistance;
+                var priority = length + 1 + end.ManhattanDistance((nx, ny));
                 var newState = new State(nx, ny, length + 1);
                 queue.Enqueue(newState, priority);
             }

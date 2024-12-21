@@ -1,6 +1,6 @@
 ﻿using AdventOfCode.Core.ArrayUtilities;
+using AdventOfCode.Core.MathUtilities;
 using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -29,12 +29,11 @@ public class Puzzle11Solver : PuzzleSolver
                     ? (pair[0].Item2, pair[1].Item2)
                     : (pair[1].Item2, pair[0].Item2);
 
-                var rawManhattanDistance = (bigX - smallX) + (bigY - smallY);
-
                 var emptyColumnsBetween = columnsWithNoGalaxies.Count(c => c < bigX && c > smallX) * gapSize;
                 var emptyRowsBetween = rowsWithNoGalaxies.Count(c => c < bigY && c > smallY) * gapSize;
 
-                return rawManhattanDistance + emptyColumnsBetween + emptyRowsBetween;
+                return (bigX, bigY).ManhattanDistance((smallX, smallY))
+                    + emptyColumnsBetween + emptyRowsBetween;
             })
             .Sum()
             .ToString();

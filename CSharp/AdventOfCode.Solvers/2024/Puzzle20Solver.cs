@@ -44,7 +44,7 @@ public class Puzzle20Solver : PuzzleSolver
                             continue;
 
                         var cheatEnd = (x0, y0);
-                        var manhattanDistance = MathExtensions.ManhattanDistance(cheatStart, cheatEnd);
+                        var manhattanDistance = cheatStart.ManhattanDistance(cheatEnd);
                         if (manhattanDistance > cheatMax)
                             continue;
 
