@@ -26,7 +26,7 @@ public class Puzzle21Solver : PuzzleSolver
             // to go from resting on button X to pressing button Y.
             dirPadCosts = dirPairs.ToDictionary(pair => pair, pair =>
             {
-                var possiblePaths = DirpadPossiblePaths.Where(p => p.Item1 == pair).ToList();
+                var possiblePaths = DirpadPathCandidates.Where(p => p.Item1 == pair).ToList();
                 var minCost = ulong.MaxValue;
                 foreach (var possiblePath in possiblePaths)
                 {
@@ -50,7 +50,7 @@ public class Puzzle21Solver : PuzzleSolver
 
         var keyPad = numPairs.ToDictionary(pair => pair, pair =>
         {
-            var possiblePaths = NumpadShortestPaths.Where(p => p.Item1 == pair).ToList();
+            var possiblePaths = NumpadPathCandidates.Where(p => p.Item1 == pair).ToList();
             var minCost = ulong.MaxValue;
             foreach (var possiblePath in possiblePaths)
             {
@@ -66,10 +66,6 @@ public class Puzzle21Solver : PuzzleSolver
             }
 
             return minCost;
-            //var path = Activate.Concat(NumpadShortestPaths[pair]).Concat(Activate);
-            //var steps = path.Zip(path.Skip(1));
-            //var costs = steps.Select(step => dirPadCosts[step]);
-            //return costs.Aggregate(0UL, (sum, cost) => sum + cost);
         });
 
         var codes = input.SplitByNewline();
@@ -81,37 +77,13 @@ public class Puzzle21Solver : PuzzleSolver
             var total = costs.Aggregate(0UL, (sum, cost) => sum + cost);
 
             var numPart = ulong.Parse(Regexes.NonNegativeInteger().Match(c).Value);
-            var complexity = total * numPart;
-            Console.WriteLine($"{c} has total {total}");
-            return complexity;
+            return total * numPart;
         });
 
-        var answer = codeComplexities.Aggregate(0UL, (sum, complexity) => sum + complexity);
-        if (layers == 25 && codes[0] == "029A")
-        {
-            const ulong expected = 154115708116294UL;
-            if (answer == expected)
-            {
-                Console.WriteLine("It's right!");
-            }
-            else
-            {
-                var difference = expected > answer
-                    ? (expected - answer)
-                    : (answer - expected);
-                var error = difference / (double)expected;
-                Console.WriteLine($"expected: {expected}");
-                Console.WriteLine($"actual:   {answer}");
-                Console.WriteLine($"diff:     {difference}");
-                Console.WriteLine($"wrong; off by {error:P}");
-            }
-        }
-
-        // 226542886432102 is too high
-        return answer.ToString();
+        return codeComplexities.Aggregate(0UL, (sum, complexity) => sum + complexity).ToString();
     }
 
-    private static readonly List<((char, char), IEnumerable<char>)> NumpadShortestPaths =
+    private static readonly List<((char, char), IEnumerable<char>)> NumpadPathCandidates =
     [
         (('7', '7'), []),
         (('7', '8'), ['>']),
@@ -294,7 +266,7 @@ public class Puzzle21Solver : PuzzleSolver
         (('A', 'A'), [])
     ];
 
-    private static readonly List<((char, char), IEnumerable<char>)> DirpadPossiblePaths =
+    private static readonly List<((char, char), IEnumerable<char>)> DirpadPathCandidates =
     [
         (('^', '^'), []),
         (('^', 'A'), ['>']),
