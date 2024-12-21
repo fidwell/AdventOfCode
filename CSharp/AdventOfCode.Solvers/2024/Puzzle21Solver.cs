@@ -14,33 +14,24 @@ public class Puzzle21Solver : PuzzleSolver
         var dirPairs = dirButtons.SelectMany(a => dirButtons.Select(b => (a, b)));
 
         // Start with "my" dir pad (pad 0).
-        var dirPad0 = dirPairs.ToDictionary(pair => pair, pair => 1UL);
+        var dirPadCosts = dirPairs.ToDictionary(pair => pair, pair => 1UL);
 
-        // To find the cost of some path on for robot 1,
-        // find the path from X->Y. Then sum the costs
-        // for each step of that path from my keypad.
-        // (In the base case, they're all 0).
-        var dirPad1 = dirPairs.ToDictionary(pair => pair, pair =>
+        for (var i = 0; i < layers; i++)
         {
-            var path = Activate.Concat(DirpadShortestPaths[pair]).Concat(Activate);
-            var steps = path.Zip(path.Skip(1));
-            var costs = steps.Select(step => dirPad0[step]);
-            return costs.Aggregate(0UL, (sum, cost) => sum + cost);
-        });
+            // To find the cost of some path on for robot 2,
+            // find the path from X->Y. Then sum the costs
+            // for each step of that path from robot 1.
 
-        // To find the cost of some path on for robot 2,
-        // find the path from X->Y. Then sum the costs
-        // for each step of that path from robot 1.
-
-        // I want to know the length of the shortest paths
-        // to go from resting on button X to pressing button Y.
-        var dirPad2 = dirPairs.ToDictionary(pair => pair, pair =>
-        {
-            var path = Activate.Concat(DirpadShortestPaths[pair]).Concat(Activate);
-            var steps = path.Zip(path.Skip(1));
-            var costs = steps.Select(step => dirPad1[step]);
-            return costs.Aggregate(0UL, (sum, cost) => sum + cost);
-        });
+            // I want to know the length of the shortest paths
+            // to go from resting on button X to pressing button Y.
+            dirPadCosts = dirPairs.ToDictionary(pair => pair, pair =>
+            {
+                var path = Activate.Concat(DirpadShortestPaths[pair]).Concat(Activate);
+                var steps = path.Zip(path.Skip(1));
+                var costs = steps.Select(step => dirPadCosts[step]);
+                return costs.Aggregate(0UL, (sum, cost) => sum + cost);
+            });
+        }
 
         var numButtons = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A' };
         var numPairs = numButtons.SelectMany(a => numButtons.Select(b => (a, b)));
@@ -49,7 +40,7 @@ public class Puzzle21Solver : PuzzleSolver
         {
             var path = Activate.Concat(NumpadShortestPaths[pair]).Concat(Activate);
             var steps = path.Zip(path.Skip(1));
-            var costs = steps.Select(step => dirPad2[step]);
+            var costs = steps.Select(step => dirPadCosts[step]);
             return costs.Aggregate(0UL, (sum, cost) => sum + cost);
         });
 
