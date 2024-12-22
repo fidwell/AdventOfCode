@@ -14,8 +14,8 @@ public class Puzzle22Solver : PuzzleSolver
 
     public override string SolvePartTwo(string input) =>
         input.SplitByNewline().Select(int.Parse)
-            .Select(n => new Buyer(n, TotalSecretNumbers))
-            .SelectMany(b => b.PrecomputedValues)
+            .Select(n => ComputeBuyerValues(n, TotalSecretNumbers))
+            .SelectMany(b => b)
             .GroupBy(ds => ds.Key)
             .Select(g => g.Sum(x => x.Value))
             .Max().ToString();
@@ -48,29 +48,24 @@ public class Puzzle22Solver : PuzzleSolver
         return number;
     }
 
-    private class Buyer
+    private static Dictionary<int, int> ComputeBuyerValues(int seed, int sequenceLength)
     {
-        public int[] LastDigits { get; } = [];
-        public int[] Differences { get; } = [];
+        var lastDigits = Evolutions(seed, sequenceLength).Select(n => n % 10).ToArray();
+        var differences = lastDigits.Zip(lastDigits.Skip(1), (a, b) => b - a).ToArray();
 
-        public Dictionary<int, int> PrecomputedValues { get; } = [];
+        var result = new Dictionary<int, int>();
 
-        public Buyer(int seed, int sequenceLength)
+        for (var i = 0; i < differences.Length - 3; i++)
         {
-            var sequence = Evolutions(seed, sequenceLength).ToArray();
-            LastDigits = sequence.Select(n => n % 10).ToArray();
-            Differences = LastDigits.Zip(LastDigits.Skip(1), (a, b) => b - a).ToArray();
+            var key = (differences[i], differences[i + 1], differences[i + 2], differences[i + 3]).GetHashCode();
+            var value = lastDigits[i + 4];
 
-            for (var i = 0; i < Differences.Length - 3; i++)
+            if (!result.TryGetValue(key, out var cachedValue))
             {
-                var key = (Differences[i], Differences[i + 1], Differences[i + 2], Differences[i + 3]).GetHashCode();
-                var value = LastDigits[i + 4];
-
-                if (!PrecomputedValues.TryGetValue(key, out var cachedValue))
-                {
-                    PrecomputedValues.Add(key, value);
-                }
+                result.Add(key, value);
             }
         }
+
+        return result;
     }
 }
