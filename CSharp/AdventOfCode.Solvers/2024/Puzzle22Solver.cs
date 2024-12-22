@@ -6,12 +6,11 @@ public class Puzzle22Solver : PuzzleSolver
 {
     const int TotalSecretNumbers = 2000;
 
-    public override string SolvePartOne(string input)
-    {
-        var numbers = input.SplitByNewline().Select(int.Parse);
-        var answers = numbers.Select(n => EvolveNTimes(n, TotalSecretNumbers));
-        return answers.Aggregate(0UL, (sum, answer) => sum + (ulong)answer).ToString();
-    }
+    public override string SolvePartOne(string input) =>
+        input.SplitByNewline().Select(int.Parse)
+            .Select(n => EvolveNTimes(n, TotalSecretNumbers))
+            .Aggregate(0UL, (sum, answer) => sum + (ulong)answer)
+            .ToString();
 
     public override string SolvePartTwo(string input) =>
         input.SplitByNewline().Select(int.Parse)
@@ -20,9 +19,6 @@ public class Puzzle22Solver : PuzzleSolver
             .GroupBy(ds => ds.Key)
             .Select(g => g.Sum(x => x.Value))
             .Max().ToString();
-    // 1631 is too low
-    // 1650 is wrong
-    // 1755 is wrong????
 
     private static IEnumerable<int> Evolutions(int number, int times)
     {
@@ -46,7 +42,6 @@ public class Puzzle22Solver : PuzzleSolver
     private static int Evolve(int number)
     {
         const int n16777216minus1 = 0b1111_1111_1111_1111_1111_1111;
-
         number = ((number << 6) ^ number) & n16777216minus1;
         number = ((number >> 5) ^ number) & n16777216minus1;
         number = ((number << 11) ^ number) & n16777216minus1;
