@@ -7,37 +7,16 @@ public class Puzzle23Solver : PuzzleSolver
     public override string SolvePartOne(string input)
     {
         var allConnections = input.SplitByNewline().Select(l => (l.Substring(0, 2), l.Substring(3, 2)));
-
         var groups = GroupsOfFullyConnectedComputers(allConnections, 3);
-        Console.WriteLine($"Found {groups.Count()} total groups");
         var tGroups = groups.Where(g => g.Any(n => n.StartsWith('t')));
         return tGroups.Count().ToString();
     }
 
     public override string SolvePartTwo(string input)
     {
-        // there are 520 nodes in my input. that's big
         var dictionary = ConnectivityDictionary(input);
         BronKerbosch(dictionary, r: [], p: [.. dictionary.Keys], x: []);
-
-        //foreach (var node in dictionary)
-        //{
-        //    foreach (var otherNode in node.Value)
-        //    {
-        //        var otherNodeConnections = dictionary[otherNode];
-        //        var intersection = otherNodeConnections.Intersect(node.Value);
-        //        if (intersection.Count() == node.Value.Count + 1)
-        //        {
-        //            // these are interconnected
-        //        }
-        //    }
-        //}
-
         return ToString(MaximalClique);
-        //var groups = GroupsOfFullyConnectedComputers(allConnections, int.MaxValue);
-        //Console.WriteLine($"Found {groups.Count()} total groups");
-        //var firstGroup = groups.First();
-        //return ToString(firstGroup);
     }
 
     private static Dictionary<string, List<string>> ConnectivityDictionary(string input)
@@ -70,13 +49,10 @@ public class Puzzle23Solver : PuzzleSolver
     private static List<string> MaximalClique = [];
     private static void BronKerbosch(Dictionary<string, List<string>> connectivityDictionary, List<string> r, List<string> p, List<string> x)
     {
-        if (p.Count == 0 && x.Count == 0)
+        // https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm#Without_pivoting
+        if (p.Count == 0 && x.Count == 0 && r.Count > MaximalClique.Count)
         {
-            if (r.Count > MaximalClique.Count)
-            {
-                MaximalClique = [.. r.OrderBy(n => n)];
-                Console.WriteLine($"Maxmial clique: {ToString(MaximalClique)}");
-            }
+            MaximalClique = [.. r.OrderBy(n => n)];
         }
 
         while (p.Count != 0)
