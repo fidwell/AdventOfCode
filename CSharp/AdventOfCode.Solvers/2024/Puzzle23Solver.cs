@@ -16,12 +16,77 @@ public class Puzzle23Solver : PuzzleSolver
 
     public override string SolvePartTwo(string input)
     {
-        var allConnections = input.SplitByNewline().Select(l => (l.Substring(0, 2), l.Substring(3, 2)));
+        // there are 520 nodes in my input. that's big
+        var dictionary = ConnectivityDictionary(input);
+        BronKerbosch(dictionary, r: [], p: [.. dictionary.Keys], x: []);
 
-        var groups = GroupsOfFullyConnectedComputers(allConnections, int.MaxValue);
-        Console.WriteLine($"Found {groups.Count()} total groups");
-        var firstGroup = groups.First();
-        return ToString(firstGroup);
+        //foreach (var node in dictionary)
+        //{
+        //    foreach (var otherNode in node.Value)
+        //    {
+        //        var otherNodeConnections = dictionary[otherNode];
+        //        var intersection = otherNodeConnections.Intersect(node.Value);
+        //        if (intersection.Count() == node.Value.Count + 1)
+        //        {
+        //            // these are interconnected
+        //        }
+        //    }
+        //}
+
+        return ToString(MaximalClique);
+        //var groups = GroupsOfFullyConnectedComputers(allConnections, int.MaxValue);
+        //Console.WriteLine($"Found {groups.Count()} total groups");
+        //var firstGroup = groups.First();
+        //return ToString(firstGroup);
+    }
+
+    private static Dictionary<string, List<string>> ConnectivityDictionary(string input)
+    {
+        var result = new Dictionary<string, List<string>>();
+        var allConnections = input.SplitByNewline().Select(l => (l.Substring(0, 2), l.Substring(3, 2)));
+        foreach (var connection in allConnections)
+        {
+            if (result.TryGetValue(connection.Item1, out List<string>? list1))
+            {
+                list1.Add(connection.Item2);
+            }
+            else
+            {
+                result.Add(connection.Item1, [connection.Item2]);
+            }
+
+            if (result.TryGetValue(connection.Item2, out List<string>? list2))
+            {
+                list2.Add(connection.Item1);
+            }
+            else
+            {
+                result.Add(connection.Item2, [connection.Item1]);
+            }
+        }
+        return result;
+    }
+
+    private static List<string> MaximalClique = [];
+    private static void BronKerbosch(Dictionary<string, List<string>> connectivityDictionary, List<string> r, List<string> p, List<string> x)
+    {
+        if (p.Count == 0 && x.Count == 0)
+        {
+            if (r.Count > MaximalClique.Count)
+            {
+                MaximalClique = [.. r.OrderBy(n => n)];
+                Console.WriteLine($"Maxmial clique: {ToString(MaximalClique)}");
+            }
+        }
+
+        while (p.Count != 0)
+        {
+            var vertex = p[0];
+            var neighborSet = connectivityDictionary[vertex];
+            BronKerbosch(connectivityDictionary, r.Concat([vertex]).ToList(), p.Intersect(neighborSet).ToList(), x.Intersect(neighborSet).ToList());
+            p.Remove(vertex);
+            x.Add(vertex);
+        }
     }
 
     private static List<List<string>> GroupsOfFullyConnectedComputers(IEnumerable<(string, string)> allConnections, int maxSize)
@@ -110,5 +175,5 @@ public class Puzzle23Solver : PuzzleSolver
         return groupsOfFour;
     }
 
-    private static string ToString(IEnumerable<string> group) => $"({string.Join(',', group)})";
+    private static string ToString(IEnumerable<string> group) => string.Join(',', group);
 }
