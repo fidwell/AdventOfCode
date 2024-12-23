@@ -165,7 +165,7 @@ public class SolutionVerifier2024 : SolutionVerifier
     public void Solve_2024_20(int part, bool useExample, string expected) =>
         Solve(new Puzzle20Solver(), 20, part, useExample, expected);
 
-    [DataTestMethod]
+    [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "126384", DisplayName = "2024.21.1-example")]
     [DataRow(1, false, "182844", DisplayName = "2024.21.1-problem")]
     [DataRow(2, true, "154115708116294", DisplayName = "2024.21.2-example")]
@@ -173,7 +173,7 @@ public class SolutionVerifier2024 : SolutionVerifier
     public void Solve_2024_21(int part, bool useExample, string expected) =>
         Solve(new Puzzle21Solver(), 21, part, useExample, expected);
 
-    [DataTestMethod]
+    [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "37327623", DisplayName = "2024.22.1-example")]
     [DataRow(1, false, "15303617151", DisplayName = "2024.22.1-problem")]
     [DataRow(2, true, "23", DisplayName = "2024.22.2-example")]
@@ -181,15 +181,15 @@ public class SolutionVerifier2024 : SolutionVerifier
     public void Solve_2024_22(int part, bool useExample, string expected) =>
         Solve(new Puzzle22Solver(), 22, part, useExample, expected);
 
-    [DataTestMethod]
-    [DataRow(1, true, "", DisplayName = "2024.23.1-example")]
-    [DataRow(1, false, "", DisplayName = "2024.23.1-problem")]
-    [DataRow(2, true, "", DisplayName = "2024.23.2-example")]
-    [DataRow(2, false, "", DisplayName = "2024.23.2-problem")]
+    [DataTestMethod, Timeout(MaxTimeout)]
+    [DataRow(1, true, "7", DisplayName = "2024.23.1-example")]
+    [DataRow(1, false, "1485", DisplayName = "2024.23.1-problem")]
+    [DataRow(2, true, "co,de,ka,ta", DisplayName = "2024.23.2-example")]
+    [DataRow(2, false, "cc,dz,ea,hj,if,it,kf,qo,sk,ug,ut,uv,wh", DisplayName = "2024.23.2-problem")]
     public void Solve_2024_23(int part, bool useExample, string expected) =>
         Solve(new Puzzle23Solver(), 23, part, useExample, expected);
 
-    [DataTestMethod]
+    [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "", DisplayName = "2024.24.1-example")]
     [DataRow(1, false, "", DisplayName = "2024.24.1-problem")]
     [DataRow(2, true, "", DisplayName = "2024.24.2-example")]
@@ -197,7 +197,7 @@ public class SolutionVerifier2024 : SolutionVerifier
     public void Solve_2024_24(int part, bool useExample, string expected) =>
         Solve(new Puzzle24Solver(), 24, part, useExample, expected);
 
-    [DataTestMethod]
+    [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "", DisplayName = "2024.25.1-example")]
     [DataRow(1, false, "", DisplayName = "2024.25.1-problem")]
     public void Solve_2024_25(int part, bool useExample, string expected) =>
