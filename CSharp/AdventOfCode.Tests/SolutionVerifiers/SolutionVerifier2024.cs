@@ -184,7 +184,7 @@ public class SolutionVerifier2024 : SolutionVerifier
     [DataTestMethod]
     [DataRow(1, true, "7", DisplayName = "2024.23.1-example")]
     [DataRow(1, false, "1485", DisplayName = "2024.23.1-problem")]
-    [DataRow(2, true, "", DisplayName = "2024.23.2-example")]
+    [DataRow(2, true, "co,de,ka,ta", DisplayName = "2024.23.2-example")]
     [DataRow(2, false, "", DisplayName = "2024.23.2-problem")]
     public void Solve_2024_23(int part, bool useExample, string expected) =>
         Solve(new Puzzle23Solver(), 23, part, useExample, expected);
