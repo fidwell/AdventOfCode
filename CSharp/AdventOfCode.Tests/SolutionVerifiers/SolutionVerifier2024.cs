@@ -180,4 +180,26 @@ public class SolutionVerifier2024 : SolutionVerifier
     [DataRow(2, false, "1727", DisplayName = "2024.22.2-problem")]
     public void Solve_2024_22(int part, bool useExample, string expected) =>
         Solve(new Puzzle22Solver(), 22, part, useExample, expected);
+
+    [DataTestMethod]
+    [DataRow(1, true, "", DisplayName = "2024.23.1-example")]
+    [DataRow(1, false, "", DisplayName = "2024.23.1-problem")]
+    [DataRow(2, true, "", DisplayName = "2024.23.2-example")]
+    [DataRow(2, false, "", DisplayName = "2024.23.2-problem")]
+    public void Solve_2024_23(int part, bool useExample, string expected) =>
+        Solve(new Puzzle23Solver(), 23, part, useExample, expected);
+
+    [DataTestMethod]
+    [DataRow(1, true, "", DisplayName = "2024.24.1-example")]
+    [DataRow(1, false, "", DisplayName = "2024.24.1-problem")]
+    [DataRow(2, true, "", DisplayName = "2024.24.2-example")]
+    [DataRow(2, false, "", DisplayName = "2024.24.2-problem")]
+    public void Solve_2024_24(int part, bool useExample, string expected) =>
+        Solve(new Puzzle24Solver(), 24, part, useExample, expected);
+
+    [DataTestMethod]
+    [DataRow(1, true, "", DisplayName = "2024.25.1-example")]
+    [DataRow(1, false, "", DisplayName = "2024.25.1-problem")]
+    public void Solve_2024_25(int part, bool useExample, string expected) =>
+        Solve(new Puzzle25Solver(), 25, part, useExample, expected);
 }
