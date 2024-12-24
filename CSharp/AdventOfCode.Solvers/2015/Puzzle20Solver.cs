@@ -38,51 +38,11 @@ public class Puzzle20Solver : PuzzleSolver
                 {
                     houses[house] += delivered;
                 }
-
-                //if (houses[house] >= target)
-                //{
-                //    Console.WriteLine($"elf {elf}, house {house}");
-                //    return house.ToString();
-                //}
             }
         }
 
         var matchingHouses = houses.Where(h => h.Value >= target).OrderBy(h => h.Key);
         return matchingHouses.Select(h => h.Key).Min().ToString();
-
-        // TRY 705600
-        // 1441440 is WRONG
-        // 3255840 is WRONG
-        // 3326400 is TOO HIGH
-
-        //return houses.First(h => h.Value >= target).Key.ToString();
-
-        //foreach (var house in houses)
-        //{
-        //    Console.WriteLine($"{house.Key}: {house.Value}");
-        //}
-
-        /*
-
-        // Elf 1 visits 1, 2, 3, ... 50
-        // Elf 2 visits 2, 4, 6, ... 100
-        // Elf 3 visits 3, 6, 9, ... 150
-        // House h gets visited by elf e if e|h and e*50 <= h
-
-        // Answer is lower than 4324320
-        var h = 4324320;
-        int presentCount;
-        do
-        {
-            h -= 1;
-            presentCount = 11 * DivisorFunction2(h);
-            if (presentCount == target)
-                Console.WriteLine($"House {h}: {presentCount}");
-        } while (h > 4000000);
-
-
-        return h.ToString();
-        */
     }
 
     private static int DivisorFunction(int input)
@@ -91,17 +51,6 @@ public class Puzzle20Solver : PuzzleSolver
         for (var e = 1; e <= input; e++)
         {
             if (input % e == 0)
-                sum += e;
-        }
-        return sum;
-    }
-
-    private static int DivisorFunction2(int input)
-    {
-        var sum = 0;
-        for (var e = 1; e <= input; e++)
-        {
-            if (e * 50 <= input && input % e == 0)
                 sum += e;
         }
         return sum;
