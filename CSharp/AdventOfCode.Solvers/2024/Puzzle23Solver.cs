@@ -6,9 +6,25 @@ public class Puzzle23Solver : PuzzleSolver
 {
     public override string SolvePartOne(string input)
     {
-        return GroupsOfFullyConnectedComputers(input.SplitByNewline().Select(l => (l.Substring(0, 2), l.Substring(3, 2))))
-            .Where(g => g.Any(n => n.StartsWith('t')))
-            .Count().ToString();
+        var dictionary = ConnectivityDictionary(input);
+        var candidates = dictionary.Where(c => c.Key.StartsWith('t'));
+
+        var groups = new HashSet<string>();
+        foreach (var node1 in candidates)
+        {
+            foreach (var node2 in node1.Value)
+            {
+                foreach (var node3 in dictionary[node2])
+                {
+                    if (dictionary[node3].Contains(node1.Key))
+                    {
+                        groups.Add(ToString(new string[] { node1.Key, node2, node3 }.OrderBy(n => n)));
+                    }
+                }
+            }
+        }
+
+        return groups.Count.ToString();
     }
 
     public override string SolvePartTwo(string input)
@@ -62,43 +78,6 @@ public class Puzzle23Solver : PuzzleSolver
             p.Remove(vertex);
             x.Add(vertex);
         }
-    }
-
-    private static List<List<string>> GroupsOfFullyConnectedComputers(IEnumerable<(string, string)> allConnections)
-    {
-        var groupsOfThree = new List<List<string>>();
-
-        foreach (var connection1 in allConnections)
-        {
-            // For each connection in the bag:
-            // Find all second connections with a shared node.
-            // For each of the second connections:
-            // See if there's a third connection that matches.
-            // If so, add it to the result.
-
-            var nodeA = connection1.Item1;
-            var nodeC = connection1.Item2;
-
-            var connection2s = allConnections.Where(c =>
-                c != connection1 &&
-                (c.Item1 == nodeA || c.Item2 == nodeA));
-
-            foreach (var connection2 in connection2s)
-            {
-                var nodeB = connection2.Item1 == nodeA ? connection2.Item2 : connection2.Item1;
-                var matches = allConnections.Where(c => c == (nodeC, nodeB) || c == (nodeB, nodeC));
-                if (matches.Any())
-                {
-                    var group = new[] { nodeA, nodeB, nodeC }.OrderBy(n => n).ToList();
-                    if (!groupsOfThree.Any(g => g.SequenceEqual(group)))
-                    {
-                        groupsOfThree.Add(group);
-                    }
-                }
-            }
-        }
-
-        return groupsOfThree;
     }
 
     private static string ToString(IEnumerable<string> group) => string.Join(',', group);
