@@ -18,7 +18,6 @@ public class Puzzle20Solver : PuzzleSolver
         {
             h += 1;
             divFun = DivisorFunction(h);
-            Console.WriteLine($"House {h}: {divFun}");
         } while (divFun < target);
 
         return h.ToString();
