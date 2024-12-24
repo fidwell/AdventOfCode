@@ -190,10 +190,9 @@ public class SolutionVerifier2024 : SolutionVerifier
         Solve(new Puzzle23Solver(), 23, part, useExample, expected);
 
     [DataTestMethod, Timeout(Timeout)]
-    [DataRow(1, true, "", DisplayName = "2024.24.1-example")]
-    [DataRow(1, false, "", DisplayName = "2024.24.1-problem")]
-    [DataRow(2, true, "", DisplayName = "2024.24.2-example")]
-    [DataRow(2, false, "", DisplayName = "2024.24.2-problem")]
+    [DataRow(1, true, "2024", DisplayName = "2024.24.1-example")]
+    [DataRow(1, false, "52038112429798", DisplayName = "2024.24.1-problem")]
+    [DataRow(2, false, "cph,jqn,kwb,qkf,tgr,z12,z16,z24", DisplayName = "2024.24.2-problem")]
     public void Solve_2024_24(int part, bool useExample, string expected) =>
         Solve(new Puzzle24Solver(), 24, part, useExample, expected);
 

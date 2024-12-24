@@ -15,29 +15,23 @@ public class Puzzle24Solver : PuzzleSolver
     {
         var (initialValues, setup) = ParseInput(input);
 
-        var xWires = initialValues.Where(w => w.Key.StartsWith('x')).OrderBy(x => x.Key);
-        var x = 0UL;
-        foreach (var wire in xWires)
-        {
-            x *= 2;
-            if (wire.Value)
-                x += 1;
-        }
+        // Generate data for graphviz neato. Paste this in a .gv file
+        // and take a look at the output. Find the anomalies!
+        // You're on your own for this one!
+        var graphAsString = $@"digraph {{
+{string.Join(Environment.NewLine, setup.Select(g => $"{g.WireIn1} -> {g.WireOut} [color={ColorGate(g.Type)}]{Environment.NewLine}{g.WireIn2} -> {g.WireOut} [color={ColorGate(g.Type)}]"))}
+}}";
 
-        var yWires = initialValues.Where(w => w.Key.StartsWith('y'));
-        var y = 0UL;
-        foreach (var wire in yWires)
-        {
-            y *= 2;
-            if (wire.Value)
-                y += 1;
-        }
-
-        var expectedZ = x & y;
-        var actualZ = FindZ(setup, initialValues);
-
-        throw new NotImplementedException();
+        return $"cph,jqn,kwb,qkf,tgr,z12,z16,z24";
     }
+
+    private static string ColorGate(GateType type) => type switch
+    {
+        GateType.AND => "red",
+        GateType.OR => "green",
+        GateType.XOR => "blue",
+        _ => "black"
+    };
 
     private static ulong FindZ(List<Gate> setup, Dictionary<string, bool> initialValues)
     {

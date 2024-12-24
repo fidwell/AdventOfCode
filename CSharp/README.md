@@ -78,5 +78,5 @@ automatically. Run the application in a console with these arguments:
 | 21  | ⭐⭐ | | | | | | | | ⭐⭐ | ⭐⭐ |
 | 22  | | | | | | | | | ⭐⭐ | ⭐⭐ |
 | 23  | | | | | | | | | ⭐⭐ | ⭐⭐ |
-| 24  | | | | | | | | | ⭐⭐ | ⭐ |
+| 24  | | | | | | | | | ⭐⭐ | ⭐⭐ |
 | 25  | | | | | | | | | ⭐⭐ | |
