@@ -7,7 +7,55 @@ public class Puzzle24Solver : PuzzleSolver
 {
     public override string SolvePartOne(string input)
     {
-        // parse input
+        var (initialValues, setup) = ParseInput(input);
+        return FindZ(setup, initialValues).ToString();
+    }
+
+    public override string SolvePartTwo(string input)
+    {
+        var (initialValues, setup) = ParseInput(input);
+
+        var xWires = initialValues.Where(w => w.Key.StartsWith('x')).OrderBy(x => x.Key);
+        var x = 0UL;
+        foreach (var wire in xWires)
+        {
+            x *= 2;
+            if (wire.Value)
+                x += 1;
+        }
+
+        var yWires = initialValues.Where(w => w.Key.StartsWith('y'));
+        var y = 0UL;
+        foreach (var wire in yWires)
+        {
+            y *= 2;
+            if (wire.Value)
+                y += 1;
+        }
+
+        var expectedZ = x & y;
+        var actualZ = FindZ(setup, initialValues);
+
+        throw new NotImplementedException();
+    }
+
+    private static ulong FindZ(List<Gate> setup, Dictionary<string, bool> initialValues)
+    {
+        var zWires = setup.Where(s => s.WireOut.StartsWith('z')).Select(s => s.WireOut).OrderByDescending(z => z);
+
+        var z = 0UL;
+        foreach (var output in zWires)
+        {
+            z *= 2;
+            var value = CalculateWire(setup, initialValues, output);
+            if (value)
+                z += 1;
+        }
+        return z;
+    }
+
+    private static (Dictionary<string, bool>, List<Gate>) ParseInput(string input)
+    {
         var initialValues = new Dictionary<string, bool>();
         var setup = new List<Gate>();
 
@@ -35,23 +83,7 @@ public class Puzzle24Solver : PuzzleSolver
             }
         }
 
-        var zWires = setup.Where(s => s.WireOut.StartsWith('z')).Select(s => s.WireOut).OrderByDescending(z => z);
-
-        var result = 0UL;
-        foreach (var output in zWires)
-        {
-            result *= 2;
-            var value = CalculateWire(setup, initialValues, output);
-            if (value)
-                result += 1;
-        }
-
-        return result.ToString();
-    }
-
-    public override string SolvePartTwo(string input)
-    {
-        throw new NotImplementedException();
+        return (initialValues, setup);
     }
 
     private static bool CalculateWire(List<Gate> setup, Dictionary<string, bool> initialValues, string wire)
