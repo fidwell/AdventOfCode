@@ -1,5 +1,4 @@
-﻿using AdventOfCode.Core.ArrayUtilities;
-using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -18,9 +17,7 @@ public class Puzzle13Solver : PuzzleSolver
         .ToString();
 
     private static IEnumerable<CharacterMatrix> GetMatrixes(string input) =>
-        input.SplitByNewline(StringSplitOptions.None)
-        .Chunk()
-        .Select(c => new CharacterMatrix(string.Join(Environment.NewLine, c)));
+        input.Chunk().Select(c => new CharacterMatrix(string.Join(Environment.NewLine, c)));
 
     private static int ValueOf(CharacterMatrix matrix, int differencesRequired)
     {

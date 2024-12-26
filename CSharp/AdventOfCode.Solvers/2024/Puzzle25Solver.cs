@@ -1,5 +1,4 @@
-﻿using AdventOfCode.Core.ArrayUtilities;
-using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -7,8 +6,7 @@ public class Puzzle25Solver : PuzzleSolver
 {
     public override string SolvePartOne(string input)
     {
-        var chunks = input.SplitByNewline(StringSplitOptions.None)
-            .Chunk()
+        var chunks = input.Chunk()
             .Where(c => c.Length > 0)
             .Select(l => string.Join(string.Empty, l))
             .ToArray();

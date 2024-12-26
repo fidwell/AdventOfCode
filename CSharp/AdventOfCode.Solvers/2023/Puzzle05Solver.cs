@@ -36,7 +36,7 @@ public class Puzzle05Solver : PuzzleSolver
             var results = _seedRanges
                 .Select(range =>
                 {
-                    IEnumerable<RangeLong> value = new[] { range };
+                    IEnumerable<RangeLong> value = [range];
                     foreach (var map in _maps)
                     {
                         value = map.TransformRanges(value).ToList();
@@ -55,7 +55,7 @@ public class Puzzle05Solver : PuzzleSolver
         {
             var mapRanges = data.Skip(1).Select(l => new MapRange(l)).OrderBy(r => r.SourceRangeStart).ToArray();
 
-            IEnumerable<MapRange> nonTransformingRanges = Array.Empty<MapRange>();
+            IEnumerable<MapRange> nonTransformingRanges = [];
             long min = 0;
             for (var i = 0; i < mapRanges.Length; i++)
             {

@@ -21,6 +21,16 @@ public static class StringExtensions
         StringSplitOptions options = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
         => input.Replace("\r", "").SplitAndTrim('\n', options);
 
+    /// <summary>
+    /// Splits a string into a collection of arrays of strings.
+    /// </summary>
+    /// <param name="input">The input string.</param>
+    /// <returns>A collection of string arrays.</returns>
+    public static IEnumerable<string[]> Chunk(this string input) =>
+        input
+            .Split(["\n\n", "\r\n\r\n"], StringSplitOptions.None)
+            .Select(c => c.SplitByNewline());
+
     public static string Repeat(this string input, int count, string separator) =>
         string.Join(separator, Enumerable.Range(0, count).Select(i => input));
 
