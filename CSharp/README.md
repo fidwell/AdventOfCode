@@ -79,4 +79,4 @@ automatically. Run the application in a console with these arguments:
 | 22  | | | | | | | | | ⭐⭐ | ⭐⭐ |
 | 23  | | | | | | | | | ⭐⭐ | ⭐⭐ |
 | 24  | | | | | | | | | ⭐⭐ | ⭐⭐ |
-| 25  | | | | | | | | | ⭐⭐ | ⭐⭐ |
+| 25  | ⭐ | | | | | | | | ⭐⭐ | ⭐⭐ |
