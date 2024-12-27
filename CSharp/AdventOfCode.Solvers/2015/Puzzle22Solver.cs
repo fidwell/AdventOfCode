@@ -130,7 +130,7 @@ public class Puzzle22Solver : PuzzleSolver
         var poisonTimer = 0;
         var rechargeTimer = 0;
 
-        if (isHardMode)
+        if (state.IsPlayerTurn && isHardMode)
         {
             playerHp -= 1;
             Write($"Player loses 1 HP from hard mode.");
@@ -154,13 +154,10 @@ public class Puzzle22Solver : PuzzleSolver
         {
             armor = ShieldArmor;
             shieldTimer = state.ShieldTimer - 1;
+            Write($"Shield's timer is now {shieldTimer}.");
             if (shieldTimer == 0)
             {
                 Write($"Shield wears off, decreasing armor by {ShieldArmor}.");
-            }
-            else
-            {
-                Write($"Shield's timer is now {shieldTimer}.");
             }
         }
 
