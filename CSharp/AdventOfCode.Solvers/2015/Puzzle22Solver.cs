@@ -152,6 +152,7 @@ public class Puzzle22Solver : PuzzleSolver
 
         if (state.ShieldTimer > 0)
         {
+            armor = ShieldArmor;
             shieldTimer = state.ShieldTimer - 1;
             if (shieldTimer == 0)
             {
@@ -160,7 +161,6 @@ public class Puzzle22Solver : PuzzleSolver
             else
             {
                 Write($"Shield's timer is now {shieldTimer}.");
-                armor = 7;
             }
         }
 
