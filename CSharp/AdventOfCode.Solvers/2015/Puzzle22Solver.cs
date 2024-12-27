@@ -20,7 +20,6 @@ public class Puzzle22Solver : PuzzleSolver
         var startingState = new GameState(
             IsPlayerTurn: true,
             PlayerHp: playerHp,
-            Armor: 0,
             Mana: mana,
             BossHp: bossHp,
             ShieldTimer: 0,
@@ -125,7 +124,6 @@ public class Puzzle22Solver : PuzzleSolver
     public readonly record struct GameState(
         bool IsPlayerTurn,
         int PlayerHp,
-        int Armor,
         int Mana,
         int BossHp,
         int ShieldTimer,
@@ -143,7 +141,7 @@ public class Puzzle22Solver : PuzzleSolver
         Write(state.IsPlayerTurn
             ? "-- Player turn --"
             : "-- Boss turn --");
-        Write($"- Player has {state.PlayerHp} hit points, {state.Armor} armor, {state.Mana} mana");
+        Write($"- Player has {state.PlayerHp} hit points, {(state.ShieldTimer > 0 ? ShieldArmor : 0)} armor, {state.Mana} mana");
         Write($"- Boss has {state.BossHp} hit points");
 
         var playerHp = state.PlayerHp;
@@ -159,13 +157,13 @@ public class Puzzle22Solver : PuzzleSolver
         if (isHardMode)
         {
             playerHp -= 1;
+            Write($"Player loses 1 HP from hard mode.");
             if (playerHp <= 0)
             {
-                Write($"Player loses 1 HP and dies.");
+                Write($"This kills the player, and the boss wins.");
                 return new GameState(
                     IsPlayerTurn: !state.IsPlayerTurn,
                     PlayerHp: playerHp,
-                    Armor: armor,
                     Mana: mana,
                     BossHp: bossHp,
                     ShieldTimer: shieldTimer,
@@ -178,12 +176,15 @@ public class Puzzle22Solver : PuzzleSolver
 
         if (state.ShieldTimer > 0)
         {
-            armor = 7;
             shieldTimer = state.ShieldTimer - 1;
-            Write($"Shield's timer is now {shieldTimer}.");
             if (shieldTimer == 0)
             {
                 Write($"Shield wears off, decreasing armor by {ShieldArmor}.");
+            }
+            else
+            {
+                Write($"Shield's timer is now {shieldTimer}.");
+                armor = 7;
             }
         }
 
@@ -196,6 +197,16 @@ public class Puzzle22Solver : PuzzleSolver
             if (bossHp <= 0)
             {
                 Write("This kills the boss, and the player wins.");
+                return new GameState(
+                    IsPlayerTurn: !state.IsPlayerTurn,
+                    PlayerHp: playerHp,
+                    Mana: mana,
+                    BossHp: bossHp,
+                    ShieldTimer: shieldTimer,
+                    PoisonTimer: poisonTimer,
+                    RechargeTimer: rechargeTimer,
+                    EndState: EndState.PlayerWins,
+                    TotalManaSpent: totalManaSpent);
             }
 
             if (poisonTimer == 0)
@@ -252,7 +263,7 @@ public class Puzzle22Solver : PuzzleSolver
                     break;
             }
         }
-        else if (bossHp > 0)
+        else
         {
             var damageDealt = bossDamage - armor;
             if (damageDealt < 1) damageDealt = 1;
@@ -287,7 +298,6 @@ public class Puzzle22Solver : PuzzleSolver
         return new GameState(
             IsPlayerTurn: !state.IsPlayerTurn,
             PlayerHp: playerHp,
-            Armor: armor,
             Mana: mana,
             BossHp: bossHp,
             ShieldTimer: shieldTimer,
