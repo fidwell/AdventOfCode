@@ -4,11 +4,13 @@ namespace AdventOfCode.Solvers._2015;
 
 public class Puzzle23Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override string SolvePartOne(string input) => Solve(input, 0);
+    public override string SolvePartTwo(string input) => Solve(input, 1);
+
+    private static string Solve(string input, ulong regA)
     {
         var lines = input.SplitByNewline();
         var pointer = 0;
-        var regA = 0;
         var regB = 0;
 
         // In my input, b is only operated on
@@ -60,10 +62,5 @@ public class Puzzle23Solver : PuzzleSolver
         }
 
         return regB.ToString();
-    }
-
-    public override string SolvePartTwo(string input)
-    {
-        throw new NotImplementedException();
     }
 }
