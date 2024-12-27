@@ -17,6 +17,7 @@ public class Puzzle22Solver : PuzzleSolver
         var playerHp = isExample ? 10 : 50;
         var mana = isExample ? 250 : 500;
 
+        var queue = new PriorityQueue<GameState, int>();
         var startingState = new GameState(
             IsPlayerTurn: true,
             PlayerHp: playerHp,
@@ -27,7 +28,31 @@ public class Puzzle22Solver : PuzzleSolver
             RechargeTimer: 0,
             EndState: EndState.NoWinnerYet,
             TotalManaSpent: 0);
-        _ = Iterate(startingState, bossDamage, 1, isHardMode);
+        queue.Enqueue(startingState, 0);
+
+        while (queue.Count > 0)
+        {
+            var state = queue.Dequeue();
+
+            if (state.EndState != EndState.NoWinnerYet)
+            {
+                if (state.EndState == EndState.PlayerWins && state.TotalManaSpent < MinimumManaSoFar)
+                {
+                    MinimumManaSoFar = state.TotalManaSpent;
+                }
+                continue;
+            }
+
+            var possibleSpells = PossibleSpells(state);
+            if (!possibleSpells.Any())
+                continue;
+
+            foreach (var nextSpell in possibleSpells)
+            {
+                var nextState = TakeTurn(state, nextSpell, bossDamage, isHardMode);
+                queue.Enqueue(nextState, nextState.BossHp); // Prioritize states where we do damage to the boss
+            }
+        }
 
         return MinimumManaSoFar == int.MaxValue
             ? "Couldn't find a solution"
@@ -64,55 +89,6 @@ public class Puzzle22Solver : PuzzleSolver
     private const int RechargeTimer = 5;
 
     private int MinimumManaSoFar = int.MaxValue;
-
-    /// <summary>
-    /// Given a particular game state, determines if we can
-    /// eventually win from this state. If we do, it also
-    /// sets the minimum mana we spent, if it's less than
-    /// what we've calculated so far.
-    /// </summary>
-    /// <param name="state"></param>
-    /// <param name="bossDamage"></param>
-    /// <returns></returns>
-    private bool Iterate(GameState state, int bossDamage, int turnNumber, bool isHardMode)
-    {
-        if (turnNumber > 30)
-        {
-            // something probably went wrong
-            return false;
-        }
-
-        if (state.EndState == EndState.BossWins)
-            return false;
-
-        if (state.EndState == EndState.PlayerWins && state.TotalManaSpent < MinimumManaSoFar)
-        {
-            MinimumManaSoFar = state.TotalManaSpent;
-            return true;
-        }
-
-        var canWin = false;
-
-        var possibleSpells = PossibleSpells(state);
-
-        if (!possibleSpells.Any())
-        {
-            Write("We're out of mana!");
-            return false;
-        }
-
-        foreach (var nextSpell in possibleSpells)
-        {
-            Write($" ** Turn {turnNumber} **");
-            var nextState = TakeTurn(state, nextSpell, bossDamage, isHardMode);
-            if (Iterate(nextState, bossDamage, turnNumber + 1, isHardMode))
-            {
-                canWin = true;
-            }
-        }
-
-        return canWin;
-    }
 
     public enum EndState
     {
