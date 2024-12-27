@@ -4,7 +4,10 @@ namespace AdventOfCode.Solvers._2015;
 
 public class Puzzle22Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override string SolvePartOne(string input) => Solve(input, false);
+    public override string SolvePartTwo(string input) => Solve(input, true);
+
+    private string Solve(string input, bool isHardMode)
     {
         var lines = input.SplitByNewline().ToArray();
         var bossHp = int.Parse(Regexes.NonNegativeInteger().Match(lines[0]).Value);
@@ -13,11 +16,6 @@ public class Puzzle22Solver : PuzzleSolver
         var isExample = bossHp == 13 && bossDamage == 8;
         var playerHp = isExample ? 10 : 50;
         var mana = isExample ? 250 : 500;
-
-        // Consider some kind of BFS/DFS with a priority queue,
-        // prioritizing lower mana costs.
-        // You'll probably spend *around* ten turns, so recursion
-        // depth shouldn't be a big deal.
 
         var startingState = new GameState(
             IsPlayerTurn: true,
@@ -30,16 +28,11 @@ public class Puzzle22Solver : PuzzleSolver
             RechargeTimer: 0,
             EndState: EndState.NoWinnerYet,
             TotalManaSpent: 0);
-        _ = Iterate(startingState, bossDamage, 1);
+        _ = Iterate(startingState, bossDamage, 1, isHardMode);
 
         return MinimumManaSoFar == int.MaxValue
             ? "Couldn't find a solution"
             : MinimumManaSoFar.ToString();
-    }
-
-    public override string SolvePartTwo(string input)
-    {
-        throw new NotImplementedException();
     }
 
     public enum Spell
@@ -82,7 +75,7 @@ public class Puzzle22Solver : PuzzleSolver
     /// <param name="state"></param>
     /// <param name="bossDamage"></param>
     /// <returns></returns>
-    private bool Iterate(GameState state, int bossDamage, int turnNumber)
+    private bool Iterate(GameState state, int bossDamage, int turnNumber, bool isHardMode)
     {
         if (turnNumber > 30)
         {
@@ -103,7 +96,7 @@ public class Puzzle22Solver : PuzzleSolver
 
         var possibleSpells = PossibleSpells(state);
 
-        if (state.IsPlayerTurn && !possibleSpells.Any())
+        if (!possibleSpells.Any())
         {
             Write("We're out of mana!");
             return false;
@@ -112,8 +105,8 @@ public class Puzzle22Solver : PuzzleSolver
         foreach (var nextSpell in possibleSpells)
         {
             Write($" ** Turn {turnNumber} **");
-            var nextState = TakeTurn(state, nextSpell, bossDamage);
-            if (Iterate(nextState, bossDamage, turnNumber + 1))
+            var nextState = TakeTurn(state, nextSpell, bossDamage, isHardMode);
+            if (Iterate(nextState, bossDamage, turnNumber + 1, isHardMode))
             {
                 canWin = true;
             }
@@ -144,7 +137,8 @@ public class Puzzle22Solver : PuzzleSolver
     private GameState TakeTurn(
         GameState state,
         Spell spellPlayerCast,
-        int bossDamage)
+        int bossDamage,
+        bool isHardMode)
     {
         Write(state.IsPlayerTurn
             ? "-- Player turn --"
@@ -161,6 +155,26 @@ public class Puzzle22Solver : PuzzleSolver
         var shieldTimer = 0;
         var poisonTimer = 0;
         var rechargeTimer = 0;
+
+        if (isHardMode)
+        {
+            playerHp -= 1;
+            if (playerHp <= 0)
+            {
+                Write($"Player loses 1 HP and dies.");
+                return new GameState(
+                    IsPlayerTurn: !state.IsPlayerTurn,
+                    PlayerHp: playerHp,
+                    Armor: armor,
+                    Mana: mana,
+                    BossHp: bossHp,
+                    ShieldTimer: shieldTimer,
+                    PoisonTimer: poisonTimer,
+                    RechargeTimer: rechargeTimer,
+                    EndState: EndState.BossWins,
+                    TotalManaSpent: totalManaSpent);
+            }
+        }
 
         if (state.ShieldTimer > 0)
         {
@@ -244,6 +258,15 @@ public class Puzzle22Solver : PuzzleSolver
             if (damageDealt < 1) damageDealt = 1;
             playerHp -= damageDealt;
             Write($"Boss attacks for {damageDealt} damage!");
+        }
+
+        if (totalManaSpent > MinimumManaSoFar)
+        {
+            // We already spent more than the known minimum,
+            // so there's no point in continuing this game
+            // Kill the player just to get this iteration over with
+            Write($"We spent too much mana; it's pointless to continue.");
+            playerHp = 0;
         }
 
         var endState = bossHp <= 0
