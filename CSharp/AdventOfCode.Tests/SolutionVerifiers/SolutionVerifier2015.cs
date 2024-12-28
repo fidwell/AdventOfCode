@@ -164,8 +164,8 @@ public class SolutionVerifier2015 : SolutionVerifier
     [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "99", DisplayName = "2015.24.1-example")]
     [DataRow(1, false, "11846773891", DisplayName = "2015.24.1-problem")]
-    [DataRow(2, true, "", DisplayName = "2015.24.2-example")]
-    [DataRow(2, false, "", DisplayName = "2015.24.2-problem")]
+    [DataRow(2, true, "44", DisplayName = "2015.24.2-example")]
+    [DataRow(2, false, "80393059", DisplayName = "2015.24.2-problem")]
     public void Solve_2015_24(int part, bool useExample, string expected) =>
         Solve(new Puzzle24Solver(), 24, part, useExample, expected);
 

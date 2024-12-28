@@ -4,10 +4,13 @@ namespace AdventOfCode.Solvers._2015;
 
 public class Puzzle24Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override string SolvePartOne(string input) => Solve(input, 3);
+    public override string SolvePartTwo(string input) => Solve(input, 4);
+
+    private static string Solve(string input, int compartments)
     {
         var weights = input.SplitByNewline().Select(int.Parse).ToArray();
-        var groupTargetWeight = weights.Sum() / 3;
+        var groupTargetWeight = weights.Sum() / compartments;
 
         // https://en.wikipedia.org/wiki/Subset_sum_problem
         var subsets = BacktrackingVersion(weights, groupTargetWeight).ToList();
@@ -16,11 +19,6 @@ public class Puzzle24Solver : PuzzleSolver
         var entanglements = minimumSubsets.Select(QuantumEntanglement);
         var minEntanglement = entanglements.Min();
         return minEntanglement.ToString();
-    }
-
-    public override string SolvePartTwo(string input)
-    {
-        throw new NotImplementedException();
     }
 
     private static List<int[]> BacktrackingVersion(int[] values, int target)
