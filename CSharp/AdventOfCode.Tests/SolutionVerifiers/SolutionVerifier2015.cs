@@ -160,4 +160,17 @@ public class SolutionVerifier2015 : SolutionVerifier
     [DataRow(2, false, "247", DisplayName = "2015.23.2-problem")]
     public void Solve_2015_23(int part, bool useExample, string expected) =>
         Solve(new Puzzle23Solver(), 23, part, useExample, expected);
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, true, "99", DisplayName = "2015.24.1-example")]
+    [DataRow(1, false, "11846773891", DisplayName = "2015.24.1-problem")]
+    [DataRow(2, true, "44", DisplayName = "2015.24.2-example")]
+    [DataRow(2, false, "80393059", DisplayName = "2015.24.2-problem")]
+    public void Solve_2015_24(int part, bool useExample, string expected) =>
+        Solve(new Puzzle24Solver(), 24, part, useExample, expected);
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, false, "8997277", DisplayName = "2015.25.1-problem")]
+    public void Solve_2015_25(int part, bool useExample, string expected) =>
+        Solve(new Puzzle25Solver(), 25, part, useExample, expected);
 }
