@@ -2,11 +2,17 @@
 
 public enum Direction : byte
 {
-    Undefined,
-    Right,
-    Down,
-    Left,
-    Up
+    Undefined = 0xff,
+
+    Right = 0x00,
+    Down = 0x01,
+    Left = 0x02,
+    Up = 0x03,
+
+    East = Right,
+    South = Down,
+    West = Left,
+    North = Up
 }
 
 public static class DirectionExtensions

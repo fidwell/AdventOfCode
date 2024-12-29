@@ -1,5 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
+﻿using AdventOfCode.Core.Geometry;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -130,12 +130,4 @@ public class Puzzle14Solver : PuzzleSolver
         matrix.FindAllCharacters('O')
         .Select(coord => matrix.Height - coord.Item2)
         .Sum();
-
-    private enum Direction
-    {
-        East,
-        South,
-        West,
-        North
-    }
 }
