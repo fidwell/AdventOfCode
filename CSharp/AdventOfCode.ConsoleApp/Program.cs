@@ -59,7 +59,7 @@ internal class Program
                     break;
                 }
 
-                await Benchmarker.Run(year.Value, session);
+                await Benchmarker.Run(year.Value, day, session);
                 break;
             case "run":
             case "solve":

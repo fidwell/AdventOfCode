@@ -7,12 +7,13 @@ namespace AdventOfCode.ConsoleApp;
 
 internal static class Benchmarker
 {
-    internal static async Task Run(int year, string session)
+    internal static async Task Run(int year, int? day, string session)
     {
         Console.WriteLine($"Running benchmarks for year {year}...");
 
         var solvers = typeof(PuzzleSolver).Assembly.GetTypes()
             .Where(t => t.Namespace == $"AdventOfCode.Solvers._{year}" && typeof(PuzzleSolver).IsAssignableFrom(t))
+            .Where(t => !day.HasValue || t.Name.Contains(day.Value.ToString("00")))
             .Select(t => (PuzzleSolver?)Activator.CreateInstance(t)) ?? [];
 
         if (!solvers.Any())
