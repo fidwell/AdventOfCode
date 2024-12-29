@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.MathUtilities;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -32,8 +33,7 @@ public class Puzzle21Solver : PuzzleSolver
                 {
                     var path = Activate.Concat(possiblePath.Item2).Concat(Activate);
                     var steps = path.Zip(path.Skip(1));
-                    var costs = steps.Select(step => dirPadCosts[step]);
-                    var sumCost = costs.Aggregate(0UL, (sum, cost) => sum + cost);
+                    var sumCost = steps.Select(step => dirPadCosts[step]).Sum();
 
                     if (sumCost < minCost)
                     {
@@ -56,8 +56,7 @@ public class Puzzle21Solver : PuzzleSolver
             {
                 var path = Activate.Concat(possiblePath.Item2).Concat(Activate);
                 var steps = path.Zip(path.Skip(1));
-                var costs = steps.Select(step => dirPadCosts[step]);
-                var sumCost = costs.Aggregate(0UL, (sum, cost) => sum + cost);
+                var sumCost = steps.Select(step => dirPadCosts[step]).Sum();
 
                 if (sumCost < minCost)
                 {
@@ -73,14 +72,12 @@ public class Puzzle21Solver : PuzzleSolver
         {
             var path = Activate.Concat(c.ToCharArray());
             var steps = path.Zip(path.Skip(1));
-            var costs = steps.Select(step => keyPad[step]);
-            var total = costs.Aggregate(0UL, (sum, cost) => sum + cost);
-
+            var total = steps.Select(step => keyPad[step]).Sum();
             var numPart = ulong.Parse(Regexes.NonNegativeInteger().Match(c).Value);
             return total * numPart;
         });
 
-        return codeComplexities.Aggregate(0UL, (sum, complexity) => sum + complexity).ToString();
+        return codeComplexities.Sum().ToString();
     }
 
     private static readonly List<((char, char), IEnumerable<char>)> NumpadPathCandidates =

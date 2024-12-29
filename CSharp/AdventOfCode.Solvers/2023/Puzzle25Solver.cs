@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.MathUtilities;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -40,7 +41,7 @@ public class Puzzle25Solver : PuzzleSolver
                     var groups = graph.GroupSizes();
                     if (groups.Count == 2)
                     {
-                        return groups.Aggregate(1, (a, b) => a * b);
+                        return groups.Product();
                     }
                     graph.ResetRemovedEdges();
                 }

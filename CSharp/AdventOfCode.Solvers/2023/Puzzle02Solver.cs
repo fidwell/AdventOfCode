@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.MathUtilities;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -39,5 +40,5 @@ public class Puzzle02Solver() : PuzzleSolver
         .Split([',', ';']).Select(s => s.Trim())
         .GroupBy(v => v.Split(" ")[1])
         .Select(g => g.Select(x => int.Parse(x.Split(" ")[0])).Max())
-        .Aggregate((x, y) => x * y);
+        .Product();
 }

@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.MathUtilities;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -11,7 +12,7 @@ public class Puzzle19Solver : PuzzleSolver
         SetUp(input).Count(t => SolutionCount(t) > 0).ToString();
 
     public override string SolvePartTwo(string input) =>
-        SetUp(input).Aggregate(0UL, (a, b) => a + SolutionCount(b)).ToString();
+        SetUp(input).Select(SolutionCount).Sum().ToString();
 
     private IEnumerable<string> SetUp(string input)
     {

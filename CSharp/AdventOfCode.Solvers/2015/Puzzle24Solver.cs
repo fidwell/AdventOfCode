@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.MathUtilities;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2015;
 
@@ -16,7 +17,7 @@ public class Puzzle24Solver : PuzzleSolver
         var subsets = BacktrackingVersion(weights, groupTargetWeight).ToList();
         var minSize = subsets.Select(s => s.Length).Min();
         var minimumSubsets = subsets.Where(s => s.Length == minSize);
-        var entanglements = minimumSubsets.Select(QuantumEntanglement);
+        var entanglements = minimumSubsets.Select(s => s.ProductLong());
         var minEntanglement = entanglements.Min();
         return minEntanglement.ToString();
     }
@@ -63,6 +64,4 @@ public class Puzzle24Solver : PuzzleSolver
             }
         }
     }
-
-    private static ulong QuantumEntanglement(IEnumerable<int> input) => input.Aggregate(1UL, (product, value) => product * (ulong)value);
 }

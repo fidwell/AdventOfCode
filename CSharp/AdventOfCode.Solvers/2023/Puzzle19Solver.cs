@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.Ranges;
+﻿using AdventOfCode.Core.MathUtilities;
+using AdventOfCode.Core.Ranges;
 using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
@@ -106,8 +107,8 @@ public class Puzzle19Solver : PuzzleSolver
                 var parameter = r[0];
                 var isLessThan = r[1] == '<';
                 var colon = r.IndexOf(':');
-                var amount = int.Parse(r.Substring(2, colon - 2));
-                var target = r.Substring(r.IndexOf(':') + 1);
+                var amount = int.Parse(r[2..colon]);
+                var target = r[(r.IndexOf(':') + 1)..];
                 return new ConditionalRule(parameter, isLessThan, amount, target);
             }
             else
@@ -121,11 +122,11 @@ public class Puzzle19Solver : PuzzleSolver
 
     private static Part ParsePart(string line)
     {
-        var portions = line.Substring(1, line.Length - 2).Split(',');
+        var portions = line[1..^1].Split(',');
         var values = new Dictionary<char, int>();
         foreach (var p in portions)
         {
-            values.Add(p[0], int.Parse(p.Substring(2)));
+            values.Add(p[0], int.Parse(p[2..]));
         }
         return new Part(values);
     }
@@ -232,7 +233,7 @@ public class Puzzle19Solver : PuzzleSolver
     private class PartValueRange(Dictionary<char, Range> ratingRanges)
     {
         public readonly Dictionary<char, Range> RatingRanges = ratingRanges;
-        public long TotalValues => RatingRanges.Aggregate(1L, (a, b) => a * b.Value.Length());
+        public long TotalValues => RatingRanges.Select(r => r.Value.Length()).ProductLong();
     }
 
     private class RangeResult(string resultingWorkflow, PartValueRange partValueRange)

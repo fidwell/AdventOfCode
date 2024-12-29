@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.MathUtilities;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -11,7 +12,7 @@ public class Puzzle06Solver : PuzzleSolver
         var records = data[1].Split(": ")[1].SplitAndTrim(' ');
         return times
             .Select((t, i) => SolveRace(int.Parse(t), int.Parse(records[i])))
-            .Aggregate((a, b) => a * b)
+            .Product()
             .ToString();
     }
 

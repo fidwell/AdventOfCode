@@ -20,7 +20,7 @@ public class Puzzle14Solver : PuzzleSolver
             robot.Move(areaWidth, areaHeight, 100);
 
         return robots.GroupBy(r => r.Quadrant(areaWidth, areaHeight))
-            .Where(g => g.Key >= 0).Aggregate(1, (total, g) => total * g.Count()).ToString();
+            .Where(g => g.Key >= 0).Select(g => g.Count()).Product().ToString();
     }
 
     // This one isn't really solvable the "normal" way.

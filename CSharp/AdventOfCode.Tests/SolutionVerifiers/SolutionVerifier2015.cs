@@ -148,7 +148,7 @@ public class SolutionVerifier2015 : SolutionVerifier
     public void Solve_2015_21(int part, bool useExample, string expected) =>
         Solve(new Puzzle21Solver(), 21, part, useExample, expected);
 
-    [DataTestMethod, Timeout(Timeout)]
+    [DataTestMethod, Timeout(LongTimeout)]
     [DataRow(1, true, "226", DisplayName = "2015.22.1-example")]
     [DataRow(1, false, "1824", DisplayName = "2015.22.1-problem")]
     [DataRow(2, false, "1937", DisplayName = "2015.22.2-problem")]

@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using AdventOfCode.Core.MathUtilities;
 using AdventOfCode.Core.StringUtilities;
-using AdventOfCode.Solvers;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -36,7 +35,7 @@ public class Puzzle03Solver : PuzzleSolver
             {
                 var neighboringWords = numbersWithNeighbors.Where(n => n.Neighbors.Contains(g)).ToList();
                 return neighboringWords.Count == 2
-                    ? neighboringWords.Select(w => int.Parse(w.Number.Value)).Aggregate((a, b) => a * b)
+                    ? neighboringWords.Select(w => int.Parse(w.Number.Value)).Product()
                     : 0;
             })
             .Sum()

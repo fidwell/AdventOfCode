@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.MathUtilities;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -9,8 +10,8 @@ public class Puzzle22Solver : PuzzleSolver
     public override string SolvePartOne(string input) =>
         input.SplitByNewline().Select(int.Parse)
             .Select(n => EvolveNTimes(n, TotalSecretNumbers))
-            .Aggregate(0UL, (sum, answer) => sum + (ulong)answer)
-            .ToString();
+            .Select(n => (ulong)n)
+            .Sum().ToString();
 
     public override string SolvePartTwo(string input) =>
         input.SplitByNewline().Select(int.Parse)
