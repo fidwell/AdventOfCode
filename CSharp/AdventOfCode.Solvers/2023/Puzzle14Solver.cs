@@ -13,22 +13,22 @@ public class Puzzle14Solver : PuzzleSolver
     {
         var state = new CharacterMatrix(input);
         var foundStates = new Dictionary<string, int>();
-
-        const int cycleCount = 1000000000;
+        const int cycleCount = 1_000_000_000;
         var i = 0;
         var foundState = -1;
         for (; i < cycleCount; i++)
         {
             SpinCycle(state);
+            var asString = state.DisplayString;
 
-            if (foundStates.TryGetValue(state.DisplayString, out foundState))
+            if (foundStates.TryGetValue(asString, out foundState))
             {
                 // cycle detected!
                 break;
             }
             else
             {
-                foundStates.Add(state.DisplayString, i);
+                foundStates.Add(asString, i);
             }
         }
 
@@ -44,7 +44,17 @@ public class Puzzle14Solver : PuzzleSolver
         bool anythingMoved;
         do
         {
-            anythingMoved = TryTilt(matrix, direction);
+            anythingMoved = false;
+            foreach (var rock in matrix.FindAllCharacters('O'))
+            {
+                var candidatePosition = rock.Go(direction);
+                if (matrix.CharAt(candidatePosition) == '.')
+                {
+                    matrix.SetCharacter(rock, '.');
+                    matrix.SetCharacter(candidatePosition, 'O');
+                    anythingMoved = true;
+                }
+            }
         } while (anythingMoved);
         return matrix;
     }
@@ -55,75 +65,6 @@ public class Puzzle14Solver : PuzzleSolver
         Tilt(matrix, Direction.West);
         Tilt(matrix, Direction.South);
         Tilt(matrix, Direction.East);
-    }
-
-    // Returns "true" if anything moved, so we need to iterate again.
-    private static bool TryTilt(CharacterMatrix matrix, Direction direction)
-    {
-        var anythingMoved = false;
-
-        if (direction == Direction.North)
-        {
-            for (var x = 0; x < matrix.Width; x++)
-            {
-                for (var y = 1; y < matrix.Height; y++)
-                {
-                    if (matrix.CharAt(x, y) == 'O' && matrix.CharAt(x, y - 1) == '.')
-                    {
-                        matrix.SetCharacter(x, y, '.');
-                        matrix.SetCharacter(x, y - 1, 'O');
-                        anythingMoved = true;
-                    }
-                }
-            }
-        }
-        else if (direction == Direction.South)
-        {
-            for (var x = 0; x < matrix.Width; x++)
-            {
-                for (var y = matrix.Height - 2; y >= 0; y--)
-                {
-                    if (matrix.CharAt(x, y) == 'O' && matrix.CharAt(x, y + 1) == '.')
-                    {
-                        matrix.SetCharacter(x, y, '.');
-                        matrix.SetCharacter(x, y + 1, 'O');
-                        anythingMoved = true;
-                    }
-                }
-            }
-        }
-        else if (direction == Direction.East)
-        {
-            for (var x = matrix.Width - 2; x >= 0; x--)
-            {
-                for (var y = 0; y < matrix.Height; y++)
-                {
-                    if (matrix.CharAt(x, y) == 'O' && matrix.CharAt(x + 1, y) == '.')
-                    {
-                        matrix.SetCharacter(x, y, '.');
-                        matrix.SetCharacter(x + 1, y, 'O');
-                        anythingMoved = true;
-                    }
-                }
-            }
-        }
-        else // West
-        {
-            for (var x = 1; x < matrix.Width; x++)
-            {
-                for (var y = 0; y < matrix.Height; y++)
-                {
-                    if (matrix.CharAt(x, y) == 'O' && matrix.CharAt(x - 1, y) == '.')
-                    {
-                        matrix.SetCharacter(x, y, '.');
-                        matrix.SetCharacter(x - 1, y, 'O');
-                        anythingMoved = true;
-                    }
-                }
-            }
-        }
-
-        return anythingMoved;
     }
 
     private static int LoadNorth(CharacterMatrix matrix) =>
