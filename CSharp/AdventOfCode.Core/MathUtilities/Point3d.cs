@@ -2,7 +2,7 @@
 
 namespace AdventOfCode.Core.MathUtilities;
 
-public record Point3d
+public readonly record struct Point3d
 {
     public readonly double X;
     public readonly double Y;

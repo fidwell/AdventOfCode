@@ -72,7 +72,7 @@ public partial class Puzzle24Solver : PuzzleSolver
                     if (collision0with1 is not null &&
                         collision0with2 is not null &&
                         collision0with1.Equals(collision0with2))
-                        return (rockVelocity, collision0with1);
+                        return (rockVelocity, collision0with1.Value);
                 }
             }
         }
