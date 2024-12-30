@@ -55,12 +55,17 @@ internal static class Benchmarker
             }
 
             ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
+
             var partOne = AggregateSolves(dayNum, 1, () => solver.SolvePartOne(input));
-            var partTwo = AggregateSolves(dayNum, 2, () => solver.SolvePartTwo(input));
             aggregates.AddRange(partOne);
-            aggregates.AddRange(partTwo);
             WritePartLine(dayNum, 1, partOne);
-            WritePartLine(dayNum, 2, partTwo);
+
+            if (dayNum != 25)
+            {
+                var partTwo = AggregateSolves(dayNum, 2, () => solver.SolvePartTwo(input));
+                aggregates.AddRange(partTwo);
+                WritePartLine(dayNum, 2, partTwo);
+            }
         }
         ConsoleWriter.Write("└─────┴──────┴─────────────┴─────────────┴─────────────┴─────────────┘");
 
@@ -86,19 +91,23 @@ internal static class Benchmarker
 
     private static void WriteAggregateMean(List<Aggregate> aggregates, string header, Func<Aggregate, bool> matcher)
     {
-        var part1AverageMean = new TimeSpan((long)aggregates.Where(matcher).Average(a => a.Mean.Ticks));
-        var part1AverageMode = new TimeSpan((long)aggregates.Where(matcher).Average(a => a.Mode.Ticks));
-        var part1AverageMin = new TimeSpan((long)aggregates.Where(matcher).Average(a => a.Min.Ticks));
-        var part1AverageMax = new TimeSpan((long)aggregates.Where(matcher).Average(a => a.Max.Ticks));
+        var filtered = aggregates.Where(matcher);
+        if (!filtered.Any())
+            return;
+
+        var averageMean = new TimeSpan((long)filtered.Average(a => a.Mean.Ticks));
+        var averageMode = new TimeSpan((long)filtered.Average(a => a.Mode.Ticks));
+        var averageMin = new TimeSpan((long)filtered.Average(a => a.Min.Ticks));
+        var averageMax = new TimeSpan((long)filtered.Average(a => a.Max.Ticks));
 
         Console.Write($"│ {header} │ ");
-        WriteTime(part1AverageMean);
+        WriteTime(averageMean);
         Console.Write(" │ ");
-        WriteTime(part1AverageMode);
+        WriteTime(averageMode);
         Console.Write(" │ ");
-        WriteTime(part1AverageMin);
+        WriteTime(averageMin);
         Console.Write(" │ ");
-        WriteTime(part1AverageMax);
+        WriteTime(averageMax);
         Console.WriteLine(" │");
     }
 
