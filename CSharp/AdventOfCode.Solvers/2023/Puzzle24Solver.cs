@@ -9,13 +9,9 @@ public partial class Puzzle24Solver : PuzzleSolver
     {
         var lines = input.SplitByNewline();
 
-        long testAreaFrom = 7;
-        long testAreaTo = 27;
-        if (lines[0].Length > 30)
-        {
-            testAreaFrom = 200000000000000;
-            testAreaTo = 400000000000000;
-        }
+        var isExample = lines[0].Length <= 30;
+        var testAreaFrom = isExample ? 7 : 200000000000000L;
+        var testAreaTo = isExample ? 27 : 400000000000000L;
 
         var hailstones = lines.Select(l =>
         {
@@ -59,7 +55,7 @@ public partial class Puzzle24Solver : PuzzleSolver
 
         // Search through coordinates starting at origin
         // (0, 1, -1, 2, -2, 3, -3, ...)
-        var values = Enumerable.Range(0, velocityRange * 2).Select(n => (1 - Math.Pow(-1, n) * (2 * n + 1)) / 4);
+        var values = Enumerable.Range(0, velocityRange * 2 + 1).Select(n => (1 - Math.Pow(-1, n) * (2 * n + 1)) / 4);
 
         foreach (var x in values)
         {
