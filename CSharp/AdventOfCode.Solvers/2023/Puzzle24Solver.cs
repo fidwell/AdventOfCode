@@ -35,33 +35,65 @@ public partial class Puzzle24Solver : PuzzleSolver
     {
         var lines = input.SplitByNewline();
         var hailstones = lines
-            .Take(3)
             .Select(l =>
             {
                 var portions = l.SplitAndTrim('@');
                 return new Ray3d(new Point3d(portions[0]), new Point3d(portions[1]));
             }).ToList();
 
-        var (velocity, position) = Solve2(hailstones, lines.Length < 10 ? 3 : 275);
+        var isExample = lines[0].Length <= 30;
+        var maxVelocity = isExample ? 5 : 1000;
+
+        var (velocity, position) = Solve2(hailstones, maxVelocity);
         var stone = new Ray3d(position, velocity);
         return (stone.Position0.X + stone.Position0.Y + stone.Position0.Z).ToString();
     }
 
-    private static (Point3d, Point3d) Solve2(List<Ray3d> hailstones, int velocityRange)
+    private static (Point3d, Point3d) Solve2(List<Ray3d> hailstones, int maxVelocity)
     {
-        // The rock stands still, and each hailstone's
-        // velocity is adjusted by what the rock's
-        // velocity would have been.
+        // if two hailstones are moving in the same direction with the same velocity,
+        // then the rock can only be moving a certain number of integer velocities to
+        // hit them both. The actual velocity must satisfy the equation
+        // (DistanceDifference % (RockVelocity - HailVelocity) = 0) and there are only
+        // so many that will. Do that for every pair in every direction and you have
+        // the velocity of your rock.
+        // https://www.reddit.com/comments/18pnycy/_/keqf8uq/
 
-        // Search through coordinates starting at origin
-        // (0, 1, -1, 2, -2, 3, -3, ...)
-        var values = Enumerable.Range(0, velocityRange * 2 + 1).Select(n => (1 - Math.Pow(-1, n) * (2 * n + 1)) / 4);
-
-        foreach (var x in values)
+        IEnumerable<int> possibleXs = [];
+        var groupX = hailstones.GroupBy(h => h.Velocity.X).Where(g => g.Count() > 1);
+        if (groupX.Any())
         {
-            foreach (var y in values)
+            var hailstonesWithCommonXvelocity = groupX.First().ToList();
+            var distanceDifferenceX = Math.Abs(hailstonesWithCommonXvelocity[0].Position0.X - hailstonesWithCommonXvelocity[1].Position0.X);
+            possibleXs = Enumerable.Range(-maxVelocity, maxVelocity * 2 + 1)
+                .Where(i => distanceDifferenceX % (i - hailstonesWithCommonXvelocity[0].Velocity.X) == 0);
+        }
+
+        IEnumerable<int> possibleYs = [];
+        var groupY = hailstones.GroupBy(h => h.Velocity.Y).Where(g => g.Count() > 1);
+        if (groupY.Any())
+        {
+            var hailstonesWithCommonYvelocity = groupY.First().ToList();
+            var distanceDifferenceY = Math.Abs(hailstonesWithCommonYvelocity[0].Position0.Y - hailstonesWithCommonYvelocity[1].Position0.Y);
+            possibleYs = Enumerable.Range(-maxVelocity, maxVelocity * 2 + 1)
+                .Where(i => distanceDifferenceY % (i - hailstonesWithCommonYvelocity[0].Velocity.Y) == 0);
+        }
+
+        IEnumerable<int> possibleZs = [];
+        var groupZ = hailstones.GroupBy(h => h.Velocity.Z).Where(g => g.Count() > 1);
+        if (groupZ.Any())
+        {
+            var hailstonesWithCommonZvelocity = groupZ.First().ToList();
+            var distanceDifferenceZ = Math.Abs(hailstonesWithCommonZvelocity[0].Position0.Z - hailstonesWithCommonZvelocity[1].Position0.Z);
+            possibleZs = Enumerable.Range(-maxVelocity, maxVelocity * 2 + 1)
+                .Where(i => distanceDifferenceZ % (i - hailstonesWithCommonZvelocity[0].Velocity.Z) == 0);
+        }
+
+        foreach (var x in possibleXs)
+        {
+            foreach (var y in possibleYs)
             {
-                foreach (var z in values)
+                foreach (var z in possibleZs)
                 {
                     var rockVelocity = new Point3d(x, y, z);
                     var adjustedHailstones = hailstones.Select(h => h - rockVelocity).ToList();

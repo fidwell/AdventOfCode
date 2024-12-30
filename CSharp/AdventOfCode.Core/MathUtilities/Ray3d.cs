@@ -13,7 +13,7 @@ public readonly record struct Ray3d
     {
         Position0 = position0;
         Velocity = velocity;
-        Position1 = position0.Plus(velocity);
+        Position1 = position0 + velocity;
 
         SlopeXy = Velocity.Y / Velocity.X;
         SlopeYz = Velocity.Z / Velocity.Y;
