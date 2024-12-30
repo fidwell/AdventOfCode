@@ -34,9 +34,9 @@ public class RayTests
         var ray2 = new Ray3d(new Point3d(ray2Px, ray2Py, ray2Pz), new Point3d(ray2Vx, ray2Vy, ray2Vz));
         var (collisionPoint, t) = ray1.Collision3d(ray2);
         Assert.IsNotNull(collisionPoint);
-        Assert.AreEqual(collisionPoint.X, expectedX);
-        Assert.AreEqual(collisionPoint.Y, expectedY);
-        Assert.AreEqual(collisionPoint.Z, expectedZ);
+        Assert.AreEqual(collisionPoint?.X, expectedX);
+        Assert.AreEqual(collisionPoint?.Y, expectedY);
+        Assert.AreEqual(collisionPoint?.Z, expectedZ);
         Assert.AreEqual(t, expectedT);
     }
 

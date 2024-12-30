@@ -2,7 +2,7 @@
 
 namespace AdventOfCode.Core.MathUtilities;
 
-public record Point3d
+public readonly record struct Point3d
 {
     public readonly double X;
     public readonly double Y;
@@ -23,8 +23,8 @@ public record Point3d
         Z = portions[2];
     }
 
-    public Point3d Plus(Point3d other) =>
-        new(X + other.X, Y + other.Y, Z + other.Z);
+    public static Point3d operator +(Point3d point1, Point3d point2) =>
+        new(point1.X + point2.X, point1.Y + point2.Y, point1.Z + point2.Z);
 
     public override int GetHashCode() =>
         HashCode.Combine(X, Y, Z);

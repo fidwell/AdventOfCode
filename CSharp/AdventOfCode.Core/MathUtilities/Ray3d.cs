@@ -1,30 +1,30 @@
 ﻿namespace AdventOfCode.Core.MathUtilities;
 
-public record Ray3d
+public readonly record struct Ray3d
 {
-    public Point3d Position0;
-    public Point3d Velocity;
-    public Point3d Position1;
-    public double SlopeXy;
-    public double SlopeYz;
-    public double SlopeZx;
+    public readonly Point3d Position0;
+    public readonly Point3d Velocity;
+    public readonly Point3d Position1;
+    public readonly double SlopeXy;
+    public readonly double SlopeYz;
+    public readonly double SlopeZx;
 
     public Ray3d(Point3d position0, Point3d velocity)
     {
         Position0 = position0;
         Velocity = velocity;
-        Position1 = position0.Plus(velocity);
+        Position1 = position0 + velocity;
 
         SlopeXy = Velocity.Y / Velocity.X;
         SlopeYz = Velocity.Z / Velocity.Y;
         SlopeZx = Velocity.X / Velocity.Z;
     }
 
-    public Ray3d Minus(Point3d adjustment) =>
-        new(Position0, new Point3d(
-            Velocity.X - adjustment.X,
-            Velocity.Y - adjustment.Y,
-            Velocity.Z - adjustment.Z));
+    public static Ray3d operator -(Ray3d value, Point3d adjustment) =>
+        new(value.Position0, new Point3d(
+            value.Velocity.X - adjustment.X,
+            value.Velocity.Y - adjustment.Y,
+            value.Velocity.Z - adjustment.Z));
 
     public (Point3d?, double) Collision3d(Ray3d other)
     {
@@ -60,7 +60,7 @@ public record Ray3d
         var t = (C * E - F * B) / (E * A - B * D);
         var s = (D * C - A * F) / (D * B - A * E);
 
-        var u = (t * (b3 - a3) + s * (c3 - d3));
+        var u = t * (b3 - a3) + s * (c3 - d3);
         var v = c3 - a3;
 
         if (u == v && 0 <= t && 0 <= s)
