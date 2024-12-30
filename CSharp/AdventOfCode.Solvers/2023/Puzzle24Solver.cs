@@ -46,7 +46,7 @@ public partial class Puzzle24Solver : PuzzleSolver
                 return new Ray3d(new Point3d(portions[0]), new Point3d(portions[1]));
             }).ToList();
 
-        var (velocity, position) = Solve2(hailstones, lines.Count() < 10 ? 3 : 275);
+        var (velocity, position) = Solve2(hailstones, lines.Length < 10 ? 3 : 275);
         var stone = new Ray3d(position, velocity);
         return (stone.Position0.X + stone.Position0.Y + stone.Position0.Z).ToString();
     }
@@ -57,11 +57,15 @@ public partial class Puzzle24Solver : PuzzleSolver
         // velocity is adjusted by what the rock's
         // velocity would have been.
 
-        for (var x = -velocityRange; x < velocityRange; x++)
+        // Search through coordinates starting at origin
+        // (0, 1, -1, 2, -2, 3, -3, ...)
+        var values = Enumerable.Range(0, velocityRange * 2).Select(n => (1 - Math.Pow(-1, n) * (2 * n + 1)) / 4);
+
+        foreach (var x in values)
         {
-            for (var y = -velocityRange; y < velocityRange; y++)
+            foreach (var y in values)
             {
-                for (var z = -velocityRange; z < velocityRange; z++)
+                foreach (var z in values)
                 {
                     var rockVelocity = new Point3d(x, y, z);
                     var adjustedHailstones = hailstones.Select(h => h.Minus(rockVelocity)).ToList();
