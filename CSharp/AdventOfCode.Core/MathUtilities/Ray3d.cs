@@ -20,11 +20,11 @@ public readonly record struct Ray3d
         SlopeZx = Velocity.X / Velocity.Z;
     }
 
-    public Ray3d Minus(Point3d adjustment) =>
-        new(Position0, new Point3d(
-            Velocity.X - adjustment.X,
-            Velocity.Y - adjustment.Y,
-            Velocity.Z - adjustment.Z));
+    public static Ray3d operator -(Ray3d value, Point3d adjustment) =>
+        new(value.Position0, new Point3d(
+            value.Velocity.X - adjustment.X,
+            value.Velocity.Y - adjustment.Y,
+            value.Velocity.Z - adjustment.Z));
 
     public (Point3d?, double) Collision3d(Ray3d other)
     {

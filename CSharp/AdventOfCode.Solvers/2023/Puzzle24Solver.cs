@@ -68,7 +68,7 @@ public partial class Puzzle24Solver : PuzzleSolver
                 foreach (var z in values)
                 {
                     var rockVelocity = new Point3d(x, y, z);
-                    var adjustedHailstones = hailstones.Select(h => h.Minus(rockVelocity)).ToList();
+                    var adjustedHailstones = hailstones.Select(h => h - rockVelocity).ToList();
 
                     var (collision0with1, t1) = adjustedHailstones[0].Collision3d(adjustedHailstones[1]);
                     var (collision0with2, t2) = adjustedHailstones[0].Collision3d(adjustedHailstones[2]);
