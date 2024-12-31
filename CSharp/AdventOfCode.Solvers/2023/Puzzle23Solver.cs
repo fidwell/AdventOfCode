@@ -47,28 +47,27 @@ public class Puzzle23Solver : PuzzleSolver
     private static void FindGraphEdges(CharacterMatrix matrix, (int, int) start, Direction initialDirection, (int, int) finish, HashSet<(int, int)> visited, List<Edge> edges)
     {
         var thisPath = WalkToNextJunction(matrix, start, initialDirection, finish, visited);
-        if (thisPath.Item1 == finish)
+        if (thisPath.End == finish)
         {
-            edges.Add(new Edge(start, initialDirection, finish, thisPath.Item3, thisPath.Item2));
+            edges.Add(new Edge(start, finish, thisPath.Length));
             return;
         }
 
-        if (thisPath.Item3 == Direction.Undefined)
+        if (thisPath.FinalDirection == Direction.Undefined)
             return;
 
-        var nextNeighbors = WalkableNeighbors(matrix, thisPath.Item1)
-            .Where(n => DirectionFrom(n, thisPath.Item1) != thisPath.Item3)
+        var nextNeighbors = WalkableNeighbors(matrix, thisPath.End)
+            .Where(n => DirectionFrom(n, thisPath.End) != thisPath.FinalDirection)
             .ToList();
-        edges.Add(new Edge(start, initialDirection, thisPath.Item1, thisPath.Item3, thisPath.Item2));
+        edges.Add(new Edge(start, thisPath.End, thisPath.Length));
 
         foreach (var n in nextNeighbors.Where(n => !visited.Contains(n)))
         {
-            FindGraphEdges(matrix, thisPath.Item1, DirectionFrom(thisPath.Item1, n), finish, visited, edges);
+            FindGraphEdges(matrix, thisPath.End, DirectionFrom(thisPath.End, n), finish, visited, edges);
         }
     }
 
-    // Returns: finishing coordinate, length of path, final direction
-    private static ((int, int), int, Direction) WalkToNextJunction(CharacterMatrix matrix, (int, int) start, Direction initialDirection, (int, int) finish, HashSet<(int, int)> visited)
+    private static WalkResult WalkToNextJunction(CharacterMatrix matrix, (int, int) start, Direction initialDirection, (int, int) finish, HashSet<(int, int)> visited)
     {
         var length = 0;
         var direction = initialDirection;
@@ -83,13 +82,13 @@ public class Puzzle23Solver : PuzzleSolver
 
             // Junction reached
             if (currentPosition == finish || nextNeighbors.Count() > 2)
-                return (currentPosition, length + 1, direction);
+                return new WalkResult(currentPosition, length + 1, direction);
 
             visited.Add(currentPosition);
 
             var charHere = matrix.CharAt(currentPosition);
             if (charHere != '.' && charHere.ToDirection() != direction)
-                return ((-1, -1), -1, Direction.Undefined); // We hit a one-way going the wrong way
+                return new WalkResult((-1, -1), -1, Direction.Undefined); // We hit a one-way going the wrong way
 
             length++;
 
@@ -147,33 +146,7 @@ public class Puzzle23Solver : PuzzleSolver
         return Direction.Undefined;
     }
 
-    private readonly record struct Edge
-    {
-        public readonly (int, int) Start;
-        public readonly Direction InitialDirection;
-        public readonly (int, int) End;
-        public readonly Direction FinalDirection;
-        public readonly int Length;
+    private readonly record struct WalkResult((int, int) End, int Length, Direction FinalDirection);
 
-        public Edge(
-            (int, int) start, Direction initialDirection,
-            (int, int) end, Direction finalDirection,
-            int length)
-        {
-            Start = start;
-            InitialDirection = initialDirection;
-            End = end;
-            FinalDirection = finalDirection;
-            Length = length;
-        }
-
-        public Edge((int, int) start, (int, int) end, int length)
-        {
-            Start = start;
-            InitialDirection = Direction.Undefined;
-            End = end;
-            FinalDirection = Direction.Undefined;
-            Length = length;
-        }
-    }
+    private readonly record struct Edge((int, int) Start, (int, int) End, int Length);
 }
