@@ -147,13 +147,13 @@ public class Puzzle23Solver : PuzzleSolver
         return Direction.Undefined;
     }
 
-    private class Edge
+    private readonly record struct Edge
     {
-        public (int, int) Start;
-        public Direction InitialDirection;
-        public (int, int) End;
-        public Direction FinalDirection;
-        public int Length;
+        public readonly (int, int) Start;
+        public readonly Direction InitialDirection;
+        public readonly (int, int) End;
+        public readonly Direction FinalDirection;
+        public readonly int Length;
 
         public Edge(
             (int, int) start, Direction initialDirection,
