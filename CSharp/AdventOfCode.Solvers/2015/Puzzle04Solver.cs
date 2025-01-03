@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+﻿using AdventOfCode.Core.Cryptography;
 
 namespace AdventOfCode.Solvers._2015;
 
