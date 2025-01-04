@@ -5,11 +5,19 @@ namespace AdventOfCode.Solvers._2015;
 
 public class Puzzle04Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input) => Solve(input, true);
+    public override string SolvePartOne(string input)
+    {
+        for (var i = 0; i < int.MaxValue; i++)
+        {
+            if (DoesSatisfy(input, i, true))
+            {
+                return i.ToString();
+            }
+        }
+        throw new Exception("No answer could be found.");
+    }
 
-    public override string SolvePartTwo(string input) => Solve(input, false);
-
-    private string Solve(string input, bool isPartOne)
+    public override string SolvePartTwo(string input)
     {
         int? result = null;
         object lockObj = new object();
@@ -17,30 +25,35 @@ public class Puzzle04Solver : PuzzleSolver
 
         Parallel.For(0, MaxSearchValue, (i, state) =>
         {
-            if (result.HasValue && i >= result.Value)
+            if ((result.HasValue && i >= result.Value) ||
+                !DoesSatisfy(input, i, false))
                 return;
 
-            var tryInput = $"{input}{i}".ToCharArray().Select(c => (byte)c).ToArray();
-            var hash = MD5.HashData(tryInput) ?? [];
-
-            if (hash[0] == 0 &&
-                hash[1] == 0 &&
-                (isPartOne ? (hash[2] <= 15) : (hash[2] == 0)))
+            lock (lockObj)
             {
-                lock (lockObj)
+                if (!result.HasValue || i < result.Value)
                 {
-                    if (!result.HasValue || i < result.Value)
-                    {
-                        if (ShouldPrint)
-                        {
-                            Console.WriteLine($"Found possible answer at {i}: {hash.AsString()}");
-                        }
-                        result = i;
-                    }
+                    result = i;
                 }
             }
         });
 
         return result?.ToString() ?? "No answer could be found.";
+    }
+
+    private bool DoesSatisfy(string input, int i, bool isPartOne)
+    {
+        var tryInput = $"{input}{i}".ToCharArray().Select(c => (byte)c).ToArray();
+        var hash = MD5.HashData(tryInput) ?? [];
+        var doesSatisfy =
+            hash[0] == 0 &&
+            hash[1] == 0 &&
+            (isPartOne ? (hash[2] <= 15) : (hash[2] == 0));
+
+        if (doesSatisfy && ShouldPrint)
+        {
+            Console.WriteLine($"Found possible answer at {i}: {hash.AsString()}");
+        }
+        return doesSatisfy;
     }
 }

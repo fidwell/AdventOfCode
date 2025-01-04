@@ -61,5 +61,5 @@ public static class StringExtensions
     /// <param name="byteArray">A byte array.</param>
     /// <returns>A hexadecimal string representation of the input.</returns>
     public static string AsString(this byte[] byteArray) =>
-        string.Join(' ', byteArray.Select(b => $"{b:X2}"));
+        string.Join(' ', byteArray.Select(b => $"{b:x2}"));
 }
