@@ -54,4 +54,12 @@ public static class StringExtensions
                  l.Split(' ', StringSplitOptions.RemoveEmptyEntries)
                   .Select(int.Parse)
                   .ToArray());
+
+    /// <summary>
+    /// Converts a byte array to a hexadecimal string representation.
+    /// </summary>
+    /// <param name="byteArray">A byte array.</param>
+    /// <returns>A hexadecimal string representation of the input.</returns>
+    public static string AsString(this byte[] byteArray) =>
+        string.Join(' ', byteArray.Select(b => $"{b:X2}"));
 }

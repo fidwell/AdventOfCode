@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2015;
 
@@ -8,10 +9,17 @@ public class Puzzle04Solver : PuzzleSolver
 
     public override string SolvePartTwo(string input) => Solve(input, false);
 
-    private static string Solve(string input, bool isPartOne)
+    private string Solve(string input, bool isPartOne)
     {
-        for (var i = 0; i < int.MaxValue; i++)
+        int? result = null;
+        object lockObj = new object();
+        const int MaxSearchValue = 10_000_000;
+
+        Parallel.For(0, MaxSearchValue, (i, state) =>
         {
+            if (result.HasValue && i >= result.Value)
+                return;
+
             var tryInput = $"{input}{i}".ToCharArray().Select(c => (byte)c).ToArray();
             var hash = MD5.HashData(tryInput) ?? [];
 
@@ -19,10 +27,20 @@ public class Puzzle04Solver : PuzzleSolver
                 hash[1] == 0 &&
                 (isPartOne ? (hash[2] <= 15) : (hash[2] == 0)))
             {
-                return i.ToString();
+                lock (lockObj)
+                {
+                    if (!result.HasValue || i < result.Value)
+                    {
+                        if (ShouldPrint)
+                        {
+                            Console.WriteLine($"Found possible answer at {i}: {hash.AsString()}");
+                        }
+                        result = i;
+                    }
+                }
             }
-        }
+        });
 
-        throw new Exception("No answer could be found.");
+        return result?.ToString() ?? "No answer could be found.";
     }
 }
