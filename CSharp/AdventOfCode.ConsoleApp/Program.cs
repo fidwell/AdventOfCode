@@ -211,7 +211,10 @@ internal class Program
         {
             try
             {
-                await Downloader.DownloadInput(year, day, session);
+                if (Downloader.SetUpDirectories(year))
+                {
+                    await Downloader.DownloadInput(year, day, session);
+                }
                 return DataReader.GetData(year, day, part, useExample);
             }
             catch
