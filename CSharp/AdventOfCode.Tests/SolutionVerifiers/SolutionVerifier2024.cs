@@ -4,10 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace AdventOfCode.Tests.SolutionVerifiers;
 
 [TestClass]
-public class SolutionVerifier2024 : SolutionVerifier
+public class SolutionVerifier2024() : SolutionVerifier(2024)
 {
-    public SolutionVerifier2024() : base(2024) { }
-
     [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "11", DisplayName = "2024.01.1-example")]
     [DataRow(1, false, "2375403", DisplayName = "2024.01.1-problem")]
