@@ -1,86 +1,32 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.Geometry;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
 public class Puzzle04Solver : PuzzleSolver
 {
-    const string xmas = "XMAS";
+    private const string _xmas = "XMAS";
 
     public override string SolvePartOne(string input)
     {
         var wordSearch = new CharacterMatrix(input);
-        var count = 0;
-        for (var x = 0; x < wordSearch.Width; x++)
-        {
-            for (var y = 0; y < wordSearch.Height; y++)
-            {
-                count += XmasesStartingAt(wordSearch, x, y);
-            }
-        }
-        return count.ToString();
+        return wordSearch.AllCoordinates.Sum(c => XmasesStartingAt(wordSearch, c)).ToString();
     }
 
     public override string SolvePartTwo(string input)
     {
         var wordSearch = new CharacterMatrix(input);
-        var count = 0;
-        for (var x = 0; x < wordSearch.Width; x++)
-        {
-            for (var y = 0; y < wordSearch.Height; y++)
-            {
-                count += XMasLocatedAt(wordSearch, x, y) ? 1 : 0;
-            }
-        }
-
-        return count.ToString();
+        return wordSearch.AllCoordinates.Count(c => XmasLocatedAt(wordSearch, c.Item1, c.Item2)).ToString();
     }
 
-    private static int XmasesStartingAt(CharacterMatrix wordSearch, int x, int y)
-    {
-        if (wordSearch.CharAt(x, y) != 'X')
-            return 0;
+    private static int XmasesStartingAt(CharacterMatrix wordSearch, (int, int) coord) =>
+        wordSearch.CharAt(coord) != 'X' ? 0 :
+        DirectionExtensions.AllDirection8.Count(d => IsXmas(wordSearch, _xmas.Select((c, i) => coord.Go(d, i)).ToArray()));
 
-        var count = 0;
+    private static bool IsXmas(CharacterMatrix wordSearch, (int, int)[] coords) =>
+        Enumerable.Range(1, 3).All(i => wordSearch.CharAt(coords[i].Item1, coords[i].Item2) == _xmas[i]);
 
-        var coordsS = xmas.Select((c, i) => (x, y + i)).ToList();
-        if (IsXmas(wordSearch, coordsS))
-            count++;
-
-        var coordsN = xmas.Select((c, i) => (x, y - i)).ToList();
-        if (IsXmas(wordSearch, coordsN))
-            count++;
-
-        var coordsE = xmas.Select((c, i) => (x + i, y)).ToList();
-        if (IsXmas(wordSearch, coordsE))
-            count++;
-
-        var coordsW = xmas.Select((c, i) => (x - i, y)).ToList();
-        if (IsXmas(wordSearch, coordsW))
-            count++;
-
-        var coordsSE = xmas.Select((c, i) => (x + i, y + i)).ToList();
-        if (IsXmas(wordSearch, coordsSE))
-            count++;
-
-        var coordsNE = xmas.Select((c, i) => (x + i, y - i)).ToList();
-        if (IsXmas(wordSearch, coordsNE))
-            count++;
-
-        var coordsSW = xmas.Select((c, i) => (x - i, y + i)).ToList();
-        if (IsXmas(wordSearch, coordsSW))
-            count++;
-
-        var coordsNW = xmas.Select((c, i) => (x - i, y - i)).ToList();
-        if (IsXmas(wordSearch, coordsNW))
-            count++;
-
-        return count;
-    }
-
-    private static bool IsXmas(CharacterMatrix wordSearch, List<(int, int)> coords) =>
-        Enumerable.Range(1, 3).All(i => wordSearch.CharAt(coords[i].Item1, coords[i].Item2) == xmas[i]);
-
-    private static bool XMasLocatedAt(CharacterMatrix wordSearch, int x, int y)
+    private static bool XmasLocatedAt(CharacterMatrix wordSearch, int x, int y)
     {
         if (wordSearch.CharAt(x, y) != 'A')
             return false;

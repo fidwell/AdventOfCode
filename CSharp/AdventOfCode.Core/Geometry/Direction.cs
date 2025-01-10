@@ -15,6 +15,20 @@ public enum Direction : byte
     North = Up
 }
 
+public enum Direction8 : byte
+{
+    Undefined = 0xff,
+
+    East = 0x00,
+    Southeast = 0x01,
+    South = 0x02,
+    Southwest = 0x03,
+    West = 0x04,
+    Northwest = 0x05,
+    North = 0x06,
+    Northeast = 0x07
+}
+
 public static class DirectionExtensions
 {
     public static Coord Go(this Coord start, Direction direction, int amount = 1) =>
@@ -26,6 +40,21 @@ public static class DirectionExtensions
             Direction.Up => (start.Item1, start.Item2 - amount),
             _ => start
         };
+
+    public static Coord Go(this Coord start, Direction8 direction, int amount = 1) =>
+        direction switch
+        {
+            Direction8.East => (start.Item1 + amount, start.Item2),
+            Direction8.Southeast => (start.Item1 + amount, start.Item2 + amount),
+            Direction8.South => (start.Item1, start.Item2 + amount),
+            Direction8.Southwest => (start.Item1 - amount, start.Item2 + amount),
+            Direction8.West => (start.Item1 - amount, start.Item2),
+            Direction8.Northwest => (start.Item1 - amount, start.Item2 - amount),
+            Direction8.North => (start.Item1, start.Item2 - amount),
+            Direction8.Northeast => (start.Item1 + amount, start.Item2 - amount),
+            _ => start
+        };
+
 
     public static Direction Opposite(this Direction direction) =>
         direction switch
@@ -77,4 +106,15 @@ public static class DirectionExtensions
             Direction.Up => Direction.Left,
             _ => Direction.Undefined
         };
+
+    public static Direction8[] AllDirection8 => [
+        Direction8.East,
+        Direction8.Southeast,
+        Direction8.South,
+        Direction8.Southwest,
+        Direction8.West,
+        Direction8.Northwest,
+        Direction8.North,
+        Direction8.Northeast
+    ];
 }
