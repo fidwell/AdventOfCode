@@ -27,7 +27,7 @@ public class Puzzle17Solver : PuzzleSolver
 
             cache.Add(state);
 
-            var possibleNexts = DirectionExtensions.All.Where(d => d != state.Direction && d != state.Direction.Opposite());
+            var possibleNexts = DirectionExtensions.All4.Where(d => d != state.Direction && d != state.Direction.Opposite());
             foreach (var next in possibleNexts)
             {
                 var loc0 = state.Location;

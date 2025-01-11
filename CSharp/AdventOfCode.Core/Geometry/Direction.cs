@@ -39,23 +39,16 @@ public static class DirectionExtensions
     public static Direction Opposite(this Direction direction) =>
         direction switch
         {
-            Direction.Right => Direction.Left,
-            Direction.Down => Direction.Up,
-            Direction.Left => Direction.Right,
-            Direction.Up => Direction.Down,
+            Direction.East => Direction.West,
+            Direction.South => Direction.North,
+            Direction.West => Direction.East,
+            Direction.North => Direction.South,
+            Direction.Southeast => Direction.Northwest,
+            Direction.Southwest => Direction.Northeast,
+            Direction.Northwest => Direction.Southeast,
+            Direction.Northeast => Direction.Southwest,
             _ => Direction.Undefined
         };
-
-    public static IEnumerable<Direction> All
-    {
-        get
-        {
-            yield return Direction.Right;
-            yield return Direction.Down;
-            yield return Direction.Left;
-            yield return Direction.Up;
-        }
-    }
 
     public static Direction ToDirection(this char input) =>
         input switch
@@ -86,6 +79,13 @@ public static class DirectionExtensions
             Direction.Up => Direction.Left,
             _ => Direction.Undefined
         };
+
+    public static Direction[] All4 => [
+        Direction.East,
+        Direction.South,
+        Direction.West,
+        Direction.North
+    ];
 
     public static Direction[] All8 => [
         Direction.East,

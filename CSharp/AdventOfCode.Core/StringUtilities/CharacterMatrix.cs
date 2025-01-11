@@ -118,6 +118,11 @@ public class CharacterMatrix
     public IEnumerable<Coord> FindAllCharacters(char matchingChar) =>
         AllCoordinates.Where(c => _data[c.Item1, c.Item2] == matchingChar);
 
+    /// <summary>
+    /// Finds the location that is the sole match for a specific character.
+    /// </summary>
+    /// <param name="matchingChar">A character to search for.</param>
+    /// <returns>The location of the character.</returns>
     public Coord SingleMatch(char matchingChar) =>
         AllCoordinates.Single(c => matchingChar == _data[c.Item1, c.Item2]);
 
