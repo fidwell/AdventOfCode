@@ -46,13 +46,12 @@ public class Puzzle16Solver : PuzzleSolver
         return maxSolution.ToString();
     }
 
-    private class Beam((int, int) location, Direction direction)
+    private class Beam(Pose pose)
     {
-        public (int, int) Location { get; set; } = location;
-        public Direction Direction { get; set; } = direction;
+        public Pose Pose { get; set; } = pose;
         public bool ShouldDestroy { get; set; } = false;
 
-        public override int GetHashCode() => (Location.Item1 * 110 + Location.Item2) * 5 + (int)Direction;
+        public override int GetHashCode() => (Pose.Location.Item1 * 110 + Pose.Location.Item2) * 8 + (int)Pose.Direction;
     }
 
     private static int EnergizedCellsStartingAt(CharacterMatrix matrix, (int, int) start, Direction dir0)
@@ -60,7 +59,7 @@ public class Puzzle16Solver : PuzzleSolver
         var cache = new List<int>();
         var beams = new List<Beam>
         {
-            new(start, dir0)
+            new(new(start, dir0))
         };
 
         while (beams.Count != 0)
@@ -68,10 +67,10 @@ public class Puzzle16Solver : PuzzleSolver
             var newBeams = new List<Beam>();
             foreach (var beam in beams)
             {
-                beam.Location = beam.Location.Go(beam.Direction);
+                beam.Pose = beam.Pose.Forward();
 
                 var hash = beam.GetHashCode();
-                if (!matrix.IsInBounds(beam.Location) ||
+                if (!matrix.IsInBounds(beam.Pose.Location) ||
                     cache.Contains(hash))
                 {
                     beam.ShouldDestroy = true;
@@ -80,38 +79,38 @@ public class Puzzle16Solver : PuzzleSolver
 
                 cache.Add(hash);
 
-                switch (matrix.CharAt(beam.Location))
+                switch (matrix.CharAt(beam.Pose.Location))
                 {
                     case '-':
-                        if (beam.Direction == Direction.Down || beam.Direction == Direction.Up)
+                        if (beam.Pose.Direction == Direction.Down || beam.Pose.Direction == Direction.Up)
                         {
-                            beam.Direction = Direction.Right;
-                            newBeams.Add(new Beam(beam.Location, Direction.Left));
+                            beam.Pose = beam.Pose.Facing(Direction.Right);
+                            newBeams.Add(new Beam(new Pose(beam.Pose.Location, Direction.Left)));
                         }
                         break;
                     case '|':
-                        if (beam.Direction == Direction.Right || beam.Direction == Direction.Left)
+                        if (beam.Pose.Direction == Direction.Right || beam.Pose.Direction == Direction.Left)
                         {
-                            beam.Direction = Direction.Up;
-                            newBeams.Add(new Beam(beam.Location, Direction.Down));
+                            beam.Pose = beam.Pose.Facing(Direction.Up);
+                            newBeams.Add(new Beam(new Pose(beam.Pose.Location, Direction.Down)));
                         }
                         break;
                     case '\\':
-                        switch (beam.Direction)
+                        switch (beam.Pose.Direction)
                         {
-                            case Direction.Left: beam.Direction = Direction.Up; break;
-                            case Direction.Down: beam.Direction = Direction.Right; break;
-                            case Direction.Right: beam.Direction = Direction.Down; break;
-                            case Direction.Up: beam.Direction = Direction.Left; break;
+                            case Direction.Left: beam.Pose = beam.Pose.Facing(Direction.Up); break;
+                            case Direction.Down: beam.Pose = beam.Pose.Facing(Direction.Right); break;
+                            case Direction.Right: beam.Pose = beam.Pose.Facing(Direction.Down); break;
+                            case Direction.Up: beam.Pose = beam.Pose.Facing(Direction.Left); break;
                         }
                         break;
                     case '/':
-                        switch (beam.Direction)
+                        switch (beam.Pose.Direction)
                         {
-                            case Direction.Left: beam.Direction = Direction.Down; break;
-                            case Direction.Down: beam.Direction = Direction.Left; break;
-                            case Direction.Right: beam.Direction = Direction.Up; break;
-                            case Direction.Up: beam.Direction = Direction.Right; break;
+                            case Direction.Left: beam.Pose = beam.Pose.Facing(Direction.Down); break;
+                            case Direction.Down: beam.Pose = beam.Pose.Facing(Direction.Left); break;
+                            case Direction.Right: beam.Pose = beam.Pose.Facing(Direction.Up); break;
+                            case Direction.Up: beam.Pose = beam.Pose.Facing(Direction.Right); break;
                         }
                         break;
                 }
@@ -124,7 +123,7 @@ public class Puzzle16Solver : PuzzleSolver
         // Reverse the hash codes to get the original coordinates back
         return cache.Select(c =>
         {
-            var xy = c / 5;
+            var xy = c / 8;
             var y = xy % 110;
             var x = xy / 110;
             return (x, y);

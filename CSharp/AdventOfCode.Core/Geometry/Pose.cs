@@ -14,4 +14,6 @@ public record Pose
     public Pose Forward() => new(Location.Go(Direction), Direction);
     public Pose TurnLeft() => new(Location, Direction.RotateLeft());
     public Pose TurnRight() => new(Location, Direction.RotateRight());
+
+    public Pose Facing(Direction direction) => new(Location, direction);
 }

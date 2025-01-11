@@ -21,7 +21,7 @@ public class Puzzle04Solver : PuzzleSolver
 
     private static int XmasesStartingAt(CharacterMatrix wordSearch, (int, int) coord) =>
         wordSearch.CharAt(coord) != 'X' ? 0 :
-        DirectionExtensions.AllDirection8.Count(d => IsXmas(wordSearch, _xmas.Select((c, i) => coord.Go(d, i)).ToArray()));
+        DirectionExtensions.All8.Count(d => IsXmas(wordSearch, _xmas.Select((c, i) => coord.Go(d, i)).ToArray()));
 
     private static bool IsXmas(CharacterMatrix wordSearch, (int, int)[] coords) =>
         Enumerable.Range(1, 3).All(i => wordSearch.CharAt(coords[i].Item1, coords[i].Item2) == _xmas[i]);
