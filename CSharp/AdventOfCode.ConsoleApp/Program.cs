@@ -9,8 +9,8 @@ internal class Program
         ConsoleWriter.Write(" ** Advent of Code utility helper ** ", ConsoleColor.Yellow);
         await Run(args);
 
-        Console.WriteLine($"{Environment.NewLine}Press any key to close this window . . .");
-        Console.ReadKey();
+        //Console.WriteLine($"{Environment.NewLine}Press any key to close this window . . .");
+        //Console.ReadKey();
     }
 
     private static async Task Run(string[] args)
