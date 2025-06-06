@@ -100,6 +100,13 @@ internal class Program
     {
         var types = typeof(PuzzleSolver).Assembly.GetTypes()
             .Where(t => t.FullName == $"AdventOfCode.Solvers._{year}.Puzzle{day.ToString().PadLeft(2, '0')}Solver");
+
+        if (!types.Any())
+        {
+            ConsoleWriter.Error($"Can't create a solver for {year} puzzle {day}.");
+            return;
+        }
+
         var solver = (PuzzleSolver?)Activator.CreateInstance(types.First());
 
         if (solver is null)

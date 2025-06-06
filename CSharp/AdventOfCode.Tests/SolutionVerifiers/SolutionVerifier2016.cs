@@ -32,4 +32,12 @@ public class SolutionVerifier2016() : SolutionVerifier(2016)
     [DataRow(2, false, "324", DisplayName = "2016.04.2-problem")]
     public void Solve_2016_04(int part, bool useExample, string expected) =>
         Solve(new Puzzle04Solver(), 4, part, useExample, expected);
+
+    [DataTestMethod, Timeout(MaxTimeout)]
+    [DataRow(1, true, "18f47a30", DisplayName = "2016.05.1-example")]
+    [DataRow(1, false, "1a3099aa", DisplayName = "2016.05.1-problem")]
+    [DataRow(2, true, "05ace8e3", DisplayName = "2016.05.2-example")]
+    [DataRow(2, false, "694190cd", DisplayName = "2016.05.2-problem")]
+    public void Solve_2016_05(int part, bool useExample, string expected) =>
+        Solve(new Puzzle05Solver(), 5, part, useExample, expected);
 }

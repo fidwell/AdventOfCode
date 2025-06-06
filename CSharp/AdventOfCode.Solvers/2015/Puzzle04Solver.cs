@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+﻿using AdventOfCode.Core.Hashing;
 using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2015;
@@ -43,8 +43,7 @@ public class Puzzle04Solver : PuzzleSolver
 
     private bool DoesSatisfy(string input, int i, bool isPartOne)
     {
-        var tryInput = $"{input}{i}".ToCharArray().Select(c => (byte)c).ToArray();
-        var hash = MD5.HashData(tryInput) ?? [];
+        var hash = Md5Hasher.Hash($"{input}{i}");
         var doesSatisfy =
             hash[0] == 0 &&
             hash[1] == 0 &&
