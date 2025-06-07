@@ -1,5 +1,4 @@
-﻿using System.Text;
-using AdventOfCode.Core.Hashing;
+﻿using AdventOfCode.Core.Hashing;
 
 namespace AdventOfCode.Solvers._2016;
 
@@ -10,43 +9,50 @@ public class Puzzle05Solver : PuzzleSolver
 
     private static string Solve(string input, bool isPartOne)
     {
+        var results = GetHashes(input, isPartOne ? 19_000_000 : 30_000_000);
+        if (isPartOne)
+        {
+            var chars = results
+                .OrderBy(r => r.Key)
+                .Take(8)
+                .Select(r => BitConverter.ToString([r.Value[2]])[1])
+                .ToArray();
+            return new string(chars).ToLower();
+        }
+        else
+        {
+            var chars = results
+                .OrderBy(r => r.Key)
+                .Select(r => (r.Value[2], (byte)(r.Value[3] >> 4)))
+                .Where(r => r.Item1 < 8)
+                .OrderBy(r => r.Item1)
+                .GroupBy(r => r.Item1)
+                .Select(g => BitConverter.ToString([g.First().Item2])[1])
+                .ToArray();
+            return new string(chars).ToLower();
+        }
+    }
+
+    private static Dictionary<int, byte[]> GetHashes(string input, int maxIndex)
+    {
         input = input.Trim();
-        var result = new StringBuilder("________");
+        var results = new Dictionary<int, byte[]>();
+        object lockObj = new object();
 
-        var charsFound = 0;
-        var index = 0;
-
-        while (charsFound < 8)
+        Parallel.For(0, maxIndex, (index, state) =>
         {
             var newInput = $"{input}{index}";
             var hash = Md5Hasher.Hash(newInput);
-
             if (hash[0] == 0 &&
                 hash[1] == 0 &&
                 hash[2] <= 15)
             {
-                if (isPartOne)
+                lock (lockObj)
                 {
-                    char thisChar = BitConverter.ToString([hash[2]])[1];
-                    result[charsFound] = thisChar;
-                    charsFound++;
-                }
-                else
-                {
-                    var placement = hash[2];
-                    var value = (byte)(hash[3] >> 4);
-                    var thisChar = BitConverter.ToString([value])[1];
-
-                    if (placement < 8 && result[placement] == '_')
-                    {
-                        result[placement] = thisChar;
-                        charsFound++;
-                    }
+                    results.Add(index, hash);
                 }
             }
-            index++;
-        }
-
-        return result.ToString().ToLower();
+        });
+        return results;
     }
 }

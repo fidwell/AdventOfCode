@@ -33,7 +33,7 @@ public class SolutionVerifier2016() : SolutionVerifier(2016)
     public void Solve_2016_04(int part, bool useExample, string expected) =>
         Solve(new Puzzle04Solver(), 4, part, useExample, expected);
 
-    [DataTestMethod, Timeout(MaxTimeout)]
+    [DataTestMethod, Timeout(LongTimeout)]
     [DataRow(1, true, "18f47a30", DisplayName = "2016.05.1-example")]
     [DataRow(1, false, "1a3099aa", DisplayName = "2016.05.1-problem")]
     [DataRow(2, true, "05ace8e3", DisplayName = "2016.05.2-example")]
@@ -41,7 +41,7 @@ public class SolutionVerifier2016() : SolutionVerifier(2016)
     public void Solve_2016_05(int part, bool useExample, string expected) =>
         Solve(new Puzzle05Solver(), 5, part, useExample, expected);
 
-    [DataTestMethod, Timeout(MaxTimeout)]
+    [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "easter", DisplayName = "2016.06.1-example")]
     [DataRow(1, false, "kqsdmzft", DisplayName = "2016.06.1-problem")]
     [DataRow(2, true, "advent", DisplayName = "2016.06.2-example")]
@@ -49,7 +49,7 @@ public class SolutionVerifier2016() : SolutionVerifier(2016)
     public void Solve_2016_06(int part, bool useExample, string expected) =>
         Solve(new Puzzle06Solver(), 6, part, useExample, expected);
 
-    [DataTestMethod, Timeout(MaxTimeout)]
+    [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "2", DisplayName = "2016.07.1-example")]
     [DataRow(1, false, "105", DisplayName = "2016.07.1-problem")]
     [DataRow(2, true, "3", DisplayName = "2016.07.2-example")]
