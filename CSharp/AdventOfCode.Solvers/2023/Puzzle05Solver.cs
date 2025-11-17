@@ -28,7 +28,7 @@ public class Puzzle05Solver : PuzzleSolver
                 : seedData
                     .Where((x, i) => i % 2 == 0)
                     .Select((x, i) => new RangeLong(seedData[i * 2], seedData[i * 2 + 1]));
-            _maps = data.Skip(2).ToArray().Chunk().Select(d => new Map(d)).ToList();
+            _maps = [.. data.Skip(2).ToArray().Chunk().Select(d => new Map(d))];
         }
 
         public long LowestLocationNumberThatCorrespondsToAnyOfTheInitialSeedNumbers()
@@ -39,7 +39,7 @@ public class Puzzle05Solver : PuzzleSolver
                     IEnumerable<RangeLong> value = [range];
                     foreach (var map in _maps)
                     {
-                        value = map.TransformRanges(value).ToList();
+                        value = [.. map.TransformRanges(value)];
                     }
                     return value;
                 });

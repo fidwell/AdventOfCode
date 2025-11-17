@@ -30,11 +30,11 @@ public class Puzzle05Solver : PuzzleSolver
         {
             if (line.Contains('|'))
             {
-                rules.Add((int.Parse(line.Substring(0, 2)), int.Parse(line.Substring(3, 2))));
+                rules.Add((int.Parse(line[..2]), int.Parse(line.Substring(3, 2))));
             }
             else if (line.Contains(','))
             {
-                updates.Add(line.Split(',').Select(int.Parse).ToArray());
+                updates.Add([.. line.Split(',').Select(int.Parse)]);
             }
         }
         return (rules, updates);

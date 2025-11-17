@@ -37,7 +37,7 @@ public class Puzzle23Solver : PuzzleSolver
     private static Dictionary<string, List<string>> ConnectivityDictionary(string input)
     {
         var result = new Dictionary<string, List<string>>();
-        var allConnections = input.SplitByNewline().Select(l => (l.Substring(0, 2), l.Substring(3, 2)));
+        var allConnections = input.SplitByNewline().Select(l => (l[..2], l.Substring(3, 2)));
         foreach (var connection in allConnections)
         {
             if (result.TryGetValue(connection.Item1, out List<string>? list1))
@@ -74,7 +74,7 @@ public class Puzzle23Solver : PuzzleSolver
         {
             var vertex = p[0];
             var neighborSet = connectivityDictionary[vertex];
-            BronKerbosch(connectivityDictionary, r.Concat([vertex]).ToList(), p.Intersect(neighborSet).ToList(), x.Intersect(neighborSet).ToList());
+            BronKerbosch(connectivityDictionary, [.. r, vertex], [.. p.Intersect(neighborSet)], [.. x.Intersect(neighborSet)]);
             p.Remove(vertex);
             x.Add(vertex);
         }

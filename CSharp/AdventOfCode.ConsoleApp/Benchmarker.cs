@@ -69,7 +69,7 @@ internal static class Benchmarker
         }
         ConsoleWriter.Write("└─────┴──────┴─────────────┴─────────────┴─────────────┴─────────────┘");
 
-        aggregates = aggregates.Where(a => a.Count > 0).ToList();
+        aggregates = [.. aggregates.Where(a => a.Count > 0)];
 
         Console.WriteLine();
         ConsoleWriter.Write("┌─────────────────┬─────────────┬─────────────┬─────────────┬─────────────┐");

@@ -44,7 +44,7 @@ public class Puzzle11Solver : PuzzleSolver
         asBytes[i]++;
         if (asBytes[i] == 'z' + 1)
         {
-            var substr = new string(asBytes.Take(asBytes.Length - 1).ToArray());
+            var substr = new string([.. asBytes.Take(asBytes.Length - 1)]);
             substr = Increment(substr);
             return $"{substr}a";
         }

@@ -1,18 +1,15 @@
-﻿using System.Text.RegularExpressions;
-using AdventOfCode.Core.MathUtilities;
+﻿using AdventOfCode.Core.MathUtilities;
 using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle03Solver : PuzzleSolver
 {
-    private static readonly Regex NumberRegex = new(@"\d+", RegexOptions.Compiled);
-
     public override string SolvePartOne(string input)
     {
         var matrix = new CharacterMatrix(input);
         return matrix
-            .FindAllWords(NumberRegex)
+            .FindAllWords(Regexes.NonNegativeInteger())
             .Where(n => matrix.CoordinatesOfNeighbors(n).Any(coordinate => IsSymbol(matrix.CharAt(coordinate))))
             .Select(n => int.Parse(matrix.StringAt(n.StartCoordinate, n.Length)))
             .Sum()
@@ -22,7 +19,7 @@ public class Puzzle03Solver : PuzzleSolver
     public override string SolvePartTwo(string input)
     {
         var matrix = new CharacterMatrix(input);
-        var numbers = matrix.FindAllWords(NumberRegex);
+        var numbers = matrix.FindAllWords(Regexes.NonNegativeInteger());
         var numbersWithNeighbors = numbers.Select(n => new
         {
             Number = n,

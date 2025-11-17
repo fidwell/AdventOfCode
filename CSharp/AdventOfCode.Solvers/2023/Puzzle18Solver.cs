@@ -9,7 +9,7 @@ public class Puzzle18Solver : PuzzleSolver
         Solve(input.SplitByNewline().Select(l => new Instruction(l, true))).ToString();
 
     public override string SolvePartTwo(string input) =>
-        Solve(input.SplitByNewline().Select(l => new Instruction(l, false)).ToList()).ToString();
+        Solve([.. input.SplitByNewline().Select(l => new Instruction(l, false))]).ToString();
 
     private static long Solve(IEnumerable<Instruction> instructions) =>
         Shoelace(FindVertices(instructions)) + instructions.Sum(i => i.Amount) / 2 + 1;

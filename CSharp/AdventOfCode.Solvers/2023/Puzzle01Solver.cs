@@ -1,9 +1,8 @@
-﻿using System.Text.RegularExpressions;
-using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
-public class Puzzle01Solver() : PuzzleSolver
+public partial class Puzzle01Solver() : PuzzleSolver
 {
     public override string SolvePartOne(string input) => Solve(input, false);
 
@@ -27,7 +26,7 @@ public class Puzzle01Solver() : PuzzleSolver
             }
         }
 
-        var matches = Regex.Matches(input, "(\\d)");
+        var matches = Regexes.Digit().Matches(input);
         return (int.Parse(matches.First().Value), int.Parse(matches.Last().Value));
     }
 

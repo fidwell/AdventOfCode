@@ -26,7 +26,7 @@ public class Puzzle09Solver : PuzzleSolver
 
         public DataLine(string input)
         {
-            _values = [input.Split(" ").Select(int.Parse).ToArray()];
+            _values = [[.. input.Split(" ").Select(int.Parse)]];
             FillDifferences();
         }
 
@@ -48,7 +48,7 @@ public class Puzzle09Solver : PuzzleSolver
             do
             {
                 var lastRow = _values.Last();
-                nextState = lastRow.Skip(1).Select((value, index) => lastRow[index + 1] - lastRow[index]).ToArray();
+                nextState = [.. lastRow.Skip(1).Select((value, index) => lastRow[index + 1] - lastRow[index])];
                 _values.Add(nextState);
             } while (nextState.Any(x => x != 0));
         }

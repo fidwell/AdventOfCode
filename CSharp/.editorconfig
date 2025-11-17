@@ -18,6 +18,8 @@ csharp_style_expression_bodied_indexers = true:silent
 csharp_style_expression_bodied_accessors = true:silent
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
+csharp_style_namespace_declarations = file_scoped:error
+dotnet_diagnostic.IDE0161.severity = error
 
 [*.{cs,vb}]
 #### Naming styles ####

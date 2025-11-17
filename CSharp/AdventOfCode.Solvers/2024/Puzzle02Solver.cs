@@ -32,5 +32,5 @@ public class Puzzle02Solver : PuzzleSolver
         Differences(input).All(d => d >= 1 && d <= 3);
 
     private static int[] Differences(int[] input) =>
-        input.Zip(input.Skip(1), (a, b) => a > b ? a - b : b - a).ToArray();
+        [.. input.Zip(input.Skip(1), (a, b) => a > b ? a - b : b - a)];
 }

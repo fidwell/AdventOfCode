@@ -29,7 +29,7 @@ public class Puzzle04Solver : PuzzleSolver
 
         public Scratchcard(string input)
         {
-            Id = int.Parse(input.Split(": ")[0].Substring("Card ".Length).Trim());
+            Id = int.Parse(input.Split(": ")[0]["Card ".Length..].Trim());
             var numberData = input.Split(": ")[1].SplitAndTrim(" | ");
             var winningNumbers = numberData[0].SplitAndTrim(' ').Select(int.Parse);
             var ownNumbers = numberData[1].SplitAndTrim(' ').Select(int.Parse);

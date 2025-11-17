@@ -51,25 +51,25 @@ public class Puzzle12Solver : PuzzleSolver
             return 0;
 
         if (input[0] == '.')
-            return CachedResult(input.Substring(1), groupCounts);
+            return CachedResult(input[1..], groupCounts);
 
         if (input[0] == '#')
         {
             var thisGroupCount = groupCounts[0];
 
             // Current group is too small
-            if (input.Substring(0, thisGroupCount).Contains('.'))
+            if (input[..thisGroupCount].Contains('.'))
                 return 0;
 
             // Current group is too big (all # or ?)
             if (thisGroupCount < input.Length && input[thisGroupCount] == '#')
                 return 0;
 
-            return CachedResult(input.Substring(groupCounts[0] + 1), groupCounts.Skip(1).ToArray());
+            return CachedResult(input[(groupCounts[0] + 1)..], [.. groupCounts.Skip(1)]);
         }
 
-        var ifPound = CachedResult($"#{input.Substring(1)}", groupCounts);
-        var ifPeriod = CachedResult($".{input.Substring(1)}", groupCounts);
+        var ifPound = CachedResult($"#{input[1..]}", groupCounts);
+        var ifPeriod = CachedResult($".{input[1..]}", groupCounts);
         return ifPound + ifPeriod;
     }
 }

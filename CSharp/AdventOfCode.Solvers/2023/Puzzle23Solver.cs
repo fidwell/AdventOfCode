@@ -118,7 +118,7 @@ public class Puzzle23Solver : PuzzleSolver
 
         if (current == end)
         {
-            paths.Add(new List<(int, int)>(path));
+            paths.Add([.. path]);
         }
         else
         {

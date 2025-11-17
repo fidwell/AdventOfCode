@@ -53,7 +53,7 @@ public class Puzzle08Solver : PuzzleSolver
 
     private class Node(string input)
     {
-        public string Name { get; private set; } = input.Substring(0, 3);
+        public string Name { get; private set; } = input[..3];
         public string Left { get; private set; } = input.Substring(7, 3);
         public string Right { get; private set; } = input.Substring(12, 3);
 

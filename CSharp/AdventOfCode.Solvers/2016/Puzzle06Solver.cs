@@ -12,8 +12,8 @@ public class Puzzle06Solver : PuzzleSolver
     {
         var lines = input.SplitByNewline();
         var columns = Enumerable.Range(0, lines[0].Length)
-            .Select(i => new string(lines.Select(l => l[i]).ToArray()));
-        return new string(columns.Select(g => BestCharIn(g, getMostLikely)).ToArray());
+            .Select(i => new string([.. lines.Select(l => l[i])]));
+        return new string([.. columns.Select(g => BestCharIn(g, getMostLikely))]);
     }
 
     private static char BestCharIn(string input, bool getMostLikely)

@@ -6,7 +6,7 @@ namespace AdventOfCode.Solvers._2024;
 public class Puzzle12Solver : PuzzleSolver
 {
     public override string SolvePartOne(string input) => Solve(input, (r, m) => r.Area * r.Perimeter(m));
-    public override string SolvePartTwo(string input) => Solve(input, (r, _) => r.Area  * r.CornerCount());
+    public override string SolvePartTwo(string input) => Solve(input, (r, _) => r.Area * r.CornerCount());
 
     private static string Solve(string input, Func<Region, CharacterMatrix, int> priceFunc)
     {

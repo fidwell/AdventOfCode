@@ -20,7 +20,7 @@ public class Puzzle25Solver : PuzzleSolver
         }
 
         var graph = new Graph(edges);
-        return lines.Count() < 15
+        return lines.Length < 15
             ? BruteForceIt(graph).ToString()
             : CheeseIt(graph).ToString();
     }
@@ -63,19 +63,12 @@ public class Puzzle25Solver : PuzzleSolver
             : -1;
     }
 
-    private class Graph
+    private class Graph(List<(string, string)> edges)
     {
-        private readonly List<string> _nodes;
-        private List<(string, string)> _removedEdges;
+        private readonly List<string> _nodes = [.. edges.Select(e => e.Item1).Union(edges.Select(e => e.Item2)).Distinct()];
+        private List<(string, string)> _removedEdges = [];
 
-        public readonly List<(string, string)> Edges;
-
-        public Graph(List<(string, string)> edges)
-        {
-            Edges = edges;
-            _nodes = edges.Select(e => e.Item1).Union(edges.Select(e => e.Item2)).Distinct().ToList();
-            _removedEdges = [];
-        }
+        public readonly List<(string, string)> Edges = edges;
 
         public void RemoveEdge((string, string) edge) => _removedEdges.Add(edge);
         public void ResetRemovedEdges() => _removedEdges = [];
@@ -113,7 +106,7 @@ public class Puzzle25Solver : PuzzleSolver
             }
         }
 
-        private List<(string, string)> AvailableEdges => Edges.Where(e => !IsRemoved(e)).ToList();
+        private List<(string, string)> AvailableEdges => [.. Edges.Where(e => !IsRemoved(e))];
 
         private bool IsRemoved((string, string) edge) =>
             _removedEdges.Any(re =>

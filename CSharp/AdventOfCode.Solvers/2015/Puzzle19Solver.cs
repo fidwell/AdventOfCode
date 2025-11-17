@@ -57,9 +57,9 @@ public partial class Puzzle19Solver : PuzzleSolver
             {
                 var index = target.LastIndexOf(replacement.To);
                 target = string.Join("", [
-                    .. target.Substring(0, index),
+                    .. target[..index],
                     replacement.From,
-                    .. target.Substring(index + replacement.To.Length)
+                    .. target[(index + replacement.To.Length)..]
                 ]);
                 iterations++;
                 break;

@@ -59,11 +59,11 @@ public class Puzzle14Solver : PuzzleSolver
     }
 
     private static List<Robot> SetUpRobots(string input) =>
-        input.SplitByNewline().Select(l =>
+        [.. input.SplitByNewline().Select(l =>
         {
             var matches = Regexes.Integer().Matches(l).Select(m => int.Parse(m.Value)).ToArray();
             return new Robot(matches[0], matches[1], matches[2], matches[3]);
-        }).ToList();
+        })];
 
     private static double Variance(IEnumerable<Robot> robots)
     {

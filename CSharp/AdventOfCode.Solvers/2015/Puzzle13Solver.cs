@@ -1,6 +1,6 @@
-﻿using AdventOfCode.Core;
+﻿using System.Text.RegularExpressions;
+using AdventOfCode.Core;
 using AdventOfCode.Core.StringUtilities;
-using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 
@@ -32,7 +32,7 @@ public partial class Puzzle13Solver : PuzzleSolver
             if (toLeft < 0) toLeft = wrap ? arrangement.Count - 1 : -1;
             if (toRight == arrangement.Count) toRight = wrap ? 0 : -1;
 
-            var ruleLeft = rules.FirstOrDefault(r => r.Source == arrangement[i] && toLeft >=0 && r.Target == arrangement[toLeft]);
+            var ruleLeft = rules.FirstOrDefault(r => r.Source == arrangement[i] && toLeft >= 0 && r.Target == arrangement[toLeft]);
             var ruleRight = rules.FirstOrDefault(r => r.Source == arrangement[i] && toRight >= 0 && r.Target == arrangement[toRight]);
             amount += ruleLeft?.Amount ?? 0;
             amount += ruleRight?.Amount ?? 0;

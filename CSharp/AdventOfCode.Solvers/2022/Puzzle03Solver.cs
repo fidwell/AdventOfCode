@@ -6,7 +6,7 @@ public class Puzzle03Solver : PuzzleSolver
 {
     public override string SolvePartOne(string input) =>
         input.SplitByNewline()
-            .Select(r => (r.Substring(0, r.Length / 2), r.Substring(r.Length / 2)))
+            .Select(r => (r[..(r.Length / 2)], r[(r.Length / 2)..]))
             .Select(r => r.Item1.Intersect(r.Item2).Single())
             .Select(ValueOf)
             .Sum()
@@ -16,7 +16,7 @@ public class Puzzle03Solver : PuzzleSolver
         input.SplitByNewline()
             .Select((v, i) => new { i, v })
             .GroupBy(x => x.i / 3)
-            .Select(g => g.Select(r => r.v.ToCharArray()).Aggregate((a, b) => a.Intersect(b).ToArray()).Single())
+            .Select(g => g.Select(r => r.v.ToCharArray()).Aggregate((a, b) => [.. a.Intersect(b)]).Single())
             .Select(ValueOf)
             .Sum()
             .ToString();

@@ -23,7 +23,7 @@ public class Puzzle20Solver : PuzzleSolver
         public int LowPulseCount { get; private set; } = 0;
         public int HighPulseCount { get; private set; } = 0;
 
-        private List<Module> Modules = [];
+        private readonly List<Module> Modules = [];
         private readonly Queue<Pulse> PulseQueue = new();
 
         private List<Conjunction> _inputsToConjunctor = [];
@@ -32,7 +32,7 @@ public class Puzzle20Solver : PuzzleSolver
 
         public ModuleSystem(string input)
         {
-            Modules = input.SplitByNewline().Select(Module.Parse).ToList();
+            Modules = [.. input.SplitByNewline().Select(Module.Parse)];
             foreach (var conjunction in Modules.OfType<Conjunction>())
             {
                 conjunction.Initialize(Modules.Where(m => m.Outputs.Contains(conjunction.Name)).Select(m => m.Name));
@@ -46,10 +46,9 @@ public class Puzzle20Solver : PuzzleSolver
                 .Where(m => m.Outputs.All(o => o == hb.Name))
                 .Select(m => m.Name);
             // inputs to inputsToHb
-            _inputsToConjunctor = Modules
+            _inputsToConjunctor = [.. Modules
                 .OfType<Conjunction>()
-                .Where(m => m.Outputs.Any(o => inputsToHb.Contains(o)))
-                .ToList();
+                .Where(m => m.Outputs.Any(o => inputsToHb.Contains(o)))];
             var conjunctorCounts = new Dictionary<string, int>();
 
             while (true)
@@ -110,8 +109,8 @@ public class Puzzle20Solver : PuzzleSolver
 
         public static Module Parse(string input)
         {
-            var name = input.Split(' ').First().Substring(1);
-            var outputs = input.Substring(input.IndexOf('>') + 2).SplitAndTrim(',');
+            var name = input.Split(' ').First()[1..];
+            var outputs = input[(input.IndexOf('>') + 2)..].SplitAndTrim(',');
 
             return input[0] switch
             {

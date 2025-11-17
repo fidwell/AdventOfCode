@@ -37,7 +37,7 @@ public class Puzzle05Solver : PuzzleSolver
     {
         input = input.Trim();
         var results = new Dictionary<int, byte[]>();
-        object lockObj = new object();
+        object lockObj = new();
 
         Parallel.For(0, maxIndex, (index, state) =>
         {

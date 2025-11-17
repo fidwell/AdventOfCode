@@ -48,7 +48,7 @@ public class PokerHand : IComparable<PokerHand>
         return 0;
     }
 
-    private static char[] Values => new[] { '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'D', 'E', 'F' };
+    private static char[] Values => ['2', '3', '4', '5', '6', '7', '8', '9', 'B', 'D', 'E', 'F'];
 
     private static PokerHandType FindType(string input)
     {

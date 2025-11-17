@@ -3,7 +3,7 @@ using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2024;
 
-public class Puzzle24Solver : PuzzleSolver
+public partial class Puzzle24Solver : PuzzleSolver
 {
     public override string SolvePartOne(string input)
     {
@@ -53,21 +53,18 @@ public class Puzzle24Solver : PuzzleSolver
         var initialValues = new Dictionary<string, bool>();
         var setup = new List<Gate>();
 
-        var initialWireValueRegex = new Regex(@"([xy]\d\d): ([01])");
-        var gateRegex = new Regex(@"([a-z0-9]{3}) (AND|OR|XOR) ([a-z0-9]{3}) -> ([a-z0-9]{3})");
-
         foreach (var line in input.SplitByNewline())
         {
             if (line.Contains(':'))
             {
-                var match = initialWireValueRegex.Match(line);
+                var match = InitialWireValueRegex().Match(line);
                 var wire = match.Groups[1].Value;
                 var value = match.Groups[2].Value;
                 initialValues.Add(wire, value == "1");
             }
             else
             {
-                var match = gateRegex.Match(line);
+                var match = GateRegex().Match(line);
                 var wire1 = match.Groups[1].Value;
                 var gateType = match.Groups[2].Value;
                 var wire2 = match.Groups[3].Value;
@@ -87,17 +84,13 @@ public class Puzzle24Solver : PuzzleSolver
 
         var input = setup.Single(s => s.WireOut == wire);
 
-        switch (input.Type)
+        return input.Type switch
         {
-            case GateType.AND:
-                return CalculateWire(setup, initialValues, input.WireIn1) && CalculateWire(setup, initialValues, input.WireIn2);
-            case GateType.OR:
-                return CalculateWire(setup, initialValues, input.WireIn1) || CalculateWire(setup, initialValues, input.WireIn2);
-            case GateType.XOR:
-                return CalculateWire(setup, initialValues, input.WireIn1) != CalculateWire(setup, initialValues, input.WireIn2);
-            default:
-                throw new NotImplementedException();
-        }
+            GateType.AND => CalculateWire(setup, initialValues, input.WireIn1) && CalculateWire(setup, initialValues, input.WireIn2),
+            GateType.OR => CalculateWire(setup, initialValues, input.WireIn1) || CalculateWire(setup, initialValues, input.WireIn2),
+            GateType.XOR => CalculateWire(setup, initialValues, input.WireIn1) != CalculateWire(setup, initialValues, input.WireIn2),
+            _ => throw new NotImplementedException(),
+        };
     }
 
     private readonly record struct Gate(string WireIn1, string WireIn2, GateType Type, string WireOut);
@@ -108,4 +101,10 @@ public class Puzzle24Solver : PuzzleSolver
         OR,
         XOR
     }
+
+    [GeneratedRegex(@"([xy]\d\d): ([01])")]
+    private static partial Regex InitialWireValueRegex();
+
+    [GeneratedRegex(@"([a-z0-9]{3}) (AND|OR|XOR) ([a-z0-9]{3}) -> ([a-z0-9]{3})")]
+    private static partial Regex GateRegex();
 }

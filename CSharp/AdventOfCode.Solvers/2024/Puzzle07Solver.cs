@@ -63,7 +63,7 @@ public partial class Puzzle07Solver : PuzzleSolver
         {
             var split = input.Split([':', ' '], StringSplitOptions.RemoveEmptyEntries);
             Answer = ulong.Parse(split[0]);
-            Operands = split.Skip(1).Select(uint.Parse).ToArray();
+            Operands = [.. split.Skip(1).Select(uint.Parse)];
         }
 
         public ulong Answer { get; }

@@ -20,7 +20,7 @@ public class Puzzle04Solver : PuzzleSolver
     public override string SolvePartTwo(string input)
     {
         int? result = null;
-        object lockObj = new object();
+        object lockObj = new();
         const int MaxSearchValue = 10_000_000;
 
         Parallel.For(0, MaxSearchValue, (i, state) =>

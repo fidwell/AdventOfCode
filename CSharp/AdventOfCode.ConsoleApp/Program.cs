@@ -24,6 +24,7 @@ internal class Program
         }
 
         cliArgs.TryGetValue("session", out string? session);
+        session ??= string.Empty;
 
         int? year = null, day = null, part = null;
         if (cliArgs.TryGetValue("year", out string? yearStr))

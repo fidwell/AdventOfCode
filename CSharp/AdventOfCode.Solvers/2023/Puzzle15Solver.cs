@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using AdventOfCode.Solvers;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2023;
 
@@ -15,9 +15,9 @@ public partial class Puzzle15Solver : PuzzleSolver
     {
         var boxes = Enumerable.Range(0, 256).Select(i => new List<Lens>()).ToArray();
 
-        var labelRegex = new Regex(@"[a-z]+", RegexOptions.Compiled);
-        var operationRegex = new Regex(@"[\-=]", RegexOptions.Compiled);
-        var digitRegex = new Regex(@"\d", RegexOptions.Compiled);
+        var labelRegex = LabelRegex();
+        var operationRegex = OperationRegex();
+        var digitRegex = Regexes.NonNegativeInteger();
 
         foreach (var step in input.Split(","))
         {
@@ -61,4 +61,10 @@ public partial class Puzzle15Solver : PuzzleSolver
         public string Label = label;
         public int FocalLength = focalLength;
     }
+
+    [GeneratedRegex(@"[a-z]+", RegexOptions.Compiled)]
+    private static partial Regex LabelRegex();
+
+    [GeneratedRegex(@"[\-=]", RegexOptions.Compiled)]
+    private static partial Regex OperationRegex();
 }

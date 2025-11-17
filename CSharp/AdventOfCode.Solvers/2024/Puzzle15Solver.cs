@@ -123,7 +123,7 @@ public class Puzzle15Solver : PuzzleSolver
         private class BoxDependency((int, int) root, IEnumerable<BoxDependency> branches)
         {
             public (int, int) Root { get; } = root;
-            public List<BoxDependency> Branches { get; } = branches.ToList();
+            public List<BoxDependency> Branches { get; } = [.. branches];
 
             public bool CanMove(List<(int, int)> walls, Direction direction, bool areBoxesWide) =>
                 !walls.Any(w =>

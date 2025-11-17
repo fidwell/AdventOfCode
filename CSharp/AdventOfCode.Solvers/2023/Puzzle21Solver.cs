@@ -33,9 +33,9 @@ public class Puzzle21Solver : PuzzleSolver
 
         for (var i = 0; i < target; i++)
         {
-            answers = new HashSet<(int, int)>(answers
+            answers = [.. answers
                 .SelectMany(a => matrix.CoordinatesOfNeighbors(a, allEight: false, allowWrapping)
-                    .Where(c => matrix.CharAt(c, allowWrapping) != '#')));
+                    .Where(c => matrix.CharAt(c, allowWrapping) != '#'))];
         }
 
         return answers.Count;

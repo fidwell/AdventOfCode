@@ -1,6 +1,6 @@
-﻿using AdventOfCode.Core.LogicGates;
+﻿using System.Text.RegularExpressions;
+using AdventOfCode.Core.LogicGates;
 using AdventOfCode.Core.StringUtilities;
-using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers._2015;
 

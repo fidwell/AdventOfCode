@@ -32,11 +32,13 @@ public class Puzzle03Solver : PuzzleSolver
         return true;
     }
 
+    private static readonly int[] chunkIndices = [0, 1, 2];
+
     private static IEnumerable<IEnumerable<int>> ParseChunk(IEnumerable<string> input)
     {
         if (input.Count() != 3) throw new Exception("Expecting a chunk of size 3.");
 
         var allInts = input.SelectMany(l => l.Split(' ', StringSplitOptions.RemoveEmptyEntries)).Select(int.Parse).ToArray();
-        return new[] { 0, 1, 2 }.Select(i => new int[] { allInts[i], allInts[i + 3], allInts[i + 6] });
+        return chunkIndices.Select(i => new int[] { allInts[i], allInts[i + 3], allInts[i + 6] });
     }
 }

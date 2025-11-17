@@ -1,5 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2015;
 

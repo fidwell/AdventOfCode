@@ -28,7 +28,7 @@ public partial class Puzzle04Solver : PuzzleSolver
             Checksum = match.Groups[4].Value;
         }
 
-        public bool IsReal
+        public readonly bool IsReal
         {
             get
             {
@@ -43,7 +43,7 @@ public partial class Puzzle04Solver : PuzzleSolver
             }
         }
 
-        public bool IsNorthpoleObjectStorage
+        public readonly bool IsNorthpoleObjectStorage
         {
             get
             {

@@ -16,7 +16,7 @@ public class Puzzle05Solver : PuzzleSolver
             }
         }
 
-        return new string(stacks.Select(s => s.Pop()).ToArray());
+        return new string([.. stacks.Select(s => s.Pop())]);
     }
 
     public override string SolvePartTwo(string input)
@@ -36,7 +36,7 @@ public class Puzzle05Solver : PuzzleSolver
             }
         }
 
-        return new string(stacks.Select(s => s.Pop()).ToArray());
+        return new string([.. stacks.Select(s => s.Pop())]);
     }
 
     private static (List<Stack<char>>, IEnumerable<Move>) SetUp(string input)

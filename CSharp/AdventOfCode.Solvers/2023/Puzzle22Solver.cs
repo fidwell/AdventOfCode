@@ -73,11 +73,13 @@ public class Puzzle22Solver : PuzzleSolver
                 var thatBrick = bricks[j];
                 if (Supports(thisBrick, thatBrick))
                 {
-                    if (!edgeDictionary.ContainsKey(thisBrick.Id))
+                    if (!edgeDictionary.TryGetValue(thisBrick.Id, out List<int>? value))
                     {
-                        edgeDictionary.Add(thisBrick.Id, []);
+                        value = [];
+                        edgeDictionary.Add(thisBrick.Id, value);
                     }
-                    edgeDictionary[thisBrick.Id].Add(thatBrick.Id);
+
+                    value.Add(thatBrick.Id);
                 }
             }
         }
@@ -105,7 +107,7 @@ public class Puzzle22Solver : PuzzleSolver
             var portions = input.Split('~').Select(p => new Point3d(p)).OrderBy(p => p.Z).ToList();
             Point1 = portions[0];
             Point2 = portions[1];
-            AllCubes = GetAllPoints().ToList();
+            AllCubes = [.. GetAllPoints()];
         }
 
         public char IdChar => (char)('A' + Id);
@@ -114,7 +116,7 @@ public class Puzzle22Solver : PuzzleSolver
         {
             Point1.Z -= amount;
             Point2.Z -= amount;
-            AllCubes = GetAllPoints().ToList();
+            AllCubes = [.. GetAllPoints()];
         }
 
         private IEnumerable<Point3d> GetAllPoints()
@@ -208,10 +210,10 @@ public class Puzzle22Solver : PuzzleSolver
         {
             _nodesStillVisible.Add(v);
 
-            if (!g.ContainsKey(v))
+            if (!g.TryGetValue(v, out List<int>? value))
                 return;
 
-            foreach (var w in g[v])
+            foreach (var w in value)
             {
                 if (!_nodesStillVisible.Contains(w))
                 {

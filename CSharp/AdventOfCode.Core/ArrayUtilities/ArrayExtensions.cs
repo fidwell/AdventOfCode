@@ -20,7 +20,7 @@ public static class ArrayExtensions
         {
             yield return array.Take(emptyIndex).ToArray();
 
-            foreach (var subArray in Chunk(array.Skip(emptyIndex + 1).ToArray()))
+            foreach (var subArray in Chunk([.. array.Skip(emptyIndex + 1)]))
             {
                 yield return subArray;
             }

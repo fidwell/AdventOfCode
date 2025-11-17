@@ -64,7 +64,7 @@ public class CharacterMatrix
         string.Join(
             Environment.NewLine,
             Enumerable.Range(0, Height).Select(y =>
-                new string(Enumerable.Range(0, Width).Select(x => _data[x, y]).ToArray())));
+                new string([.. Enumerable.Range(0, Width).Select(x => _data[x, y])])));
 
     /// <summary>
     /// Returns the single character value at a given coordinate.
@@ -107,7 +107,7 @@ public class CharacterMatrix
     public string StringAt(Coord start, int length)
     {
         var row = RowAt(start.Item2);
-        return new string(Enumerable.Range(start.Item1, length).Select(i => row[i]).ToArray());
+        return new string([.. Enumerable.Range(start.Item1, length).Select(i => row[i])]);
     }
 
     /// <summary>
@@ -158,9 +158,7 @@ public class CharacterMatrix
     /// <param name="x">The row index.</param>
     /// <returns>The string value of this row.</returns>
     public string RowAt(int y) =>
-        new(Enumerable.Range(0, Width)
-            .Select(x => _data[x, y])
-            .ToArray());
+        new([.. Enumerable.Range(0, Width).Select(x => _data[x, y])]);
 
     /// <summary>
     /// Get a string representing the characters in the given column.
@@ -168,9 +166,7 @@ public class CharacterMatrix
     /// <param name="y">The column index.</param>
     /// <returns>The string value of this column.</returns>
     public string ColumnAt(int x) =>
-        new(Enumerable.Range(0, Height)
-            .Select(y => _data[x, y])
-            .ToArray());
+        new([.. Enumerable.Range(0, Height).Select(y => _data[x, y])]);
 
     /// <summary>
     /// Replaces the character value at the given index.

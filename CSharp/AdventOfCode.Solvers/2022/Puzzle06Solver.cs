@@ -1,6 +1,4 @@
-﻿using AdventOfCode.Solvers;
-
-namespace AdventOfCode.Solvers._2022;
+﻿namespace AdventOfCode.Solvers._2022;
 
 public class Puzzle06Solver : PuzzleSolver
 {

@@ -14,14 +14,14 @@ public class Puzzle02Solver() : PuzzleSolver
 
     public override string SolvePartOne(string input) =>
         input.SplitByNewline()
-            .Select(g => g.Substring(g.IndexOf(":") + 2))
+            .Select(g => g[(g.IndexOf(':') + 2)..])
             .Select((g, ix) => WasGroupPossible(g) ? (ix + 1) : 0)
             .Sum()
             .ToString();
 
     public override string SolvePartTwo(string input) =>
         input.SplitByNewline()
-            .Select(g => g.Substring(g.IndexOf(":") + 2))
+            .Select(g => g[(g.IndexOf(':') + 2)..])
             .Select(SetPower)
             .Sum()
             .ToString();

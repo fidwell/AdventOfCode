@@ -51,7 +51,7 @@ public class Puzzle18Solver : PuzzleSolver
         var size = isExample ? 7 : 71;
         var memory = new bool[size, size];
 
-        var coordCount = maxCoords.HasValue ? maxCoords.Value : (isExample ? 12 : 1024);
+        var coordCount = maxCoords ?? (isExample ? 12 : 1024);
         foreach (var coord in coords.Take(coordCount))
         {
             memory[coord.Item1, coord.Item2] = true;
@@ -60,11 +60,11 @@ public class Puzzle18Solver : PuzzleSolver
     }
 
     private static List<(int, int)> ParseCoords(string input) =>
-        input.SplitByNewline().Select(l =>
+        [.. input.SplitByNewline().Select(l =>
         {
             var matches = Regexes.NonNegativeInteger().Matches(l).Select(m => int.Parse(m.Value)).ToArray();
             return (matches[0], matches[1]);
-        }).ToList();
+        })];
 
     private static List<(int, int)> Solve(bool[,] maze)
     {
