@@ -60,7 +60,15 @@ public class SolutionVerifier2016() : SolutionVerifier(2016)
     [DataTestMethod, Timeout(Timeout)]
     [DataRow(1, true, "6", DisplayName = "2016.08.1-example")]
     [DataRow(1, false, "116", DisplayName = "2016.08.1-problem")]
-    [DataRow(2, false, "See console output", DisplayName = "2016.08.2-problem")]
+    [DataRow(2, false, "UPOJFLBCEZ", DisplayName = "2016.08.2-problem")]
     public void Solve_2016_08(int part, bool useExample, string expected) =>
         Solve(new Puzzle08Solver(), 8, part, useExample, expected);
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, true, "18", DisplayName = "2016.09.1-example")]
+    [DataRow(1, false, "183269", DisplayName = "2016.09.1-problem")]
+    [DataRow(2, true, "241920", DisplayName = "2016.09.2-example")]
+    [DataRow(2, false, "11317278863", DisplayName = "2016.09.2-problem")]
+    public void Solve_2016_09(int part, bool useExample, string expected) =>
+        Solve(new Puzzle09Solver(), 9, part, useExample, expected);
 }

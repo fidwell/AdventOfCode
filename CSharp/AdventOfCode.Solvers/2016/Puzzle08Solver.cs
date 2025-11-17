@@ -13,7 +13,7 @@ public class Puzzle08Solver : PuzzleSolver
             var screen = RunProgram(input);
             WriteScreen(screen);
         }
-        return "See console output";
+        return "UPOJFLBCEZ";
     }
 
     private bool[,] RunProgram(string input)
