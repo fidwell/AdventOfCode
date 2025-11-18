@@ -196,42 +196,24 @@ internal static class Benchmarker
         Console.ForegroundColor = ConsoleColor.Gray;
     }
 
-    private static string ElapsedTimeString(TimeSpan duration)
+    private static string ElapsedTimeString(TimeSpan duration) =>
+        duration.TotalMilliseconds < 1
+            ? $"{duration.TotalMicroseconds:N1} μs"
+            : duration.TotalSeconds < 1
+                ? $"{duration.TotalMilliseconds:N1} ms"
+                : $"{duration.TotalSeconds:N1} s ";
+
+    private static ConsoleColor TimeColor(TimeSpan duration) => duration switch
     {
-        if (duration.TotalMilliseconds < 1)
-            return $"{duration.TotalMicroseconds:N1} μs";
-
-        if (duration.TotalSeconds < 1)
-            return $"{duration.TotalMilliseconds:N1} ms";
-
-        return $"{duration.TotalSeconds:N1} s ";
-    }
-
-    private static ConsoleColor TimeColor(TimeSpan duration)
-    {
-        if (duration.TotalSeconds > 10)
-            return ConsoleColor.DarkRed;
-
-        if (duration.TotalSeconds > 5)
-            return ConsoleColor.Red;
-
-        if (duration.TotalSeconds > 1)
-            return ConsoleColor.DarkYellow;
-
-        if (duration.TotalMilliseconds > 500)
-            return ConsoleColor.Yellow;
-
-        if (duration.TotalMilliseconds > 250)
-            return ConsoleColor.Green;
-
-        if (duration.TotalMilliseconds > 1)
-            return ConsoleColor.DarkGreen;
-
-        if (duration.TotalMicroseconds > 500)
-            return ConsoleColor.Blue;
-
-        return ConsoleColor.DarkBlue;
-    }
+        _ when duration.TotalSeconds > 10 => ConsoleColor.DarkRed,
+        _ when duration.TotalSeconds > 5 => ConsoleColor.Red,
+        _ when duration.TotalSeconds > 1 => ConsoleColor.DarkYellow,
+        _ when duration.TotalMilliseconds > 500 => ConsoleColor.Yellow,
+        _ when duration.TotalMilliseconds > 250 => ConsoleColor.Green,
+        _ when duration.TotalMilliseconds > 1 => ConsoleColor.DarkGreen,
+        _ when duration.TotalMicroseconds > 500 => ConsoleColor.Blue,
+        _ => ConsoleColor.DarkBlue
+    };
 
     private record Aggregate(int Day, int Part, int Count, TimeSpan Mean, TimeSpan Mode, TimeSpan Min, TimeSpan Max);
 }
