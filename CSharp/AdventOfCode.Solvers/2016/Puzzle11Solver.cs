@@ -10,100 +10,108 @@ public partial class Puzzle11Solver : PuzzleSolver
 
     private static string Solve(string input, bool isPartTwo)
     {
-        var initialState = GetInitialState(input);
-
-        if (isPartTwo)
-        {
-            initialState.Floors[0].Add("gel");
-            initialState.Floors[0].Add("mel");
-            initialState.Floors[0].Add("gdi");
-            initialState.Floors[0].Add("mdi");
-        }
-
+        var initialState = GetInitialState(input, isPartTwo);
         var queue = new PriorityQueue<PuzzleState, int>();
         queue.Enqueue(initialState, 0);
 
-        var visitedStates = new HashSet<string>();
+        var visitedStates = new HashSet<int>();
 
         while (queue.Count > 0)
         {
             var thisState = queue.Dequeue();
 
             if (thisState.IsFinalState())
-                return $"{thisState.StepsFromStart} --- {thisState.Hash}";
+                return thisState.StepsFromStart.ToString();
 
             visitedStates.Add(thisState.Hash);
 
             var nextStates = thisState.GetNextStates();
             var validStates = nextStates.Where(s => s.IsValidState());
             var unvisitedStates = validStates.Where(s => !visitedStates.Contains(s.Hash));
-            var closerStates = unvisitedStates.Where(s => s.StepsFromStart < 73);
-            foreach (var nextState in closerStates)
+            foreach (var nextState in unvisitedStates)
             {
-                // Need faster priority score algorithm
-                queue.Enqueue(nextState, nextState.Score * nextState.StepsFromStart);
+                queue.Enqueue(nextState, nextState.Score);
             }
         }
 
         throw new Exception("Couldn't find end state");
     }
 
-    private static PuzzleState GetInitialState(string input)
+    private static PuzzleState GetInitialState(string input, bool isPartTwo)
     {
-        var state = new PuzzleState(0);
         var directions = input.SplitByNewline();
-        for (var f = 0; f < directions.Length; f++)
+
+        var microchips = directions.SelectMany((d, i) =>
         {
-            var generators = GeneratorDefinition().Matches(directions[f])
-                .Select(g => $"g{g.Groups[1].Value[..2]}");
-            var microchips = MicrochipDefinition().Matches(directions[f])
-                .Select(g => $"m{g.Groups[1].Value[..2]}");
-            List<string> items = [.. generators, .. microchips];
-            items.Sort();
-            state.Floors[f].AddRange(items);
+            var regexMatches = MicrochipDefinition().Matches(d)
+                .Select(g => g.Groups[1].Value);
+            return regexMatches.Select(r => (name: r, floor: i));
+        });
+
+        var generators = directions.SelectMany((d, i) =>
+        {
+            var regexMatches = GeneratorDefinition().Matches(d)
+                .Select(g => g.Groups[1].Value);
+            return regexMatches.Select(r => (name: r, floor: i));
+        });
+
+        Pair[] pairs = [.. microchips.Select(m =>
+        {
+            var (_, floor) = generators.Single(g => g.name == m.name);
+            return new Pair(m.floor, floor);
+        })];
+
+        if (isPartTwo)
+        {
+            pairs = [.. pairs, new(0, 0), new(0, 0)];
         }
-        return state;
+
+        return new PuzzleState(0, 0, pairs);
     }
 
-    private class PuzzleState(int stepsFromStart)
+    private class PuzzleState(int stepsFromStart, int elevator, Pair[] pairs)
     {
-        public int StepsFromStart = stepsFromStart;
-        public int Elevator = 0;
-        public List<List<string>> Floors = [[], [], [], []];
+        public readonly int StepsFromStart = stepsFromStart;
+        public readonly int Elevator = elevator;
+        public readonly Pair[] Pairs = pairs;
+
+        private int? _hash;
+        public int Hash => _hash ??= ComputeHash(Elevator, Pairs);
+
+        private static int ComputeHash(int elevator, Pair[] pairs)
+        {
+            var sorted = pairs
+                .Select(p => (Math.Min(p.Microchip, p.Generator), Math.Max(p.Microchip, p.Generator)))
+                .OrderBy(p => p.Item1)
+                .ThenBy(p => p.Item2);
+            return HashCode.Combine(
+                elevator,
+                sorted.Aggregate(0, (acc, p) => HashCode.Combine(acc, p.Item1, p.Item2)));
+        }
+
+        public int Score => StepsFromStart - Elevator - Pairs.Sum(p => p.Microchip + p.Generator);
+
+        public bool IsFinalState() => Pairs.All(p => p.Microchip == 3 && p.Generator == 3);
 
         public bool IsValidState()
         {
-            foreach (var floor in Floors)
+            foreach (var pair in Pairs)
             {
-                var microchipsHere = floor.Where(f => f.StartsWith('m'));
-                var generatorsHere = floor.Where(f => f.StartsWith('g'));
-                if (generatorsHere.Any() &&
-                    microchipsHere.Any(m => generatorsHere.All(g => g[1..] != m[1..])))
+                if (pair.Microchip == pair.Generator)
+                    continue;
+
+                if (Pairs.Any(p => p.Generator == pair.Microchip))
                     return false;
             }
+
             return true;
         }
 
-        public bool IsFinalState() =>
-            Floors[0].Count == 0 &&
-            Floors[1].Count == 0 &&
-            Floors[2].Count == 0;
-
-        public int Score => // Lower is better
-            Floors[0].Count * 64 +
-            Floors[1].Count * 16 +
-            Floors[2].Count * 4 +
-            Floors[3].Count * 1;
-
         public IEnumerable<PuzzleState> GetNextStates()
         {
-            // If there are no items, the elevator cannot move
-            if (Floors[Elevator].Count == 0)
-                throw new Exception("Invalid state");
-
-            if (AreItemsBelowElevator())
+            if (Pairs.Any(p => p.Generator < Elevator || p.Microchip < Elevator))
             {
-                foreach (var nextState in StatesWhenElevatorMoves(this, Elevator, Elevator - 1))
+                foreach (var nextState in StatesWhenElevatorMoves(this, Elevator - 1))
                 {
                     yield return nextState;
                 }
@@ -111,86 +119,72 @@ public partial class Puzzle11Solver : PuzzleSolver
 
             if (Elevator < 3)
             {
-                foreach (var nextState in StatesWhenElevatorMoves(this, Elevator, Elevator + 1))
+                foreach (var nextState in StatesWhenElevatorMoves(this, Elevator + 1))
                 {
                     yield return nextState;
                 }
             }
-
-            yield break;
         }
 
-        private bool AreItemsBelowElevator()
+        private static IEnumerable<PuzzleState> StatesWhenElevatorMoves(PuzzleState state, int to)
         {
-            if (Elevator == 0)
-                return false;
+            // Yuck.
 
-            for (int i = 0; i < Elevator; i++)
-            {
-                if (Floors[i].Count > 0)
-                    return true;
-            }
-            return false;
-        }
+            // Find all combinations of one or two items
+            // that are on the same floor as the elevator.
+            var matches = new List<(int index, string property)>();
 
-        private static IEnumerable<PuzzleState> StatesWhenElevatorMoves(PuzzleState state, int from, int to)
-        {
-            // the elevator takes 1 thing
-            foreach (var item in state.Floors[from])
+            for (var i = 0; i < state.Pairs.Length; i++)
             {
-                var floorsCopy = Copy(state.Floors);
-                floorsCopy[from].Remove(item);
-                floorsCopy[to].Add(item);
-                floorsCopy[to].Sort();
-                yield return new PuzzleState(state.StepsFromStart + 1)
-                {
-                    Elevator = to,
-                    Floors = floorsCopy
-                };
+                if (state.Pairs[i].Generator == state.Elevator)
+                    matches.Add((i, "g"));
+                if (state.Pairs[i].Microchip == state.Elevator)
+                    matches.Add((i, "m"));
             }
 
-            // the elevator takes 2 things in any combination
-            if (state.Floors[from].Count > 1)
+            // Return any new states where we move just one thing.
+            foreach (var (index, property) in matches)
             {
-                for (var i = 0; i < state.Floors[from].Count - 1; i++)
+                var newPairs = state.Pairs.Select((p, i) =>
+                    i == index
+                        ? (property == "m" ? new Pair(to, p.Generator) : new Pair(p.Microchip, to))
+                        : new Pair(p.Microchip, p.Generator)
+                ).ToArray();
+
+                yield return new PuzzleState(state.StepsFromStart + 1, to, newPairs);
+            }
+
+            // Return any new states where we move two things.
+            for (var i = 0; i < matches.Count - 1; i++)
+            {
+                for (var j = i + 1; j < matches.Count; j++)
                 {
-                    var item1 = state.Floors[from][i];
-                    for (var j = i + 1; j < state.Floors[from].Count; j++)
+                    var (index1, prop1) = matches[i];
+                    var (index2, prop2) = matches[j];
+
+                    var newPairs = state.Pairs.Select((p, idx) =>
                     {
-                        var item2 = state.Floors[from][j];
+                        // Moving same items in a single pair
+                        if (idx == index1 && idx == index2)
+                            return new Pair(to, to);
 
-                        var floorsCopy = Copy(state.Floors);
-                        floorsCopy[from].Remove(item1);
-                        floorsCopy[from].Remove(item2);
-                        floorsCopy[to].Add(item1);
-                        floorsCopy[to].Add(item2);
-                        floorsCopy[to].Sort();
-                        yield return new PuzzleState(state.StepsFromStart + 1)
-                        {
-                            Elevator = to,
-                            Floors = floorsCopy
-                        };
-                    }
+                        // Moving items from different pairs
+                        if (idx == index1)
+                            return prop1 == "m" ? new Pair(to, p.Generator) : new Pair(p.Microchip, to);
+                        if (idx == index2)
+                            return prop2 == "m" ? new Pair(to, p.Generator) : new Pair(p.Microchip, to);
+
+                        // Not moving anything in other pairs
+                        return new Pair(p.Microchip, p.Generator);
+                    }).ToArray();
+
+                    yield return new PuzzleState(state.StepsFromStart + 1, to, newPairs);
                 }
             }
         }
-
-        public string Hash => $"{Elevator}|{string.Join("|", Floors.Select(f => string.Join(",", f)))}";
     }
 
-    private static List<List<string>> Copy(List<List<string>> input)
-    {
-        var result = new List<List<string>>();
-        foreach (var list in input)
-        {
-            //var sublist = new List<string>();
-            ////  just use  tolist() instead
-            //foreach (var item in list)
-            //    sublist.Add(item);
-            result.Add(list.ToList());
-        }
-        return result;
-    }
+    private record Pair(int Microchip, int Generator);
 
     [GeneratedRegex(@" (\w+) generator")]
     private static partial Regex GeneratorDefinition();
