@@ -8,9 +8,45 @@ public class Puzzle13Solver : PuzzleSolver
     {
         var number = int.Parse(input);
         var isExample = number == 10;
-
-        var start = (1, 1);
         var target = isExample ? (7, 4) : (31, 39);
+        var path = GetPathTo(target, number, int.MaxValue);
+        return (path.Count - 1).ToString();
+    }
+
+    public override string SolvePartTwo(string input)
+    {
+        var number = int.Parse(input);
+        const int max = 50;
+
+        var reachableSpaces = new HashSet<Coord>();
+
+        for (var x = 0; x < max; x++)
+        {
+            for (var y = 0; y < max; y++)
+            {
+                if (!IsOpenSpace((x, y), number))
+                    continue;
+
+                if (reachableSpaces.Contains((x, y)))
+                    continue;
+
+                var path = GetPathTo((x, y), number, max);
+                if (path.Count <= max + 1)
+                {
+                    foreach (var c in path)
+                    {
+                        reachableSpaces.Add((x, y));
+                    }
+                }
+            }
+        }
+
+        return reachableSpaces.Count.ToString();
+    }
+
+    private List<Coord> GetPathTo(Coord destination, int number, int max)
+    {
+        var start = (1, 1);
 
         var queue = new PriorityQueue<List<Coord>, int>();
         queue.Enqueue([start], 0);
@@ -20,10 +56,13 @@ public class Puzzle13Solver : PuzzleSolver
             var testPath = queue.Dequeue();
             var currentCoord = testPath.Last();
 
-            if (currentCoord == target)
+            if (currentCoord == destination)
             {
-                return (testPath.Count - 1).ToString();
+                return testPath;
             }
+
+            if (testPath.Count > max)
+                continue;
 
             var neighbors = NeighborsOf(currentCoord);
             var unvisitedNeighbors = neighbors.Where(c => !testPath.Contains(c));
@@ -34,12 +73,7 @@ public class Puzzle13Solver : PuzzleSolver
             }
         }
 
-        return "No solution found";
-    }
-
-    public override string SolvePartTwo(string input)
-    {
-        throw new NotImplementedException();
+        return [];
     }
 
     private static IEnumerable<Coord> NeighborsOf(Coord c)
