@@ -86,4 +86,11 @@ public class SolutionVerifier2016() : SolutionVerifier(2016)
     [DataRow(2, false, "57", DisplayName = "2016.11.2-problem")]
     public void Solve_2016_11(int part, bool useExample, string expected) =>
         Solve(new Puzzle11Solver(), 11, part, useExample, expected);
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, true, "42", DisplayName = "2016.12.1-example")]
+    [DataRow(1, false, "318117", DisplayName = "2016.12.1-problem")]
+    [DataRow(2, false, "9227771", DisplayName = "2016.12.2-problem")]
+    public void Solve_2016_12(int part, bool useExample, string expected) =>
+        Solve(new Puzzle12Solver(), 12, part, useExample, expected);
 }
