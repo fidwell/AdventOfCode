@@ -9,16 +9,16 @@ public class Puzzle01Solver : PuzzleSolver
 
     public static int Solve(string input, bool countPasses)
     {
-        var directions = input.SplitByNewline();
+        var amounts = input
+            .Replace("L", "-")
+            .Replace("R", "")
+            .SplitByNewline()
+            .Select(int.Parse);
         var zeros = 0;
         var dial = 50;
-        foreach (var direction in directions)
+        foreach (var amount in amounts)
         {
-            var orientation = direction[0];
-            var isGoingUp = orientation == 'R';
-            var amount = int.Parse(direction[1..]) *
-                (isGoingUp ? 1 : -1);
-
+            var isGoingUp = amount > 0;
             var passes = Math.Abs(amount) / 100;
             var effectiveAmount = amount % 100;
 
@@ -30,12 +30,12 @@ public class Puzzle01Solver : PuzzleSolver
             if (isGoingUp && dial == 100)
                 dial = 0;
 
-            while (dial > 99)
+            if (dial > 99)
             {
                 dial -= 100;
                 passes++;
             }
-            while (dial < 0)
+            else if (dial < 0)
             {
                 dial += 100;
                 passes++;
