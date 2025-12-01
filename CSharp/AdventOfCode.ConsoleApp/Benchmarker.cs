@@ -101,13 +101,13 @@ internal static class Benchmarker
         var averageMax = new TimeSpan((long)filtered.Average(a => a.Max.Ticks));
 
         Console.Write($"│ {header} │ ");
-        WriteTime(averageMean);
+        ConsoleWriter.WriteTime(averageMean);
         Console.Write(" │ ");
-        WriteTime(averageMode);
+        ConsoleWriter.WriteTime(averageMode);
         Console.Write(" │ ");
-        WriteTime(averageMin);
+        ConsoleWriter.WriteTime(averageMin);
         Console.Write(" │ ");
-        WriteTime(averageMax);
+        ConsoleWriter.WriteTime(averageMax);
         Console.WriteLine(" │");
     }
 
@@ -119,13 +119,13 @@ internal static class Benchmarker
         var part1TotalMax = new TimeSpan(aggregates.Where(matcher).Sum(a => a.Max.Ticks));
 
         Console.Write($"│ {header} │ ");
-        WriteTime(part1TotalMean, false);
+        ConsoleWriter.WriteTime(part1TotalMean, false);
         Console.Write(" │ ");
-        WriteTime(part1TotalMode, false);
+        ConsoleWriter.WriteTime(part1TotalMode, false);
         Console.Write(" │ ");
-        WriteTime(part1TotalMin, false);
+        ConsoleWriter.WriteTime(part1TotalMin, false);
         Console.Write(" │ ");
-        WriteTime(part1TotalMax, false);
+        ConsoleWriter.WriteTime(part1TotalMax, false);
         Console.WriteLine(" │");
     }
 
@@ -175,45 +175,15 @@ internal static class Benchmarker
         }
 
         Console.Write($"│  {day,2} │    {part} │ ");
-        WriteTime(aggregate.Mean);
+        ConsoleWriter.WriteTime(aggregate.Mean);
         Console.Write(" │ ");
-        WriteTime(aggregate.Mode);
+        ConsoleWriter.WriteTime(aggregate.Mode);
         Console.Write(" │ ");
-        WriteTime(aggregate.Min);
+        ConsoleWriter.WriteTime(aggregate.Min);
         Console.Write(" │ ");
-        WriteTime(aggregate.Max);
+        ConsoleWriter.WriteTime(aggregate.Max);
         Console.WriteLine(" │");
     }
-
-    private static void WriteTime(TimeSpan duration, bool useColor = true)
-    {
-        if (useColor)
-        {
-            Console.ForegroundColor = TimeColor(duration);
-        }
-
-        Console.Write(ElapsedTimeString(duration).PadLeft(11, ' '));
-        Console.ForegroundColor = ConsoleColor.Gray;
-    }
-
-    private static string ElapsedTimeString(TimeSpan duration) =>
-        duration.TotalMilliseconds < 1
-            ? $"{duration.TotalMicroseconds:N1} μs"
-            : duration.TotalSeconds < 1
-                ? $"{duration.TotalMilliseconds:N1} ms"
-                : $"{duration.TotalSeconds:N1} s ";
-
-    private static ConsoleColor TimeColor(TimeSpan duration) => duration switch
-    {
-        _ when duration.TotalSeconds > 10 => ConsoleColor.DarkRed,
-        _ when duration.TotalSeconds > 5 => ConsoleColor.Red,
-        _ when duration.TotalSeconds > 1 => ConsoleColor.DarkYellow,
-        _ when duration.TotalMilliseconds > 500 => ConsoleColor.Yellow,
-        _ when duration.TotalMilliseconds > 250 => ConsoleColor.Green,
-        _ when duration.TotalMilliseconds > 1 => ConsoleColor.DarkGreen,
-        _ when duration.TotalMicroseconds > 500 => ConsoleColor.Blue,
-        _ => ConsoleColor.DarkBlue
-    };
 
     private record Aggregate(int Day, int Part, int Count, TimeSpan Mean, TimeSpan Mode, TimeSpan Min, TimeSpan Max);
 }

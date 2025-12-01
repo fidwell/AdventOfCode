@@ -1,4 +1,5 @@
-﻿using AdventOfCode.ConsoleApp;
+﻿using System.Diagnostics;
+using AdventOfCode.ConsoleApp;
 using AdventOfCode.Core.Input;
 using AdventOfCode.Solvers;
 
@@ -64,13 +65,23 @@ internal class Program
                 break;
             case "run":
             case "solve":
-                if (!year.HasValue || !day.HasValue)
+                if (!year.HasValue)
                 {
-                    ConsoleWriter.Error("Year and day not specified.");
+                    ConsoleWriter.Error("Year not specified.");
                     return;
                 }
 
-                await RunSolver(year.Value, day.Value, part, cliArgs.ContainsKey("example"), cliArgs.ContainsKey("verbose"), session);
+                if (day.HasValue)
+                {
+                    await RunSolver(year.Value, day.Value, part, cliArgs.ContainsKey("example"), cliArgs.ContainsKey("verbose"), session);
+                }
+                else
+                {
+                    for (var d = 1; d < PuzzlesPerYear(year.Value); d++)
+                    {
+                        await RunSolver(year.Value, d, part, cliArgs.ContainsKey("example"), cliArgs.ContainsKey("verbose"), session);
+                    }
+                }
                 break;
             default:
                 ConsoleWriter.Error("Invalid program argument.");
@@ -121,12 +132,15 @@ internal class Program
         {
             try
             {
-                ConsoleWriter.Info($"Solving part {part}...");
+                ConsoleWriter.Info($"Solving day {day} part {part}...");
                 var input = await GetData(year, day, part.Value, useExample, session);
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
                 var result = part.Value == 1
                     ? solver.SolvePartOne(input)
                     : solver.SolvePartTwo(input);
-                ConsoleWriter.Answer(part.Value, result);
+                stopwatch.Stop();
+                ConsoleWriter.Answer(part.Value, result, stopwatch.Elapsed);
             }
             catch (Exception e)
             {
@@ -137,12 +151,21 @@ internal class Program
         {
             try
             {
-                ConsoleWriter.Info($"Solving part 1...");
+                var stopwatch = new Stopwatch();
+
+                ConsoleWriter.Info($"Solving day {day} part 1...");
                 var input1 = await GetData(year, day, 1, useExample, session);
-                ConsoleWriter.Answer(1, solver.SolvePartOne(input1));
-                ConsoleWriter.Info($"Solving part 2...");
+                stopwatch.Start();
+                var answer1 = solver.SolvePartOne(input1);
+                stopwatch.Stop();
+                ConsoleWriter.Answer(1, answer1, stopwatch.Elapsed);
+
+                ConsoleWriter.Info($"Solving day {day} part 2...");
                 var input2 = await GetData(year, day, 2, useExample, session);
-                ConsoleWriter.Answer(2, solver.SolvePartTwo(input2));
+                stopwatch.Restart();
+                var answer2 = solver.SolvePartTwo(input2);
+                stopwatch.Stop();
+                ConsoleWriter.Answer(2, answer2, stopwatch.Elapsed);
             }
             catch (Exception e)
             {
@@ -156,7 +179,7 @@ internal class Program
         ConsoleWriter.Info("Downloading today's input...");
 
         var today = DateTime.Now;
-        if (today.Month != 12 || !IsValidDay(today.Day))
+        if (today.Month != 12 || !IsValidDay(today.Year, today.Day))
         {
             ConsoleWriter.Error("Advent of Code is not active today.");
             return;
@@ -173,7 +196,7 @@ internal class Program
             return;
         }
 
-        if (!day.HasValue || !IsValidDay(day.Value))
+        if (!day.HasValue || !IsValidDay(year.Value, day.Value))
         {
             ConsoleWriter.Error($"Invalid day: {day}");
             return;
@@ -185,7 +208,7 @@ internal class Program
     private static async Task DownloadYear(string session, int? year)
     {
         ConsoleWriter.Info($"Downloading all missing inputs for {year}...");
-        var maxDay = year == DateTime.Now.Year ? DateTime.Now.Day : 25;
+        var maxDay = year == DateTime.Now.Year ? DateTime.Now.Day : PuzzlesPerYear(DateTime.Now.Year);
         for (var day = 1; day <= maxDay; day++)
         {
             await DownloadDay(session, year, day);
@@ -233,5 +256,8 @@ internal class Program
     }
 
     private static bool IsValidYear(int year) => year >= 2015 && year <= DateTime.Now.Year;
-    private static bool IsValidDay(int day) => day >= 1 && day <= 25;
+
+    private static int PuzzlesPerYear(int year) => year < 2025 ? 25 : 12;
+
+    private static bool IsValidDay(int year, int day) => day >= 1 && day <= PuzzlesPerYear(year);
 }
