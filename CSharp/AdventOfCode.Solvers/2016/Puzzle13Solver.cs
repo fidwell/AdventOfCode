@@ -11,15 +11,15 @@ public class Puzzle13Solver : PuzzleSolver
         var isExample = number == 10;
         var target = isExample ? (7, 4) : (31, 39);
 
-        var memoizer = new Memoizer<Coord, bool>(c => IsOpenSpace(c, number));
-        var path = GetPathTo(target, int.MaxValue, memoizer);
+        var isOpenSpace = Memoizer.Create<Coord, bool>(c => IsOpenSpace(c, number));
+        var path = GetPathTo(target, int.MaxValue, isOpenSpace);
         return (path.Count - 1).ToString();
     }
 
     public override string SolvePartTwo(string input)
     {
         var number = int.Parse(input);
-        var memoizer = new Memoizer<Coord, bool>(c => IsOpenSpace(c, number));
+        var isOpenSpace = Memoizer.Create<Coord, bool>(c => IsOpenSpace(c, number));
 
         const int max = 50;
 
@@ -35,7 +35,7 @@ public class Puzzle13Solver : PuzzleSolver
                 if (reachableSpaces.Contains((x, y)))
                     continue;
 
-                var path = GetPathTo((x, y), max, memoizer);
+                var path = GetPathTo((x, y), max, isOpenSpace);
                 if (path.Count <= max + 1)
                 {
                     foreach (var c in path)
@@ -49,7 +49,7 @@ public class Puzzle13Solver : PuzzleSolver
         return reachableSpaces.Count.ToString();
     }
 
-    private static List<Coord> GetPathTo(Coord destination, int max, Memoizer<Coord, bool> memoizer)
+    private static List<Coord> GetPathTo(Coord destination, int max, Func<Coord, bool> isOpenSpace)
     {
         var start = (1, 1);
 
@@ -71,7 +71,7 @@ public class Puzzle13Solver : PuzzleSolver
 
             var neighbors = NeighborsOf(currentCoord);
             var unvisitedNeighbors = neighbors.Where(c => !testPath.Contains(c));
-            var openNeighbors = unvisitedNeighbors.Where(memoizer.Get);
+            var openNeighbors = unvisitedNeighbors.Where(c => isOpenSpace(c));
             foreach (var neighbor in openNeighbors)
             {
                 queue.Enqueue([.. testPath, neighbor], testPath.Count + 1);
