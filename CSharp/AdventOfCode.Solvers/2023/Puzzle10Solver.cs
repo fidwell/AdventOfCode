@@ -67,29 +67,26 @@ public class Puzzle10Solver : PuzzleSolver
                 .Replace("FJ", "|")
                 .Length % 2 == 1;
 
-    private static ((int, int), Direction) Travel(CharacterMatrix data, (int, int) coordinate, Direction currentDirection)
+    private static ((int, int), Direction) Travel(CharacterMatrix data, (int, int) coordinate, Direction currentDirection) => data.CharAt(coordinate) switch
     {
-        return data.CharAt(coordinate) switch
-        {
-            '|' => currentDirection == Direction.Up
-                ? ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up)
-                : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
-            '-' => currentDirection == Direction.Right
-                ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
-                : ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left),
-            'F' => currentDirection == Direction.Up
-                ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
-                : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
-            '7' => currentDirection == Direction.Up
-                ? ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left)
-                : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
-            'J' => currentDirection == Direction.Down
-                ? ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left)
-                : ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up),
-            'L' => currentDirection == Direction.Down
-                ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
-                : ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up),
-            _ => throw new Exception("Didn't consider some case"),
-        };
-    }
+        '|' => currentDirection == Direction.Up
+            ? ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up)
+            : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
+        '-' => currentDirection == Direction.Right
+            ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
+            : ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left),
+        'F' => currentDirection == Direction.Up
+            ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
+            : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
+        '7' => currentDirection == Direction.Up
+            ? ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left)
+            : ((coordinate.Item1, coordinate.Item2 + 1), Direction.Down),
+        'J' => currentDirection == Direction.Down
+            ? ((coordinate.Item1 - 1, coordinate.Item2), Direction.Left)
+            : ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up),
+        'L' => currentDirection == Direction.Down
+            ? ((coordinate.Item1 + 1, coordinate.Item2), Direction.Right)
+            : ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up),
+        _ => throw new Exception("Didn't consider some case"),
+    };
 }

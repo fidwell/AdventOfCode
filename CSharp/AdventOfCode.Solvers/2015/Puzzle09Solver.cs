@@ -22,16 +22,14 @@ public partial class Puzzle09Solver : PuzzleSolver
      * Since the puzzle input only has 8 cities, finding all
      * the different route permutations and summing up their
      * distances (brute force) is more than efficient enough
-     * (even though e're double-counting!).
+     * (even though we're double-counting!).
      */
     private static IEnumerable<int> RouteDistances(List<Edge> edges, List<string> nodes) =>
         nodes.AllPermutations().Select(p => p.Zip(p.Skip(1), (a, b) =>
-        {
-            return edges.Single(e =>
+            edges.Single(e =>
                 e.From == a && e.To == b ||
                 e.From == b && e.To == a)
-            .Distance;
-        }).Sum());
+            .Distance).Sum());
 
     private static (List<Edge>, List<string>) BuildGraph(string input)
     {

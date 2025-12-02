@@ -132,10 +132,7 @@ public class Puzzle20Solver : PuzzleSolver
 
     private class Broadcaster(IEnumerable<string> outputs) : Module("broadcaster", outputs)
     {
-        public override IEnumerable<Pulse> ReceivePulse(Pulse pulse)
-        {
-            return SendPulse(pulse.IsHigh);
-        }
+        public override IEnumerable<Pulse> ReceivePulse(Pulse pulse) => SendPulse(pulse.IsHigh);
     }
 
     private class Conjunction(string name, IEnumerable<string> outputs)
