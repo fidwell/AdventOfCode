@@ -31,6 +31,30 @@ public static class StringExtensions
             .Split(["\n\n", "\r\n\r\n"], StringSplitOptions.None)
             .Select(c => c.SplitByNewline());
 
+    /// <summary>
+    /// Creates a string by repeating a smaller string several times.
+    /// </summary>
+    /// <param name="input">The string to repeat.</param>
+    /// <param name="count">The number of times to repeat the string.</param>
+    /// <returns>A long string consisting of repeated substrings.</returns>
+    public static string Repeat(this string input, int count)
+    {
+        var textAsSpan = input.AsSpan();
+        var span = new Span<char>(new char[textAsSpan.Length * count]);
+        for (var i = 0; i < count; i++)
+        {
+            textAsSpan.CopyTo(span.Slice(i * textAsSpan.Length, textAsSpan.Length));
+        }
+        return span.ToString();
+    }
+
+    /// <summary>
+    /// Creates a string by repeating a smaller string several times, with a separator between each.
+    /// </summary>
+    /// <param name="input">The string to repeat.</param>
+    /// <param name="count">The number of times to repeat the string.</param>
+    /// <param name="separator">A string to fit between each repeat.</param>
+    /// <returns>A long string consisting of separated repeated substrings.</returns>
     public static string Repeat(this string input, int count, string separator) =>
         string.Join(separator, Enumerable.Range(0, count).Select(i => input));
 

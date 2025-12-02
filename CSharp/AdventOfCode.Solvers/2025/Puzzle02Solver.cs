@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace AdventOfCode.Solvers._2025;
+﻿namespace AdventOfCode.Solvers._2025;
 
 public class Puzzle02Solver : PuzzleSolver
 {
@@ -16,8 +14,8 @@ public class Puzzle02Solver : PuzzleSolver
             var bounds = range.Split('-').Select(long.Parse).ToList();
             for (var id = bounds[0]; id <= bounds[1]; id++)
             {
-                if ((isPartOne && HasInvalidPatternPartOne(id))
-                    || HasInvalidPatternPartTwo(id))
+                if ((isPartOne && HasInvalidPatternPartOne(id)) ||
+                    (!isPartOne && HasInvalidPatternPartTwo(id)))
                 {
                     invalidIds.Add(id);
                 }
@@ -33,9 +31,14 @@ public class Puzzle02Solver : PuzzleSolver
         if (asString.Length % 2 == 1)
             return false;
 
-        var firstHalf = asString[..(asString.Length / 2)];
-        var secondHalf = asString[(asString.Length / 2)..];
-        return firstHalf.Equals(secondHalf);
+        var half = asString.Length / 2;
+        for (var i = 0; i < half; i++)
+        {
+            if (asString[i] != asString[i + half])
+                return false;
+        }
+
+        return true;
     }
 
     private static bool HasInvalidPatternPartTwo(long input)
@@ -47,23 +50,25 @@ public class Puzzle02Solver : PuzzleSolver
             if (asString.Length % chunkLength != 0)
                 continue;
 
-            var firstChunk = asString.Substring(0, chunkLength);
-            var repeats = asString.Length / chunkLength;
-            var comparison = Repeat(firstChunk, repeats);
-            if (comparison.Equals(asString))
+            if (HasInvalidPatternOfSize(asString, chunkLength))
                 return true;
         }
 
         return false;
     }
 
-    private static string Repeat(string input, int count)
+    private static bool HasInvalidPatternOfSize(string input, int chunkLength)
     {
-        var sb = new StringBuilder();
-        for (var i = 0; i < count; i++)
+        var chunkCount = input.Length / chunkLength;
+        for (var i = 0; i < chunkLength; i++)
         {
-            sb.Append(input);
+            for (var j = 0; j < chunkCount - 1; j++)
+            {
+                if (input[i] != input[i + chunkLength + j * chunkLength])
+                    return false;
+            }
         }
-        return sb.ToString();
+
+        return true;
     }
 }
