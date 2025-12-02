@@ -8,20 +8,28 @@ public class Puzzle02Solver : PuzzleSolver
     private static long Solve(string input, bool isPartOne)
     {
         var ranges = input.Trim().Split(',');
-        var invalidIds = new List<long>();
-        foreach (var range in ranges)
+        long sum = 0;
+
+        object lockObj = new();
+
+        Parallel.For(0, ranges.Length, (i, state) =>
         {
+            var range = ranges[i];
             var bounds = range.Split('-').Select(long.Parse).ToList();
             for (var id = bounds[0]; id <= bounds[1]; id++)
             {
                 if ((isPartOne && HasInvalidPatternPartOne(id)) ||
                     (!isPartOne && HasInvalidPatternPartTwo(id)))
                 {
-                    invalidIds.Add(id);
+                    lock (lockObj)
+                    {
+                        sum += id;
+                    }
                 }
             }
-        }
-        return invalidIds.Sum();
+        });
+
+        return sum;
     }
 
     private static bool HasInvalidPatternPartOne(long input)
