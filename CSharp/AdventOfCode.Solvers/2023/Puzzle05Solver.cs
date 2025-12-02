@@ -71,7 +71,7 @@ public class Puzzle05Solver : PuzzleSolver
             _mapRanges = mapRanges.Union(nonTransformingRanges).OrderBy(r => r.SourceRangeStart);
         }
 
-        public IEnumerable<RangeLong> TransformRanges(IEnumerable<RangeLong> input)
+        public List<RangeLong> TransformRanges(IEnumerable<RangeLong> input)
         {
             var results = new List<RangeLong>();
             foreach (var range in _mapRanges)

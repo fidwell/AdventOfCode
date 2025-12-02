@@ -61,7 +61,7 @@ public class RayTests
     {
         var ray1 = new Ray3d(new Point3d(ray1Px, ray1Py, ray1Pz), new Point3d(ray1Vx, ray1Vy, ray1Vz));
         var ray2 = new Ray3d(new Point3d(ray2Px, ray2Py, ray2Pz), new Point3d(ray2Vx, ray2Vy, ray2Vz));
-        var (collisionPoint, t) = ray1.Collision3d(ray2);
+        var (collisionPoint, _) = ray1.Collision3d(ray2);
         Assert.IsNull(collisionPoint);
     }
 }
