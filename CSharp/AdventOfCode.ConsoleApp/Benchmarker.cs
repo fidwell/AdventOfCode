@@ -135,7 +135,7 @@ internal static class Benchmarker
 
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        while (results.Count < 2 || (results.Count < 20 && stopwatch.Elapsed.TotalSeconds < 1))
+        while (results.Count < 2 || (results.Count < 50 && stopwatch.Elapsed.TotalSeconds < 5))
         {
             try
             {
