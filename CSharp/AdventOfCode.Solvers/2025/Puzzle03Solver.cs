@@ -9,14 +9,14 @@ public class Puzzle03Solver : PuzzleSolver
 
     private static long Solve(string input, int length) =>
         input.SplitByNewline()
-        .Sum(line => HighestValueIn([.. line.ToCharArray()], length));
+        .Sum(line => long.Parse(HighestValueIn([.. line.ToCharArray()], length)));
 
-    private static long HighestValueIn(char[] values, int resultLength)
+    private static char[] HighestValueIn(char[] values, int resultLength)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(resultLength, nameof(resultLength));
 
         if (resultLength == 1)
-            return values.Max() - '0';
+            return [values.Max()];
 
         char maxDigit = '\0';
         var maxDigitIndex = -1;
@@ -31,6 +31,6 @@ public class Puzzle03Solver : PuzzleSolver
 
         var subArray = values.Skip(maxDigitIndex + 1).ToArray();
         var bestFollowingValue = HighestValueIn(subArray, resultLength - 1);
-        return (long)((maxDigit - '0') * Math.Pow(10, resultLength - 1)) + bestFollowingValue;
+        return [maxDigit, .. bestFollowingValue];
     }
 }
