@@ -9,16 +9,16 @@ public class Puzzle03Solver : PuzzleSolver
 
     private static long Solve(string input, int length) =>
         input.SplitByNewline()
-        .Sum(line => HighestValueIn([.. line.ToCharArray().Select(c => c - '0')], length));
+        .Sum(line => HighestValueIn([.. line.ToCharArray()], length));
 
-    private static long HighestValueIn(int[] values, int resultLength)
+    private static long HighestValueIn(char[] values, int resultLength)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(resultLength, nameof(resultLength));
 
         if (resultLength == 1)
-            return values.Max();
+            return values.Max() - '0';
 
-        var maxDigit = 0;
+        char maxDigit = '\0';
         var maxDigitIndex = -1;
         for (var i = 0; i <= values.Length - resultLength; i++)
         {
@@ -31,6 +31,6 @@ public class Puzzle03Solver : PuzzleSolver
 
         var subArray = values.Skip(maxDigitIndex + 1).ToArray();
         var bestFollowingValue = HighestValueIn(subArray, resultLength - 1);
-        return (long)(maxDigit * Math.Pow(10, resultLength - 1)) + bestFollowingValue;
+        return (long)((maxDigit - '0') * Math.Pow(10, resultLength - 1)) + bestFollowingValue;
     }
 }
