@@ -16,23 +16,27 @@ public class Puzzle04Solver : PuzzleSolver
     public override string SolvePartTwo(string input)
     {
         var grid = new CharacterMatrix(input);
-        var rolls = grid.FindAllCharacters('@').ToHashSet();
-        var originalCount = rolls.Count;
+        var queue = new Queue<(int, int)>(grid.FindAllCharacters('@')
+            .Where(c => CanBeRemoved(grid, c)));
+        var count = 0;
 
-        do
+        while (queue.Count > 0)
         {
-            var removableRolls = rolls.Where(c => CanBeRemoved(grid, c));
-            if (!removableRolls.Any())
-                break;
+            var r = queue.Dequeue();
+            if (grid.CharAt(r) == '.')
+                continue;
 
-            foreach (var c in removableRolls)
+            grid.SetCharacter(r, '.');
+            count++;
+
+            var neighbors = grid.CoordinatesOfNeighbors(r);
+            foreach (var n in neighbors.Where(n => grid.CharAt(n) == '@' && CanBeRemoved(grid, n)))
             {
-                grid.SetCharacter(c, '.');
-                rolls.Remove(c);
+                queue.Enqueue(n);
             }
-        } while (true);
+        }
 
-        return (originalCount - rolls.Count).ToString();
+        return count.ToString();
     }
 
     private static bool CanBeRemoved(CharacterMatrix grid, (int, int) coord) =>
