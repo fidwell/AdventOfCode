@@ -7,8 +7,8 @@ public class Puzzle04Solver : PuzzleSolver
     public override string SolvePartOne(string input)
     {
         var grid = new CharacterMatrix(input);
-        return grid.AllCoordinates
-            .Where(c => grid.CharAt(c) == '@')
+        return grid
+            .FindAllCharacters('@')
             .Count(c => CanBeRemoved(grid, c))
             .ToString();
     }
@@ -16,24 +16,23 @@ public class Puzzle04Solver : PuzzleSolver
     public override string SolvePartTwo(string input)
     {
         var grid = new CharacterMatrix(input);
-        var count = 0;
+        var rolls = grid.FindAllCharacters('@').ToHashSet();
+        var originalCount = rolls.Count;
 
         do
         {
-            var candidates = grid.AllCoordinates.Where(c => grid.CharAt(c) == '@' && CanBeRemoved(grid, c));
-            if (!candidates.Any())
-            {
+            var removableRolls = rolls.Where(c => CanBeRemoved(grid, c));
+            if (!removableRolls.Any())
                 break;
-            }
 
-            foreach (var c in candidates)
+            foreach (var c in removableRolls)
             {
                 grid.SetCharacter(c, '.');
-                count++;
+                rolls.Remove(c);
             }
         } while (true);
 
-        return count.ToString();
+        return (originalCount - rolls.Count).ToString();
     }
 
     private static bool CanBeRemoved(CharacterMatrix grid, (int, int) coord) =>

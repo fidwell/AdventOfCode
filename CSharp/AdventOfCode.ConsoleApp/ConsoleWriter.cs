@@ -4,19 +4,9 @@ internal static class ConsoleWriter
 {
     private static ConsoleColor Default => ConsoleColor.Gray;
 
-    internal static void Error(string message)
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(message);
-        Console.ForegroundColor = Default;
-    }
+    internal static void Error(string message) => Write(message, ConsoleColor.Red);
 
-    internal static void Info(string message)
-    {
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine(message);
-        Console.ForegroundColor = Default;
-    }
+    internal static void Info(string message) => Write(message, ConsoleColor.Cyan);
 
     internal static void Answer(int part, string answer, TimeSpan duration)
     {
