@@ -4,7 +4,8 @@ using AdventOfCode.Core.ArrayUtilities;
 namespace AdventOfCode.Core.StringUtilities;
 
 /// <summary>
-/// Creates a matrix of characters from a "rectanuglar-shaped" string.
+/// Represents a two-dimensional grid of characters, providing methods for accessing, modifying,
+/// and searching character data by coordinates, rows, columns, and patterns.
 /// </summary>
 public class CharacterMatrix
 {
@@ -60,6 +61,9 @@ public class CharacterMatrix
         }
     }
 
+    /// <summary>
+    /// Gets a string representation of the grid, with each row separated by a newline character.
+    /// </summary>
     public string DisplayString =>
         string.Join(
             Environment.NewLine,
@@ -67,13 +71,17 @@ public class CharacterMatrix
                 new string([.. Enumerable.Range(0, Width).Select(x => _data[x, y])])));
 
     /// <summary>
-    /// Returns the single character value at a given coordinate.
-    /// If the coordinates are out of bounds, a null value is returned.
+    /// Retrieves the character at the specified coordinates within the grid.
     /// </summary>
-    /// <param name="x">The x coordinate.</param>
-    /// <param name="y">The y coordinate.</param>
-    /// <returns>The character at this position in the matrix,
-    /// or null if the coordinates are out of bounds.</returns>
+    /// <remarks>When <paramref name="allowOutOfBounds"/> is <see langword="true"/>, negative or out-of-range
+    /// coordinates are wrapped to valid positions within the grid using modular arithmetic. This can be useful for
+    /// implementing toroidal (wraparound) behavior.</remarks>
+    /// <param name="x">The zero-based column index of the character to retrieve.</param>
+    /// <param name="y">The zero-based row index of the character to retrieve.</param>
+    /// <param name="allowOutOfBounds">If <see langword="true"/>, coordinates that are outside the
+    /// grid bounds will wrap around; otherwise, out-of-bounds coordinates will result in a default value.</param>
+    /// <returns>The character at the specified coordinates. If <paramref name="allowOutOfBounds"/> is <see langword="false"/>
+    /// and the coordinates are out of bounds, returns '\0'.</returns>
     public char CharAt(int x, int y, bool allowOutOfBounds = false)
     {
         if (allowOutOfBounds)
@@ -169,18 +177,19 @@ public class CharacterMatrix
         new([.. Enumerable.Range(0, Height).Select(y => _data[x, y])]);
 
     /// <summary>
-    /// Replaces the character value at the given index.
+    /// Sets the character at the specified coordinates within the grid.
     /// </summary>
-    /// <param name="coordinates">The coordinates of the character to replace.</param>
-    /// <param name="value">The new value of the character.</param>
+    /// <param name="coordinates">The coordinates, represented as a <see cref="Coord"/>, indicating
+    /// the position in the grid where the character will be set.</param>
+    /// <param name="value">The character to assign at the specified coordinates.</param>
     public void SetCharacter(Coord coordinates, char value) => SetCharacter(coordinates.Item1, coordinates.Item2, value);
 
     /// <summary>
-    /// Replaces the character value at the given index.
+    /// Sets the character at the specified coordinates within the grid.
     /// </summary>
-    /// <param name="x">The x coordinate of the character to replace.</param>
-    /// <param name="y">The y coordinate of the character to replace.</param>
-    /// <param name="value">The new value of the character.</param>
+    /// <param name="x">The zero-based column index at which to set the character. Must be within the valid range of columns.</param>
+    /// <param name="y">The zero-based row index at which to set the character. Must be within the valid range of rows.</param>
+    /// <param name="value">The character to assign at the specified coordinates.</param>
     public void SetCharacter(int x, int y, char value) => _data[x, y] = value;
 
     /// <summary>
@@ -206,15 +215,16 @@ public class CharacterMatrix
             .Select(r => r.i);
 
     /// <summary>
-    /// Returns a collection of all x,y pairs that are valid for this matrix.
+    /// Gets an enumerable collection of all coordinates within the bounds defined by the current width and height.
     /// </summary>
     public IEnumerable<Coord> AllCoordinates => ArrayExtensions.AllPoints(Width, Height);
 
     /// <summary>
-    /// Determines whether a given coordinate is in-bounds for the matrix.
+    /// Determines whether the specified coordinate is within the bounds of the grid.
     /// </summary>
-    /// <param name="coordinate">The coordinate to check.</param>
-    /// <returns>Whether the coordinate is in-bounds for the matrix.</returns>
+    /// <param name="coordinate">The coordinate to check for validity within the grid. The first
+    /// item represents the horizontal position; the /// second item represents the vertical position.</param>
+    /// <returns>true if the coordinate is inside the grid boundaries; otherwise, false.</returns>
     public bool IsInBounds(Coord coordinate) =>
         coordinate.Item1 >= 0 &&
         coordinate.Item2 >= 0 &&
@@ -230,24 +240,34 @@ public class CharacterMatrix
         Enumerable.Range(0, word.Length).Select(x => (word.StartCoordinate.Item1 + x, word.StartCoordinate.Item2));
 
     /// <summary>
-    /// Find the coordinates of characters surrounding a group
-    /// of other characters, given by their coordinates.
+    /// Returns the coordinates of all neighboring cells that are adjacent to any of the specified
+    /// coordinates, excluding the original coordinates themselves.
     /// </summary>
-    /// <param name="coordinates">All coordinates of characters.</param>
-    /// <returns>Coordinates of all characters surrounding the input character coordinates.</returns>
+    /// <param name="coordinates">A collection of coordinates for which to find all adjacent neighbor
+    /// coordinates. Cannot be null.</param>
+    /// <returns>An enumerable collection of coordinates representing the neighbors of the specified
+    /// coordinates, excluding any coordinates that are present in the input collection. The collection
+    /// contains no duplicate coordinates.</returns>
     private IEnumerable<Coord> CoordinatesOfNeighbors(IEnumerable<Coord> coordinates) => coordinates
         .SelectMany(c => CoordinatesOfNeighbors(c))
         .Where(c => !coordinates.Contains(c))
         .Distinct();
 
     /// <summary>
-    /// Find the coordinate values of the (up to) eight characters
-    /// surrounding the character at the given index. Will
-    /// omit values if the coordinate is at the edges of the matrix.
+    /// Returns the coordinates of neighboring cells adjacent to the specified cell within the grid.
     /// </summary>
-    /// <param name="coordinate">The index to search around.</param>
-    /// <returns>Coordinates of all characters surrounding the input character index.</returns>
-    public IEnumerable<Coord> CoordinatesOfNeighbors(Coord coordinate, bool allEight = true, bool allowWrapping = false)
+    /// <param name="coordinate">The coordinate of the cell for which to find neighboring cell coordinates.</param>
+    /// <param name="allEight">Indicates whether to include diagonal neighbors in addition to orthogonal
+    /// neighbors. If <see langword="true"/>, all eight surrounding cells are considered; otherwise,
+    /// only the four orthogonal neighbors are included.</param>
+    /// <param name="allowWrapping">Indicates whether neighbor coordinates should wrap around grid
+    /// boundaries. If <see langword="true"/>, neighbors beyond the grid edges are included as wrapped
+    /// coordinates.</param>
+    /// <returns>An enumerable collection of coordinates representing the neighboring cells of the
+    /// specified cell. The collection may contain fewer than eight coordinates if the cell is on a
+    /// grid edge and wrapping is not allowed.</returns>
+    public IEnumerable<Coord> CoordinatesOfNeighbors(
+        Coord coordinate, bool allEight = true, bool allowWrapping = false)
     {
         var (x, y) = coordinate;
 
@@ -266,6 +286,19 @@ public class CharacterMatrix
             if (x < Width - 1 && y > 0) yield return (x + 1, y - 1);
         }
     }
+
+    /// <summary>
+    /// Returns the values of all neighboring cells adjacent to the specified coordinate.
+    /// </summary>
+    /// <param name="coordinate">The coordinate for which to retrieve neighboring cell values.</param>
+    /// <param name="allEight">Indicates whether to include diagonal neighbors in addition to
+    /// orthogonal ones. If <see langword="true"/>, all eight adjacent cells are considered;
+    /// otherwise, only the four orthogonal neighbors are included.</param>
+    /// <returns>An enumerable collection of characters representing the values of the neighboring
+    /// cells. The collection will be empty if the coordinate has no valid neighbors.</returns>
+    public IEnumerable<char> ValuesOfNeighbors(Coord coordinate, bool allEight = true) =>
+        CoordinatesOfNeighbors(coordinate, allEight, allowWrapping: false)
+        .Select(c => _data[c.Item1, c.Item2]);
 
     public class Word(Coord startCoordinate, int length, string value)
     {

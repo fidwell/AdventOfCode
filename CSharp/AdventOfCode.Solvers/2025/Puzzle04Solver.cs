@@ -36,5 +36,5 @@ public class Puzzle04Solver : PuzzleSolver
     }
 
     private static bool CanBeRemoved(CharacterMatrix grid, (int, int) coord) =>
-        grid.CoordinatesOfNeighbors(coord).Count(n => grid.CharAt(n) == '@') < 4;
+        grid.ValuesOfNeighbors(coord).Count(c => c == '@') < 4;
 }
