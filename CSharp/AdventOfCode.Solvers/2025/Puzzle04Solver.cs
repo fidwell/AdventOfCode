@@ -7,8 +7,8 @@ public class Puzzle04Solver : PuzzleSolver
     public override string SolvePartOne(string input)
     {
         var grid = new CharacterMatrix(input);
-        return grid.AllCoordinates
-            .Where(c => grid.CharAt(c) == '@')
+        return grid
+            .FindAllCharacters('@')
             .Count(c => CanBeRemoved(grid, c))
             .ToString();
     }
@@ -16,26 +16,29 @@ public class Puzzle04Solver : PuzzleSolver
     public override string SolvePartTwo(string input)
     {
         var grid = new CharacterMatrix(input);
+        var queue = new Queue<(int, int)>(grid.FindAllCharacters('@')
+            .Where(c => CanBeRemoved(grid, c)));
         var count = 0;
 
-        do
+        while (queue.Count > 0)
         {
-            var candidates = grid.AllCoordinates.Where(c => grid.CharAt(c) == '@' && CanBeRemoved(grid, c));
-            if (!candidates.Any())
-            {
-                break;
-            }
+            var r = queue.Dequeue();
+            if (grid.CharAt(r) == '.')
+                continue;
 
-            foreach (var c in candidates)
+            grid.SetCharacter(r, '.');
+            count++;
+
+            var neighbors = grid.CoordinatesOfNeighbors(r);
+            foreach (var n in neighbors.Where(n => grid.CharAt(n) == '@' && CanBeRemoved(grid, n)))
             {
-                grid.SetCharacter(c, '.');
-                count++;
+                queue.Enqueue(n);
             }
-        } while (true);
+        }
 
         return count.ToString();
     }
 
     private static bool CanBeRemoved(CharacterMatrix grid, (int, int) coord) =>
-        grid.CoordinatesOfNeighbors(coord).Count(n => grid.CharAt(n) == '@') < 4;
+        grid.ValuesOfNeighbors(coord).Count(c => c == '@') < 4;
 }
