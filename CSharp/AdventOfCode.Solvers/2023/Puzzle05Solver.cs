@@ -24,10 +24,10 @@ public class Puzzle05Solver : PuzzleSolver
             var data = input.SplitByNewline(StringSplitOptions.None);
             var seedData = data[0].Split(": ")[1].SplitAndTrim(' ').Select(long.Parse).ToArray();
             _seedRanges = isPartOne
-                ? seedData.Select(s => new RangeLong(s, 1))
+                ? seedData.Select(s => RangeLong.ByLength(s, 1))
                 : seedData
                     .Where((x, i) => i % 2 == 0)
-                    .Select((x, i) => new RangeLong(seedData[i * 2], seedData[i * 2 + 1]));
+                    .Select((x, i) => RangeLong.ByLength(seedData[i * 2], seedData[i * 2 + 1]));
             _maps = [.. data.Skip(2).ToArray().Chunk().Select(d => new Map(d))];
         }
 
@@ -118,11 +118,11 @@ public class Puzzle05Solver : PuzzleSolver
             var intersection = AsRange.Intersection(input);
             return new RangeLong[]
                 {
-                    new(intersection.Start + Transformation, intersection.Length)
+                    RangeLong.ByLength(intersection.Start + Transformation, intersection.Length)
                 }.Where(r => r.Length > 0);
         }
 
-        private RangeLong AsRange => new(SourceRangeStart, RangeLength);
+        private RangeLong AsRange => RangeLong.ByLength(SourceRangeStart, RangeLength);
 
         public override string ToString() => $"[{SourceRangeStart},{SourceRangeEnd}) > [{DestinationRangeStart},{DestinationRangeStart + RangeLength}) ({RangeLength}); {Transformation}";
     }

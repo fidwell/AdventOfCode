@@ -32,7 +32,6 @@ public partial class Puzzle05Solver : PuzzleSolver
                     break;
                 }
             }
-
         } while (anythingChanged);
 
         return ranges.Sum(r => r.Length).ToString();
@@ -50,7 +49,7 @@ public partial class Puzzle05Solver : PuzzleSolver
                 var matches = Range().Match(line);
                 var min = long.Parse(matches.Groups[1].Value);
                 var max = long.Parse(matches.Groups[2].Value);
-                ranges.Add(new RangeLong(min, max - min + 1));
+                ranges.Add(RangeLong.ByBounds(min, max + 1));
             }
             else if (line.Length > 0)
             {
