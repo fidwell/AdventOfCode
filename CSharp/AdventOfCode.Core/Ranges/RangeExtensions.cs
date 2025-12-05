@@ -25,4 +25,17 @@ public static class RangeExtensions
         yield return new RangeLong(left.Start, intersectionStart - left.Start);
         yield return new RangeLong(intersectionEnd, left.Start + left.Length - intersectionEnd);
     }
+
+    public static bool ContainsInclusive(this RangeLong range, long value) => range.Start <= value && value <= range.End;
+
+    public static bool OverlapsWith(this RangeLong a, RangeLong b) =>
+        (a.Start <= b.Start && a.End >= b.Start) ||
+        (b.Start <= a.Start && b.End >= a.Start);
+
+    public static RangeLong MergeWith(this RangeLong a, RangeLong b)
+    {
+        var min = a.Start < b.Start ? a.Start : b.Start;
+        var max = a.End > b.End ? a.End : b.End;
+        return new RangeLong(min, max - min);
+    }
 }
