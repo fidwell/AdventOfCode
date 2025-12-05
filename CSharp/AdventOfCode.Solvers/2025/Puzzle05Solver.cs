@@ -26,10 +26,7 @@ public partial class Puzzle05Solver : PuzzleSolver
         {
             if (line.Contains('-'))
             {
-                var matches = Regexes.Range().Match(line);
-                var min = long.Parse(matches.Groups[1].Value);
-                var max = long.Parse(matches.Groups[2].Value);
-                ranges.Add(RangeLong.ByBounds(min, max + 1));
+                ranges.Add(RangeLongExtensions.Parse(line, isInclusive: true));
             }
             else if (line.Length > 0)
             {

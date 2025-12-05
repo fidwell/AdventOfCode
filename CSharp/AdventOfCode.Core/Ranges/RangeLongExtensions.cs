@@ -1,7 +1,17 @@
-﻿namespace AdventOfCode.Core.Ranges;
+﻿using AdventOfCode.Core.StringUtilities;
+
+namespace AdventOfCode.Core.Ranges;
 
 public static class RangeLongExtensions
 {
+    public static RangeLong Parse(string input, bool isInclusive = false)
+    {
+        var matches = Regexes.Range().Match(input);
+        var start = long.Parse(matches.Groups[1].Value);
+        var end = long.Parse(matches.Groups[2].Value);
+        return RangeLong.ByBounds(start, end + (isInclusive ? 1 : 0));
+    }
+
     /// <summary>
     /// Calculates the intersection of two ranges and returns a new range representing the overlapping portion.
     /// </summary>
