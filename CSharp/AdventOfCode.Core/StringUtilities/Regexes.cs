@@ -18,4 +18,7 @@ public static partial class Regexes
 
     [GeneratedRegex(@"(\w)\1\1")]
     public static partial Regex TripleCharacter();
+
+    [GeneratedRegex(@"(\d+)\-(\d+)")]
+    public static partial Regex Range();
 }

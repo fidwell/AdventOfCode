@@ -60,16 +60,81 @@ public static class RangeExtensions
         yield return RangeLong.ByBounds(intersectionEnd, two.End);
     }
 
-    public static bool ContainsInclusive(this RangeLong range, long value) => range.Start <= value && value <= range.End;
+    /// <summary>
+    /// Determines whether the specified value is within the bounds of the given range.
+    /// </summary>
+    /// <remarks>The containment check is inclusive of the range's start and inclusive of its end.</remarks>
+    /// <param name="range">The range to test for containment of the value.</param>
+    /// <param name="value">The value to check for inclusion within the range.</param>
+    /// <returns>true if the value is greater than or equal to the start of the range and
+    /// less than or equal to the end of the range; otherwise, false.</returns>
+    public static bool ContainsInclusive(this RangeLong range, long value) =>
+        range.Start <= value && value <= range.End;
 
-    public static bool Contains(this RangeLong range, long value) => range.Start <= value && value < range.End;
+    /// <summary>
+    /// Determines whether the specified value is within the bounds of the given range.
+    /// </summary>
+    /// <remarks>The containment check is inclusive of the range's start and exclusive of its end.</remarks>
+    /// <param name="range">The range to test for containment of the value.</param>
+    /// <param name="value">The value to check for inclusion within the range.</param>
+    /// <returns>true if the value is greater than or equal to the start of the range and
+    /// less than the end of the range; otherwise, false.</returns>
+    public static bool Contains(this RangeLong range, long value) =>
+        range.Start <= value && value < range.End;
 
+    /// <summary>
+    /// Determines whether the current range overlaps with the specified range.
+    /// </summary>
+    /// <param name="a">The first range to compare.</param>
+    /// <param name="b">The second range to compare against.</param>
+    /// <returns>true if the two ranges overlap; otherwise, false.</returns>
     public static bool OverlapsWith(this RangeLong a, RangeLong b) =>
         (a.Start <= b.Start && a.End > b.Start) ||
         (b.Start <= a.Start && b.End > a.Start);
 
+    /// <summary>
+    /// Merges overlapping or adjacent ranges in the specified sequence into the minimal set of non-overlapping ranges.
+    /// </summary>
+    /// <remarks>The order of the returned ranges is not guaranteed to match the input. Ranges that overlap or
+    /// are adjacent will be merged into a single range.</remarks>
+    /// <param name="ranges">The sequence of ranges to simplify. Cannot be null.</param>
+    /// <returns>An enumerable collection of non-overlapping ranges representing the simplified form of the input.</returns>
+    public static IEnumerable<RangeLong> Simplify(this IList<RangeLong> ranges)
+    {
+        var anythingChanged = false;
+        do
+        {
+            anythingChanged = false;
+            foreach (var range in ranges)
+            {
+                var firstOverlap = ranges.FirstOrDefault(r => r != range && r.OverlapsWith(range));
+                if (firstOverlap != null)
+                {
+                    var newRange = range.MergeWith(firstOverlap);
+                    var otherRanges = ranges.Where(r => r != range && r != firstOverlap);
+                    ranges = [newRange, .. otherRanges];
+                    anythingChanged = true;
+                    break;
+                }
+            }
+        } while (anythingChanged);
+        return ranges;
+    }
+
+    /// <summary>
+    /// Creates a new range that spans both specified ranges, provided they overlap.
+    /// </summary>
+    /// <remarks>The resulting range will have its start at the minimum of the two input ranges' starts and
+    /// its end at the maximum of their ends. Both input ranges must overlap for the merge to succeed.</remarks>
+    /// <param name="a">The first range to merge.</param>
+    /// <param name="b">The second range to merge.</param>
+    /// <returns>A new RangeLong that covers the combined extent of both input ranges.</returns>
+    /// <exception cref="ArgumentException">Thrown if the specified ranges do not overlap.</exception>
     public static RangeLong MergeWith(this RangeLong a, RangeLong b)
     {
+        if (!a.OverlapsWith(b))
+            throw new ArgumentException("Ranges do not overlap.");
+
         var min = a.Start < b.Start ? a.Start : b.Start;
         var max = a.End > b.End ? a.End : b.End;
         return RangeLong.ByBounds(min, max);

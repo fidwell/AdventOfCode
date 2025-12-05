@@ -1,12 +1,12 @@
 ﻿using System.Text.Json;
-using System.Text.RegularExpressions;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Solvers._2015;
 
 public partial class Puzzle12Solver : PuzzleSolver
 {
     public override string SolvePartOne(string input) =>
-        Number()
+        Regexes.Integer()
         .Matches(input)
         .Select(m => m.Captures[0])
         .Select(m => int.Parse(m.Value))
@@ -36,7 +36,4 @@ public partial class Puzzle12Solver : PuzzleSolver
 
     public static bool IsRed(JsonElement element) =>
         element.ValueKind == JsonValueKind.String && element.ValueEquals("red");
-
-    [GeneratedRegex(@"(\-?\d+)")]
-    private static partial Regex Number();
 }
