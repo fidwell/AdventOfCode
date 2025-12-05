@@ -8,16 +8,19 @@ internal class Program
     private static async Task Main(string[] args)
     {
         ConsoleWriter.Write(" ** Advent of Code utility helper ** ", ConsoleColor.Yellow);
-        await Run(args);
 
-        //Console.WriteLine($"{Environment.NewLine}Press any key to close this window . . .");
-        //Console.ReadKey();
+        var cliArgs = ParseArgs(args);
+        await Run(cliArgs);
+
+        if (cliArgs.ContainsKey("wait-to-exit"))
+        {
+            Console.WriteLine($"{Environment.NewLine}Press any key to close this window . . .");
+            Console.ReadKey();
+        }
     }
 
-    private static async Task Run(string[] args)
+    private static async Task Run(Dictionary<string, string> cliArgs)
     {
-        var cliArgs = ParseArgs(args);
-
         if (!cliArgs.TryGetValue("action", out string? action))
         {
             ConsoleWriter.Error("No CLI action provided.");
