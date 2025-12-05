@@ -91,31 +91,26 @@ public static class RangeLongExtensions
         (b.Start <= a.Start && b.End > a.Start);
 
     /// <summary>
-    /// Merges overlapping or adjacent ranges in the specified sequence into the minimal set of non-overlapping ranges.
+    /// Merges overlapping or adjacent ranges in the specified sequence into the minimal set of
+    /// non-overlapping ranges.
     /// </summary>
-    /// <remarks>The order of the returned ranges is not guaranteed to match the input. Ranges that overlap or
-    /// are adjacent will be merged into a single range.</remarks>
+    /// <remarks>The order of the returned ranges is not guaranteed to match the input. Ranges
+    /// that overlap or are adjacent will be merged into a single range.</remarks>
     /// <param name="ranges">The sequence of ranges to simplify. Cannot be null.</param>
     /// <returns>An enumerable collection of non-overlapping ranges representing the simplified form of the input.</returns>
     public static IEnumerable<RangeLong> Simplify(this IList<RangeLong> ranges)
     {
-        var anythingChanged = false;
-        do
+        ranges = [.. ranges.OrderBy(r => r.Start)];
+
+        for (var i = 0; i < ranges.Count - 1; i++)
         {
-            anythingChanged = false;
-            foreach (var range in ranges)
+            while (i < ranges.Count - 1 && ranges[i].OverlapsWith(ranges[i + 1]))
             {
-                var firstOverlap = ranges.FirstOrDefault(r => r != range && r.OverlapsWith(range));
-                if (firstOverlap != null)
-                {
-                    var newRange = range.MergeWith(firstOverlap);
-                    var otherRanges = ranges.Where(r => r != range && r != firstOverlap);
-                    ranges = [newRange, .. otherRanges];
-                    anythingChanged = true;
-                    break;
-                }
+                var newRange = ranges[i].MergeWith(ranges[i + 1]);
+                ranges = [.. ranges.Take(i), newRange, .. ranges.Skip(i + 2)];
             }
-        } while (anythingChanged);
+        }
+
         return ranges;
     }
 
