@@ -16,17 +16,7 @@ public partial class Puzzle06Solver : PuzzleSolver
         long total = 0;
         for (var i = 0; i < operations.Count; i++)
         {
-            var thisOperands = operands.Select(line => line[i]);
-            if (operations[i] == "+")
-            {
-                var sum = thisOperands.Sum();
-                total += (long)sum;
-            }
-            else
-            {
-                var product = thisOperands.Aggregate(1L, (a, b) => a * b);
-                total += product;
-            }
+            total += Operate(operands.Select(line => line[i]), operations[i][0]);
         }
 
         return total.ToString();
@@ -34,10 +24,8 @@ public partial class Puzzle06Solver : PuzzleSolver
 
     public override string SolvePartTwo(string input)
     {
-        var lines = input.SplitByNewline(options: StringSplitOptions.None);
-
-        // Todo - find this dynamically (in case there's no trailing newline)
-        var operandLine = lines.Length - 2;
+        var lines = input.SplitByNewline(options: StringSplitOptions.RemoveEmptyEntries);
+        var operandLine = lines.Length - 1;
 
         var operationIndexes = Operator().Matches(lines[operandLine]).Select(m => m.Index).ToList();
         operationIndexes = [.. operationIndexes, lines[operandLine].Length + 1];
@@ -46,20 +34,9 @@ public partial class Puzzle06Solver : PuzzleSolver
         for (var i = 0; i < operationIndexes.Count - 1; i++)
         {
             var thisOperation = lines[operandLine][operationIndexes[i]];
-            var result = thisOperation == '+' ? 0L : 1L;
-
-            for (var c = operationIndexes[i + 1] - 2; c >= operationIndexes[i]; c--)
-            {
-                var num = ReadNumberAt(lines, c);
-                if (thisOperation == '+')
-                {
-                    result += num;
-                }
-                else
-                {
-                    result *= num;
-                }
-            }
+            var operands = Enumerable.Range(operationIndexes[i], operationIndexes[i + 1] - operationIndexes[i] - 1)
+                .Select(c => ReadNumberAt(lines, c));
+            var result = Operate(operands, thisOperation);
 
             total += result;
         }
@@ -67,13 +44,13 @@ public partial class Puzzle06Solver : PuzzleSolver
         return total.ToString();
     }
 
-    private static int ReadNumberAt(string[] input, int col)
-    {
-        var asString = $"{input[0][col]}{input[1][col]}{input[2][col]}{input[3][col]}"
+    private static int ReadNumberAt(string[] input, int col) =>
+        int.Parse($"{input[0][col]}{input[1][col]}{input[2][col]}{input[3][col]}"
             .Replace("*", "")
-            .Replace("+", "");
-        return int.Parse(asString);
-    }
+            .Replace("+", ""));
+
+    private static long Operate(IEnumerable<int> operands, char operatorKind) =>
+        operatorKind == '+' ? operands.Sum() : operands.Aggregate(1L, (a, b) => a * b);
 
     [GeneratedRegex(@"[\+\*]")]
     private static partial Regex Operator();
