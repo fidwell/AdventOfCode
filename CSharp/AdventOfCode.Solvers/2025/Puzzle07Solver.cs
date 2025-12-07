@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using AdventOfCode.Core.Optimization;
+using AdventOfCode.Core.StringUtilities;
 using Coord = (int, int);
 
 namespace AdventOfCode.Solvers._2025;
@@ -44,33 +45,17 @@ public class Puzzle07Solver : PuzzleSolver
         return PossibleStatesAfter(grid, grid.SingleMatch('S')).ToString();
     }
 
-    // Todo - Figure out why custom Memoizer class didn't work
-    private readonly Dictionary<Coord, long> cache = [];
-
-    public long PossibleStatesAfter(CharacterMatrix grid, Coord beam)
-    {
-        if (cache.TryGetValue(beam, out long value))
-            return value;
-
-        if (beam.Item2 >= grid.Height)
+    public static long PossibleStatesAfter(CharacterMatrix grid, Coord beam) =>
+        Memoizer.Memoize<Coord, long>((c, func) =>
         {
-            cache.Add(beam, 1);
-            return 1;
-        }
+            if (c.Item2 >= grid.Height)
+                return 1;
 
-        if (grid.CharAt((beam.Item1, beam.Item2 + 1)) == '^')
-        {
-            var result =
-                PossibleStatesAfter(grid, (beam.Item1 - 1, beam.Item2 + 1)) +
-                PossibleStatesAfter(grid, (beam.Item1 + 1, beam.Item2 + 1));
-            cache.Add(beam, result);
-            return result;
-        }
-        else
-        {
-            var result = PossibleStatesAfter(grid, (beam.Item1, beam.Item2 + 1));
-            cache.Add(beam, result);
-            return result;
-        }
-    }
+            return grid.CharAt((c.Item1, c.Item2 + 1)) switch
+            {
+                '^' => func((c.Item1 - 1, c.Item2 + 1)) +
+                    func((c.Item1 + 1, c.Item2 + 1)),
+                _ => func((c.Item1, c.Item2 + 1))
+            };
+        })(beam);
 }

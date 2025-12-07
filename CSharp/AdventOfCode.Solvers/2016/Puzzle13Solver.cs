@@ -10,32 +10,27 @@ public class Puzzle13Solver : PuzzleSolver
         var number = int.Parse(input);
         var isExample = number == 10;
         var target = isExample ? (7, 4) : (31, 39);
-
-        var isOpenSpace = Memoizer.Create<Coord, bool>(c => IsOpenSpace(c, number));
-        var path = GetPathTo(target, int.MaxValue, isOpenSpace);
+        var path = GetPathTo(target, int.MaxValue, number);
         return (path.Count - 1).ToString();
     }
 
     public override string SolvePartTwo(string input)
     {
         var number = int.Parse(input);
-        var isOpenSpace = Memoizer.Create<Coord, bool>(c => IsOpenSpace(c, number));
-
         const int max = 50;
-
         var reachableSpaces = new HashSet<Coord>();
 
         for (var x = 0; x < max; x++)
         {
             for (var y = 0; y < max; y++)
             {
-                if (!IsOpenSpace((x, y), number))
+                if (!IsOpenSpace2((x, y), number))
                     continue;
 
                 if (reachableSpaces.Contains((x, y)))
                     continue;
 
-                var path = GetPathTo((x, y), max, isOpenSpace);
+                var path = GetPathTo((x, y), max, number);
                 if (path.Count <= max + 1)
                 {
                     foreach (var c in path)
@@ -49,7 +44,7 @@ public class Puzzle13Solver : PuzzleSolver
         return reachableSpaces.Count.ToString();
     }
 
-    private static List<Coord> GetPathTo(Coord destination, int max, Func<Coord, bool> isOpenSpace)
+    private static List<Coord> GetPathTo(Coord destination, int max, int favNum)
     {
         var start = (1, 1);
 
@@ -71,7 +66,7 @@ public class Puzzle13Solver : PuzzleSolver
 
             var neighbors = NeighborsOf(currentCoord);
             var unvisitedNeighbors = neighbors.Where(c => !testPath.Contains(c));
-            var openNeighbors = unvisitedNeighbors.Where(c => isOpenSpace(c));
+            var openNeighbors = unvisitedNeighbors.Where(c => IsOpenSpace2(c, favNum));
             foreach (var neighbor in openNeighbors)
             {
                 queue.Enqueue([.. testPath, neighbor], testPath.Count + 1);
@@ -91,14 +86,15 @@ public class Puzzle13Solver : PuzzleSolver
         yield return (c.Item1, c.Item2 + 1);
     }
 
-    private static bool IsOpenSpace(Coord c, int favNum)
-    {
-        var x = c.Item1;
-        var y = c.Item2;
-        var z = x * x + 3 * x + 2 * x * y + y + y * y;
-        z += favNum;
-        var binaryRep = Convert.ToString(z, 2);
-        var onesCount = binaryRep.ToCharArray().Count(c => c == '1');
-        return onesCount % 2 == 0;
-    }
+    private static bool IsOpenSpace2(Coord coord, int favNum) =>
+        Memoizer.Memoize<Coord, bool>((c, func) =>
+        {
+            var x = c.Item1;
+            var y = c.Item2;
+            var z = x * x + 3 * x + 2 * x * y + y + y * y;
+            z += favNum;
+            var binaryRep = Convert.ToString(z, 2);
+            var onesCount = binaryRep.ToCharArray().Count(c => c == '1');
+            return onesCount % 2 == 0;
+        })(coord);
 }
