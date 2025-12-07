@@ -52,10 +52,10 @@ public class Puzzle17Solver : PuzzleSolver
         throw new Exception("Couldn't complete execution.");
     }
 
-    private class State(int heat, (int, int) location, Direction direction)
+    private class State(int heat, Coord location, Direction direction)
     {
         public int Heat = heat;
-        public (int, int) Location = location;
+        public Coord Location = location;
         public Direction Direction = direction;
 
         public override bool Equals(object? obj) =>

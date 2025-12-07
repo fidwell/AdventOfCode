@@ -18,7 +18,7 @@ public class Puzzle10Solver : PuzzleSolver
             }).ToString();
     }
 
-    private static IEnumerable<(int, int)> NinesReachedFromHere(CharacterMatrix map, (int, int) coord, char charHere)
+    private static IEnumerable<Coord> NinesReachedFromHere(CharacterMatrix map, Coord coord, char charHere)
     {
         if (charHere == '9')
             return [coord];

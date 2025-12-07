@@ -13,11 +13,11 @@ public class Puzzle03Solver : PuzzleSolver
         return santaResult.Union(robotResult).Count().ToString();
     }
 
-    private static HashSet<(int, int)> Deliver(string input)
+    private static HashSet<Coord> Deliver(string input)
     {
         var currX = 0;
         var currY = 0;
-        var visited = new HashSet<(int, int)>();
+        var visited = new HashSet<Coord>();
 
         foreach (var direction in input)
         {

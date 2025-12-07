@@ -25,9 +25,9 @@ public class Puzzle15Solver : PuzzleSolver
 
     private class Warehouse
     {
-        public (int, int) Robot { get; private set; }
-        public List<(int, int)> Boxes { get; } = [];
-        public List<(int, int)> Walls { get; } = [];
+        public Coord Robot { get; private set; }
+        public List<Coord> Boxes { get; } = [];
+        public List<Coord> Walls { get; } = [];
         public string RobotInstructions { get; private set; } = string.Empty;
         public bool AreBoxesWide { get; }
         private readonly int _size;
@@ -94,7 +94,7 @@ public class Puzzle15Solver : PuzzleSolver
             _step++;
         }
 
-        private BoxDependency? CreateDependencyTree((int, int) target, Direction direction)
+        private BoxDependency? CreateDependencyTree(Coord target, Direction direction)
         {
             var firstBox = Boxes.Where(b => b == target || (AreBoxesWide && b == target.Go(Direction.Left)));
             if (!firstBox.Any())
@@ -105,10 +105,10 @@ public class Puzzle15Solver : PuzzleSolver
             return IterateDependency(firstBox.Single(), direction);
         }
 
-        private BoxDependency IterateDependency((int, int) box, Direction direction) =>
+        private BoxDependency IterateDependency(Coord box, Direction direction) =>
             new(box, (direction == Direction.Down || direction == Direction.Up
                 ? AreBoxesWide
-                    ? new List<(int, int)>
+                    ? new List<Coord>
                     {
                         box.Go(direction).Go(Direction.Left),
                         box.Go(direction),
@@ -120,18 +120,18 @@ public class Puzzle15Solver : PuzzleSolver
 
         public int BoxLocationSum => Boxes.Sum(b => b.Item1 + 100 * b.Item2);
 
-        private class BoxDependency((int, int) root, IEnumerable<BoxDependency> branches)
+        private class BoxDependency(Coord root, IEnumerable<BoxDependency> branches)
         {
-            public (int, int) Root { get; } = root;
+            public Coord Root { get; } = root;
             public List<BoxDependency> Branches { get; } = [.. branches];
 
-            public bool CanMove(List<(int, int)> walls, Direction direction, bool areBoxesWide) =>
+            public bool CanMove(List<Coord> walls, Direction direction, bool areBoxesWide) =>
                 !walls.Any(w =>
                     w == Root.Go(direction) ||
                     (areBoxesWide && w == Root.Go(Direction.Right).Go(direction))) &&
                 Branches.All(b => b.CanMove(walls, direction, areBoxesWide));
 
-            public void Move(List<(int, int)> boxes, Direction direction)
+            public void Move(List<Coord> boxes, Direction direction)
             {
                 // if another boxed pushed this one, there
                 // was an overlapping tree structure, but

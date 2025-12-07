@@ -29,13 +29,13 @@ public class Puzzle16Solver : PuzzleSolver
         return (coords.Count + 1).ToString();
     }
 
-    private static (int, List<List<(int, int)>>) Solve(CharacterMatrix matrix)
+    private static (int, List<List<Coord>>) Solve(CharacterMatrix matrix)
     {
         var start = (1, matrix.Height - 2);
         var end = (matrix.Width - 2, 1);
 
         var bestScore = int.MaxValue;
-        var bestPaths = new List<List<(int, int)>>();
+        var bestPaths = new List<List<Coord>>();
         var minScores = new Dictionary<Pose, int>();
 
         var queue = new PriorityQueue<State, int>();
@@ -82,7 +82,7 @@ public class Puzzle16Solver : PuzzleSolver
         }
     }
 
-    private readonly record struct State(Pose Pose, int Score, List<(int, int)> Path)
+    private readonly record struct State(Pose Pose, int Score, List<Coord> Path)
     {
         public readonly State Forward() =>
             new(Pose.Forward(), Score + 1, [.. Path, Pose.Location.Go(Pose.Direction)]);
@@ -94,7 +94,7 @@ public class Puzzle16Solver : PuzzleSolver
             new(Pose.TurnRight(), Score + 1000, Path);
     }
 
-    private static void Print(CharacterMatrix matrix, IEnumerable<(int, int)> coords)
+    private static void Print(CharacterMatrix matrix, IEnumerable<Coord> coords)
     {
         for (var y = 0; y < matrix.Height; y++)
         {

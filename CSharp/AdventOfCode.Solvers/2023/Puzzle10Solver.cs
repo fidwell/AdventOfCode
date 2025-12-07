@@ -7,13 +7,13 @@ public class Puzzle10Solver : PuzzleSolver
 {
     public override string SolvePartOne(string input)
     {
-        var (_, _, coordinatesOfLoop) = GetData(input);
+        var (_, coordinatesOfLoop) = GetData(input);
         return (coordinatesOfLoop.Count() / 2).ToString();
     }
 
     public override string SolvePartTwo(string input)
     {
-        var (matrix, _, coordinatesOfLoop) = GetData(input);
+        var (matrix, coordinatesOfLoop) = GetData(input);
 
         // Replace non-loop characters
         foreach (var coordinate in matrix.AllCoordinates)
@@ -29,21 +29,21 @@ public class Puzzle10Solver : PuzzleSolver
             .ToString();
     }
 
-    private static (CharacterMatrix, (int, int), IEnumerable<(int, int)>) GetData(string input)
+    private static (CharacterMatrix, IEnumerable<Coord>) GetData(string input)
     {
         var matrix = new CharacterMatrix(input);
-        var startingPosition = matrix.FindAllCharacters('S').Single();
+        var startingPosition = matrix.SingleMatch('S');
 
         // works for my inputs :)
         var useSample = matrix.Width < 30;
         matrix.SetCharacter(startingPosition, useSample ? 'F' : '7');
         var coordinatesOfLoop = CoordinatesOfLoop(matrix, startingPosition);
-        return (matrix, startingPosition, coordinatesOfLoop);
+        return (matrix, coordinatesOfLoop);
     }
 
-    private static IEnumerable<(int, int)> CoordinatesOfLoop(CharacterMatrix matrix, (int, int) startingPosition)
+    private static IEnumerable<Coord> CoordinatesOfLoop(CharacterMatrix matrix, Coord startingPosition)
     {
-        IList<(int, int)> visitedCoordinates = [startingPosition];
+        IList<Coord> visitedCoordinates = [startingPosition];
         var currentDirection = Direction.Down;
 
         do
@@ -56,7 +56,7 @@ public class Puzzle10Solver : PuzzleSolver
         return visitedCoordinates.Skip(1);
     }
 
-    private static bool IsInsideLoop(CharacterMatrix matrix, (int, int) startingCoordinate) =>
+    private static bool IsInsideLoop(CharacterMatrix matrix, Coord startingCoordinate) =>
         startingCoordinate.Item1 > 0 &&
             matrix.StringAt((0, startingCoordinate.Item2), startingCoordinate.Item1)
                 .Replace(".", "")
@@ -67,7 +67,7 @@ public class Puzzle10Solver : PuzzleSolver
                 .Replace("FJ", "|")
                 .Length % 2 == 1;
 
-    private static ((int, int), Direction) Travel(CharacterMatrix data, (int, int) coordinate, Direction currentDirection) => data.CharAt(coordinate) switch
+    private static (Coord, Direction) Travel(CharacterMatrix data, Coord coordinate, Direction currentDirection) => data.CharAt(coordinate) switch
     {
         '|' => currentDirection == Direction.Up
             ? ((coordinate.Item1, coordinate.Item2 - 1), Direction.Up)

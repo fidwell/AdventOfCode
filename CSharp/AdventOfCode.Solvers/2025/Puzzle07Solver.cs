@@ -1,6 +1,5 @@
 ﻿using AdventOfCode.Core.Optimization;
 using AdventOfCode.Core.StringUtilities;
-using Coord = (int, int);
 
 namespace AdventOfCode.Solvers._2025;
 

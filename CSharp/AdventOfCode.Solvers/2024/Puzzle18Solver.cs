@@ -45,7 +45,7 @@ public class Puzzle18Solver : PuzzleSolver
         return $"{resultCoord.Item1},{resultCoord.Item2}";
     }
 
-    private static bool[,] FillMemory(List<(int, int)> coords, int? maxCoords = null)
+    private static bool[,] FillMemory(List<Coord> coords, int? maxCoords = null)
     {
         var isExample = coords.Count == 25;
         var size = isExample ? 7 : 71;
@@ -59,21 +59,21 @@ public class Puzzle18Solver : PuzzleSolver
         return memory;
     }
 
-    private static List<(int, int)> ParseCoords(string input) =>
+    private static List<Coord> ParseCoords(string input) =>
         [.. input.SplitByNewline().Select(l =>
         {
             var matches = Regexes.NonNegativeInteger().Matches(l).Select(m => int.Parse(m.Value)).ToArray();
             return (matches[0], matches[1]);
         })];
 
-    private static List<(int, int)> Solve(bool[,] maze)
+    private static List<Coord> Solve(bool[,] maze)
     {
         var mazeSize = maze.GetLength(0);
         var end = (mazeSize - 1, mazeSize - 1);
 
         var queue = new PriorityQueue<State, int>();
-        var visited = new HashSet<(int, int)>();
-        var parent = new Dictionary<(int, int), (int, int)>();
+        var visited = new HashSet<Coord>();
+        var parent = new Dictionary<Coord, Coord>();
 
         visited.Add((0, 0));
         queue.Enqueue(new State(0, 0, 0), 0);
@@ -109,9 +109,9 @@ public class Puzzle18Solver : PuzzleSolver
         return [];
     }
 
-    private static List<(int, int)> ReconstructPath(Dictionary<(int, int), (int, int)> parent, (int X, int Y) end)
+    private static List<Coord> ReconstructPath(Dictionary<Coord, Coord> parent, (int X, int Y) end)
     {
-        var path = new List<(int, int)>();
+        var path = new List<Coord>();
         for (var current = end; parent.ContainsKey(current); current = parent[current])
             path.Add(current);
 
@@ -122,7 +122,7 @@ public class Puzzle18Solver : PuzzleSolver
 
     private readonly record struct State(int X, int Y, int Length);
 
-    private static void Print(bool[,] memory, List<(int, int)> bestPath)
+    private static void Print(bool[,] memory, List<Coord> bestPath)
     {
         Console.WriteLine();
         for (var y = 0; y < memory.GetLength(0); y++)

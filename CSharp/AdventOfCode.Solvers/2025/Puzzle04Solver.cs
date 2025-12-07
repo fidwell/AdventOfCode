@@ -16,7 +16,7 @@ public class Puzzle04Solver : PuzzleSolver
     public override string SolvePartTwo(string input)
     {
         var grid = new CharacterMatrix(input);
-        var queue = new Queue<(int, int)>(grid.FindAllCharacters('@')
+        var queue = new Queue<Coord>(grid.FindAllCharacters('@')
             .Where(c => CanBeRemoved(grid, c)));
         var count = 0;
 
@@ -39,6 +39,6 @@ public class Puzzle04Solver : PuzzleSolver
         return count.ToString();
     }
 
-    private static bool CanBeRemoved(CharacterMatrix grid, (int, int) coord) =>
+    private static bool CanBeRemoved(CharacterMatrix grid, Coord coord) =>
         grid.ValuesOfNeighbors(coord).Count(c => c == '@') < 4;
 }

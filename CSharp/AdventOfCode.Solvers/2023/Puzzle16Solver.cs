@@ -54,7 +54,7 @@ public class Puzzle16Solver : PuzzleSolver
         public override int GetHashCode() => (Pose.Location.Item1 * 110 + Pose.Location.Item2) * 8 + (int)Pose.Direction;
     }
 
-    private static int EnergizedCellsStartingAt(CharacterMatrix matrix, (int, int) start, Direction dir0)
+    private static int EnergizedCellsStartingAt(CharacterMatrix matrix, Coord start, Direction dir0)
     {
         var cache = new List<int>();
         var beams = new List<Beam>

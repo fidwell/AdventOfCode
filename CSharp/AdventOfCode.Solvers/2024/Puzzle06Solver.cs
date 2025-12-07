@@ -29,9 +29,9 @@ public class Puzzle06Solver : PuzzleSolver
 
     private static (HashSet<Pose>, bool) GetRoute(
         CharacterMatrix map,
-        (int, int) coord,
+        Coord coord,
         Direction direction,
-        (int, int)? extraObstacle = null)
+        Coord? extraObstacle = null)
     {
         HashSet<Pose> visitedLocations = [];
 

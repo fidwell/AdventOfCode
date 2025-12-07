@@ -26,7 +26,7 @@ public class Puzzle01Solver : PuzzleSolver
     public override string SolvePartTwo(string input)
     {
         var pose = new Pose((0, 0), Direction.Up);
-        var visited = new HashSet<(int, int)>();
+        var visited = new HashSet<Coord>();
 
         foreach (var step in input.Split(", ", StringSplitOptions.RemoveEmptyEntries))
         {

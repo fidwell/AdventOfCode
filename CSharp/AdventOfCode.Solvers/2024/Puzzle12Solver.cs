@@ -14,7 +14,7 @@ public class Puzzle12Solver : PuzzleSolver
 
         List<Region> plots = [];
 
-        var coordsToRegionize = new List<(int, int)>(map.AllCoordinates);
+        var coordsToRegionize = new List<Coord>(map.AllCoordinates);
 
         while (coordsToRegionize.Count != 0)
         {
@@ -27,10 +27,10 @@ public class Puzzle12Solver : PuzzleSolver
         return plots.Sum(p => priceFunc(p, map)).ToString();
     }
 
-    private class Region(char identifier, List<(int, int)> locations)
+    private class Region(char identifier, List<Coord> locations)
     {
         public char Identifier { get; set; } = identifier;
-        public List<(int, int)> Locations { get; } = locations;
+        public List<Coord> Locations { get; } = locations;
 
         public int Area => Locations.Count;
 

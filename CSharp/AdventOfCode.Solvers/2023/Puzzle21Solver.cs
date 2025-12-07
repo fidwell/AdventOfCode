@@ -29,7 +29,7 @@ public class Puzzle21Solver : PuzzleSolver
     private static int Solve(CharacterMatrix matrix, int target, bool allowWrapping)
     {
         var start = matrix.FindAllCharacters('S').Single();
-        var answers = new HashSet<(int, int)> { start };
+        var answers = new HashSet<Coord> { start };
 
         for (var i = 0; i < target; i++)
         {

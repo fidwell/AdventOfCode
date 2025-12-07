@@ -37,14 +37,14 @@ public class Puzzle23Solver : PuzzleSolver
         return PathTotalLengths(graph, allPaths).Max().ToString();
     }
 
-    private static IEnumerable<int> PathTotalLengths(List<Edge> graph, List<List<(int, int)>> allPaths) =>
+    private static IEnumerable<int> PathTotalLengths(List<Edge> graph, List<List<Coord>> allPaths) =>
         allPaths.Select(path =>
             Enumerable.Range(0, path.Count - 1)
             .Sum(i => graph
                 .Single(e => e.Start.Equals(path[i]) && e.End.Equals(path[i + 1]))
                 .Length));
 
-    private static void FindGraphEdges(CharacterMatrix matrix, (int, int) start, Direction initialDirection, (int, int) finish, HashSet<(int, int)> visited, List<Edge> edges)
+    private static void FindGraphEdges(CharacterMatrix matrix, Coord start, Direction initialDirection, Coord finish, HashSet<Coord> visited, List<Edge> edges)
     {
         var thisPath = WalkToNextJunction(matrix, start, initialDirection, finish, visited);
         if (thisPath.Item1 == finish)
@@ -68,7 +68,7 @@ public class Puzzle23Solver : PuzzleSolver
     }
 
     // Returns: finishing coordinate, length of path, final direction
-    private static ((int, int), int, Direction) WalkToNextJunction(CharacterMatrix matrix, (int, int) start, Direction initialDirection, (int, int) finish, HashSet<(int, int)> visited)
+    private static (Coord, int, Direction) WalkToNextJunction(CharacterMatrix matrix, Coord start, Direction initialDirection, Coord finish, HashSet<Coord> visited)
     {
         var length = 0;
         var direction = initialDirection;
@@ -100,19 +100,19 @@ public class Puzzle23Solver : PuzzleSolver
         throw new Exception("Never reached the finish or a junction");
     }
 
-    private static IEnumerable<(int, int)> WalkableNeighbors(CharacterMatrix matrix, (int, int) coordinate) =>
+    private static IEnumerable<Coord> WalkableNeighbors(CharacterMatrix matrix, Coord coordinate) =>
         matrix.CoordinatesOfNeighbors(coordinate, allEight: false).Where(c => matrix.CharAt(c) != '#');
 
-    private static List<List<(int, int)>> FindAllPaths(List<Edge> graph, (int, int) start, (int, int) end)
+    private static List<List<Coord>> FindAllPaths(List<Edge> graph, Coord start, Coord end)
     {
-        var paths = new List<List<(int, int)>>();
+        var paths = new List<List<Coord>>();
         DepthFirstSearch(graph, start, end, [], paths);
         return paths;
     }
 
     private static void DepthFirstSearch(List<Edge> graph,
-        (int, int) current, (int, int) end,
-        List<(int, int)> path, List<List<(int, int)>> paths)
+        Coord current, Coord end,
+        List<Coord> path, List<List<Coord>> paths)
     {
         path.Add(current);
 
@@ -134,7 +134,7 @@ public class Puzzle23Solver : PuzzleSolver
         path.RemoveAt(path.Count - 1);
     }
 
-    private static Direction DirectionFrom((int, int) a, (int, int) b)
+    private static Direction DirectionFrom(Coord a, Coord b)
     {
         if (a.Item1 > b.Item1)
             return Direction.Left;
@@ -149,15 +149,15 @@ public class Puzzle23Solver : PuzzleSolver
 
     private class Edge
     {
-        public (int, int) Start;
+        public Coord Start;
         public Direction InitialDirection;
-        public (int, int) End;
+        public Coord End;
         public Direction FinalDirection;
         public int Length;
 
         public Edge(
-            (int, int) start, Direction initialDirection,
-            (int, int) end, Direction finalDirection,
+            Coord start, Direction initialDirection,
+            Coord end, Direction finalDirection,
             int length)
         {
             Start = start;
@@ -167,7 +167,7 @@ public class Puzzle23Solver : PuzzleSolver
             Length = length;
         }
 
-        public Edge((int, int) start, (int, int) end, int length)
+        public Edge(Coord start, Coord end, int length)
         {
             Start = start;
             InitialDirection = Direction.Undefined;

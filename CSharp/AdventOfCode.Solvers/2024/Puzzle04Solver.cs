@@ -19,11 +19,11 @@ public class Puzzle04Solver : PuzzleSolver
         return wordSearch.AllCoordinates.Count(c => XmasLocatedAt(wordSearch, c.Item1, c.Item2)).ToString();
     }
 
-    private static int XmasesStartingAt(CharacterMatrix wordSearch, (int, int) coord) =>
+    private static int XmasesStartingAt(CharacterMatrix wordSearch, Coord coord) =>
         wordSearch.CharAt(coord) != 'X' ? 0 :
         DirectionExtensions.All8.Count(d => IsXmas(wordSearch, [.. _xmas.Select((c, i) => coord.Go(d, i))]));
 
-    private static bool IsXmas(CharacterMatrix wordSearch, (int, int)[] coords) =>
+    private static bool IsXmas(CharacterMatrix wordSearch, Coord[] coords) =>
         Enumerable.Range(1, 3).All(i => wordSearch.CharAt(coords[i].Item1, coords[i].Item2) == _xmas[i]);
 
     private static bool XmasLocatedAt(CharacterMatrix wordSearch, int x, int y)

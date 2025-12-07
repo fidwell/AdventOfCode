@@ -21,7 +21,7 @@ public class Puzzle08Solver : PuzzleSolver
             .Select(c => new Antenna(c.Item1, c.Item2, map.CharAt(c)))
             .Where(a => a.Type != '.').GroupBy(a => a.Type).Select(g => g);
 
-    private static IEnumerable<(int, int)> NodesCausedByAntennas(
+    private static IEnumerable<Coord> NodesCausedByAntennas(
         CharacterMatrix map, IEnumerable<Antenna> group, bool includeHarmonics)
     {
         var allPairs = ArrayExtensions.Pairs(group.ToArray());
@@ -57,17 +57,17 @@ public class Puzzle08Solver : PuzzleSolver
         }
     }
 
-    private static (int, int) Add((int, int) a, (int, int) b) =>
+    private static Coord Add(Coord a, Coord b) =>
         (a.Item1 + b.Item1, a.Item2 + b.Item2);
 
-    private static (int, int) Subtract((int, int) a, (int, int) b) =>
+    private static Coord Subtract(Coord a, Coord b) =>
         (a.Item1 - b.Item1, a.Item2 - b.Item2);
 
     private record Antenna(int X, int Y, char Type)
     {
-        public (int, int) Coord => (X, Y);
+        public Coord Coord => (X, Y);
 
-        public static (int, int) operator -(Antenna a, Antenna b) =>
+        public static Coord operator -(Antenna a, Antenna b) =>
             (a.X - b.X, a.Y - b.Y);
     }
 }
