@@ -53,4 +53,12 @@ public class SolutionVerifier2025() : SolutionVerifier(2025)
     [DataRow(2, false, "10603075273949", DisplayName = "2025.06.2-problem")]
     public void Solve_2025_06(int part, bool useExample, string expected) =>
         Solve(new Puzzle06Solver(), 6, part, useExample, expected);
+
+    [DataTestMethod, Timeout(Timeout)]
+    [DataRow(1, true, "21", DisplayName = "2025.07.1-example")]
+    [DataRow(1, false, "1546", DisplayName = "2025.07.1-problem")]
+    [DataRow(2, true, "40", DisplayName = "2025.07.2-example")]
+    [DataRow(2, false, "13883459503480", DisplayName = "2025.07.2-problem")]
+    public void Solve_2025_07(int part, bool useExample, string expected) =>
+        Solve(new Puzzle07Solver(), 7, part, useExample, expected);
 }
