@@ -7,7 +7,7 @@ public class Puzzle02Solver : PuzzleSolver
     public override string SolvePartOne(string input)
     {
         var presents = input.SplitByNewline()
-            .Select(line => line.Split('x').Select(int.Parse).ToList());
+            .Select(line => line.ParseInts());
         var sum = 0;
         foreach (var present in presents)
         {
@@ -24,7 +24,7 @@ public class Puzzle02Solver : PuzzleSolver
     public override string SolvePartTwo(string input)
     {
         var presents = input.SplitByNewline()
-            .Select(line => line.Split('x').Select(int.Parse).ToList());
+            .Select(line => line.ParseInts());
         var sum = 0;
         foreach (var present in presents)
         {

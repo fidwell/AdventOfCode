@@ -9,17 +9,15 @@ public class Puzzle15Solver : PuzzleSolver
 
     public static int Solve(string input, bool isPartTwo)
     {
-        var discs = input.SplitByNewline().Select((l, i) =>
+        var discs = input.SplitByNewline().Select(l =>
         {
-            var words = l.Replace(".", "").Split(" ");
-            var positionCount = int.Parse(words[3]);
-            var stateAtTime0 = int.Parse(words[11]);
-            return new Disc(positionCount, stateAtTime0, i);
+            var values = l.ParseInts();
+            return new Disc(values[0] - 1, values[1], values[3]);
         }).ToList();
 
         if (isPartTwo)
         {
-            discs.Add(new Disc(11, 0, discs.Count));
+            discs.Add(new Disc(discs.Count, 11, 0));
         }
 
         var t = 0;
@@ -34,15 +32,15 @@ public class Puzzle15Solver : PuzzleSolver
         return t - 1;
     }
 
-    private class Disc(int positionCount, int state, int position)
+    private class Disc(int position, int slotCount, int state)
     {
         public int State = state;
 
-        private readonly int PositionCount = positionCount;
-        private readonly int DesiredPositionAtButtonPress = (positionCount * 2 - position) % positionCount;
+        private readonly int SlotCount = slotCount;
+        private readonly int DesiredStateAtButtonPress = (slotCount * 2 - position) % slotCount;
 
-        public void Tick() => State = (State + 1) % PositionCount;
+        public void Tick() => State = (State + 1) % SlotCount;
 
-        public bool IsAtDesiredPosition => State == DesiredPositionAtButtonPress;
+        public bool IsAtDesiredPosition => State == DesiredStateAtButtonPress;
     }
 }
