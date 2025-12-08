@@ -1,6 +1,8 @@
 ﻿using AdventOfCode.Core.MathUtilities;
 using AdventOfCode.Core.StringUtilities;
 
+using Point = AdventOfCode.Core.MathUtilities.Point3d<double>;
+
 namespace AdventOfCode.Solvers._2023;
 
 public partial class Puzzle24Solver : PuzzleSolver
@@ -10,13 +12,13 @@ public partial class Puzzle24Solver : PuzzleSolver
         var lines = input.SplitByNewline();
 
         var isExample = lines[0].Length <= 30;
-        var testAreaFrom = isExample ? 7 : 200000000000000L;
-        var testAreaTo = isExample ? 27 : 400000000000000L;
+        var testAreaFrom = isExample ? 7 : 200_000_000_000_000L;
+        var testAreaTo = isExample ? 27 : 400_000_000_000_000L;
 
         var hailstones = lines.Select(l =>
         {
             var portions = l.SplitAndTrim('@');
-            return new Ray3d(new Point3d(portions[0]), new Point3d(portions[1]));
+            return new Ray3d(new Point(portions[0]), new Point(portions[1]));
         }).ToList();
 
         var count = 0;
@@ -38,7 +40,7 @@ public partial class Puzzle24Solver : PuzzleSolver
             .Select(l =>
             {
                 var portions = l.SplitAndTrim('@');
-                return new Ray3d(new Point3d(portions[0]), new Point3d(portions[1]));
+                return new Ray3d(new Point(portions[0]), new Point(portions[1]));
             }).ToList();
 
         var isExample = lines[0].Length <= 30;
@@ -49,7 +51,7 @@ public partial class Puzzle24Solver : PuzzleSolver
         return (stone.Position0.X + stone.Position0.Y + stone.Position0.Z).ToString();
     }
 
-    private static (Point3d, Point3d) Solve2(List<Ray3d> hailstones, int maxVelocity)
+    private static (Point, Point) Solve2(List<Ray3d> hailstones, int maxVelocity)
     {
         // if two hailstones are moving in the same direction with the same velocity,
         // then the rock can only be moving a certain number of integer velocities to
@@ -95,7 +97,7 @@ public partial class Puzzle24Solver : PuzzleSolver
             {
                 foreach (var z in possibleZs)
                 {
-                    var rockVelocity = new Point3d(x, y, z);
+                    var rockVelocity = new Point(x, y, z);
                     var adjustedHailstones = hailstones.Select(h => h - rockVelocity).ToList();
 
                     var (collision0with1, t1) = adjustedHailstones[0].Collision3d(adjustedHailstones[1]);

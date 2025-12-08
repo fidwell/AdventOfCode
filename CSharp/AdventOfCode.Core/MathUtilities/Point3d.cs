@@ -1,14 +1,15 @@
-﻿using AdventOfCode.Core.StringUtilities;
+﻿using System.Numerics;
+using AdventOfCode.Core.StringUtilities;
 
 namespace AdventOfCode.Core.MathUtilities;
 
-public readonly record struct Point3d
+public readonly record struct Point3d<T> where T : INumber<T>
 {
-    public readonly double X;
-    public readonly double Y;
-    public readonly double Z;
+    public readonly T X;
+    public readonly T Y;
+    public readonly T Z;
 
-    public Point3d(double x, double y, double z)
+    public Point3d(T x, T y, T z)
     {
         X = x;
         Y = y;
@@ -17,23 +18,26 @@ public readonly record struct Point3d
 
     public Point3d(string input)
     {
-        var portions = input.SplitAndTrim(',').Select(double.Parse).ToArray();
+        var portions = input.SplitAndTrim(',').Select(x => T.Parse(x, null)).ToArray();
         X = portions[0];
         Y = portions[1];
         Z = portions[2];
     }
 
-    public static Point3d operator +(Point3d point1, Point3d point2) =>
+    public static Point3d<T> operator +(Point3d<T> point1, Point3d<T> point2) =>
         new(point1.X + point2.X, point1.Y + point2.Y, point1.Z + point2.Z);
 
-    public static double DistanceBetween(Point3d a, Point3d b)
+    public static T SquareDistanceBetween(Point3d<T> a, Point3d<T> b)
     {
+        // Warning --- does not do its own type checking.
+        // If you overflow, you'll get the wrong answer.
         var x = a.X - b.X;
         var y = a.Y - b.Y;
         var z = a.Z - b.Z;
-        return Math.Sqrt(x * x + y * y + z * z);
+        return x * x + y * y + z * z;
     }
 
-    public override int GetHashCode() =>
-        HashCode.Combine(X, Y, Z);
+    public override string ToString() => $"({X},{Y},{Z})";
+
+    public override int GetHashCode() => HashCode.Combine(X, Y, Z);
 }

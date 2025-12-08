@@ -1,6 +1,8 @@
 ﻿using AdventOfCode.Core.MathUtilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using Point = AdventOfCode.Core.MathUtilities.Point3d<double>;
+
 namespace AdventOfCode.Tests.UtilityTests;
 
 [TestClass]
@@ -30,8 +32,8 @@ public class RayTests
         double expectedZ,
         double expectedT)
     {
-        var ray1 = new Ray3d(new Point3d(ray1Px, ray1Py, ray1Pz), new Point3d(ray1Vx, ray1Vy, ray1Vz));
-        var ray2 = new Ray3d(new Point3d(ray2Px, ray2Py, ray2Pz), new Point3d(ray2Vx, ray2Vy, ray2Vz));
+        var ray1 = new Ray3d(new Point(ray1Px, ray1Py, ray1Pz), new Point(ray1Vx, ray1Vy, ray1Vz));
+        var ray2 = new Ray3d(new Point(ray2Px, ray2Py, ray2Pz), new Point(ray2Vx, ray2Vy, ray2Vz));
         var (collisionPoint, t) = ray1.Collision3d(ray2);
         Assert.IsNotNull(collisionPoint);
         Assert.AreEqual(expectedX, collisionPoint?.X);
@@ -59,8 +61,8 @@ public class RayTests
         double ray2Vy,
         double ray2Vz)
     {
-        var ray1 = new Ray3d(new Point3d(ray1Px, ray1Py, ray1Pz), new Point3d(ray1Vx, ray1Vy, ray1Vz));
-        var ray2 = new Ray3d(new Point3d(ray2Px, ray2Py, ray2Pz), new Point3d(ray2Vx, ray2Vy, ray2Vz));
+        var ray1 = new Ray3d(new Point(ray1Px, ray1Py, ray1Pz), new Point(ray1Vx, ray1Vy, ray1Vz));
+        var ray2 = new Ray3d(new Point(ray2Px, ray2Py, ray2Pz), new Point(ray2Vx, ray2Vy, ray2Vz));
         var (collisionPoint, _) = ray1.Collision3d(ray2);
         Assert.IsNull(collisionPoint);
     }

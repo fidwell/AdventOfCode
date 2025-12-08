@@ -1,15 +1,17 @@
 ﻿namespace AdventOfCode.Core.MathUtilities;
 
+using Point = Point3d<double>;
+
 public readonly record struct Ray3d
 {
-    public readonly Point3d Position0;
-    public readonly Point3d Velocity;
-    public readonly Point3d Position1;
+    public readonly Point Position0;
+    public readonly Point Velocity;
+    public readonly Point Position1;
     public readonly double SlopeXy;
     public readonly double SlopeYz;
     public readonly double SlopeZx;
 
-    public Ray3d(Point3d position0, Point3d velocity)
+    public Ray3d(Point position0, Point velocity)
     {
         Position0 = position0;
         Velocity = velocity;
@@ -20,13 +22,13 @@ public readonly record struct Ray3d
         SlopeZx = Velocity.X / Velocity.Z;
     }
 
-    public static Ray3d operator -(Ray3d value, Point3d adjustment) =>
-        new(value.Position0, new Point3d(
+    public static Ray3d operator -(Ray3d value, Point adjustment) =>
+        new(value.Position0, new Point(
             value.Velocity.X - adjustment.X,
             value.Velocity.Y - adjustment.Y,
             value.Velocity.Z - adjustment.Z));
 
-    public (Point3d?, double) Collision3d(Ray3d other)
+    public (Point?, double) Collision3d(Ray3d other)
     {
         // Parallel; will never intersect
         if (SlopeXy == other.SlopeXy &&
@@ -75,7 +77,7 @@ public readonly record struct Ray3d
                 intersectionZ % 1 != 0)
                 return (null, 0);
 
-            return (new Point3d(intersectionX, intersectionY, intersectionZ), t);
+            return (new Point(intersectionX, intersectionY, intersectionZ), t);
         }
         return (null, 0);
     }
