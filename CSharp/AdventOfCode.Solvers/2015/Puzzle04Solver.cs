@@ -1,23 +1,14 @@
 ﻿using AdventOfCode.Core.Hashing;
-using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers.Common;
 
 namespace AdventOfCode.Solvers._2015;
 
 public class Puzzle04Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
-    {
-        for (var i = 0; i < int.MaxValue; i++)
-        {
-            if (DoesSatisfy(input, i, true))
-            {
-                return i.ToString();
-            }
-        }
-        throw new Exception("No answer could be found.");
-    }
+    public override object SolvePartOne(string input) =>
+        Enumerable.Range(0, int.MaxValue).First(i => DoesSatisfy(input, i, true));
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         int? result = null;
         object lockObj = new();
@@ -38,21 +29,17 @@ public class Puzzle04Solver : PuzzleSolver
             }
         });
 
-        return result?.ToString() ?? "No answer could be found.";
+        if (result.HasValue)
+            return result.Value;
+        throw new SolutionNotFoundException();
     }
 
-    private bool DoesSatisfy(string input, int i, bool isPartOne)
+    private static bool DoesSatisfy(string input, int i, bool isPartOne)
     {
         var hash = Md5Hasher.Hash($"{input}{i}");
-        var doesSatisfy =
+        return
             hash[0] == 0 &&
             hash[1] == 0 &&
             (isPartOne ? (hash[2] <= 15) : (hash[2] == 0));
-
-        if (doesSatisfy && ShouldPrint)
-        {
-            Console.WriteLine($"Found possible answer at {i}: {hash.AsString()}");
-        }
-        return doesSatisfy;
     }
 }

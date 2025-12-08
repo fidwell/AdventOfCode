@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers.Common;
 
 namespace AdventOfCode.Solvers._2024;
 
@@ -12,11 +13,14 @@ public class Puzzle17Solver : PuzzleSolver
         return string.Join(",", Run(instructions, registerA));
     }
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         var lines = input.SplitByNewline();
         var instructions = new List<int>(Regexes.Digit().Matches(lines[3]).Select(m => int.Parse(m.Value)));
-        return GetBestQuine(instructions, 0, 0)?.ToString() ?? "No value found";
+        var best = GetBestQuine(instructions, 0, 0);
+        if (best.HasValue)
+            return best.Value;
+        throw new SolutionNotFoundException();
     }
 
     private static ulong? GetBestQuine(List<int> instructions, int pointerFromEnd, ulong aSoFar)

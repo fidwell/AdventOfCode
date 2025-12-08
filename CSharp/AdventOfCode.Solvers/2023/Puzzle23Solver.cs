@@ -1,11 +1,12 @@
 ﻿using AdventOfCode.Core.Geometry;
 using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers.Common;
 
 namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle23Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override object SolvePartOne(string input)
     {
         var matrix = new CharacterMatrix(input);
         var periodChars = matrix.FindAllCharacters('.');
@@ -14,10 +15,10 @@ public class Puzzle23Solver : PuzzleSolver
         var graph = new List<Edge>();
         FindGraphEdges(matrix, start, Direction.Down, finish, [], graph);
         var allPaths = FindAllPaths(graph, start, finish);
-        return PathTotalLengths(graph, allPaths).Max().ToString();
+        return PathTotalLengths(graph, allPaths).Max();
     }
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         var matrix = new CharacterMatrix(input);
         var periodChars = matrix.FindAllCharacters('.');
@@ -34,7 +35,7 @@ public class Puzzle23Solver : PuzzleSolver
         graph.AddRange(extraEdges);
 
         var allPaths = FindAllPaths(graph, start, finish);
-        return PathTotalLengths(graph, allPaths).Max().ToString();
+        return PathTotalLengths(graph, allPaths).Max();
     }
 
     private static IEnumerable<int> PathTotalLengths(List<Edge> graph, List<List<Coord>> allPaths) =>
@@ -97,7 +98,7 @@ public class Puzzle23Solver : PuzzleSolver
             direction = DirectionFrom(currentPosition, nextTarget);
         }
 
-        throw new Exception("Never reached the finish or a junction");
+        throw new SolutionNotFoundException("Never reached the finish or a junction");
     }
 
     private static IEnumerable<Coord> WalkableNeighbors(CharacterMatrix matrix, Coord coordinate) =>

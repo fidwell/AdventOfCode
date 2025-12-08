@@ -1,12 +1,13 @@
 ﻿using AdventOfCode.Core.Hashing;
 using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers.Common;
 
 namespace AdventOfCode.Solvers._2016;
 
 public class Puzzle14Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input) => Solve(input.Trim(), false).ToString();
-    public override string SolvePartTwo(string input) => Solve(input.Trim(), true).ToString();
+    public override object SolvePartOne(string input) => Solve(input.Trim(), false);
+    public override object SolvePartTwo(string input) => Solve(input.Trim(), true);
 
     private int Solve(string salt, bool keyStretch)
     {
@@ -38,7 +39,7 @@ public class Puzzle14Solver : PuzzleSolver
                 return i;
         }
 
-        throw new Exception("Not enough keys found");
+        throw new SolutionNotFoundException("Not enough keys found");
     }
 
     private readonly Dictionary<int, string> Hashes = [];

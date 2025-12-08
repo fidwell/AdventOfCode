@@ -1,19 +1,20 @@
 ﻿using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers.Common;
 
 namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle22Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override object SolvePartOne(string input)
     {
         var (bricks, graph) = Initialize(input);
-        return bricks.Count(b => bricks.Count - graph.IfRemoveNode(b.Id).Count(b => b != -1) - 1 == 0).ToString();
+        return bricks.Count(b => bricks.Count - graph.IfRemoveNode(b.Id).Count(b => b != -1) - 1 == 0);
     }
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         var (bricks, graph) = Initialize(input);
-        return bricks.Sum(b => bricks.Count - graph.IfRemoveNode(b.Id).Count(b => b != -1) - 1).ToString();
+        return bricks.Sum(b => bricks.Count - graph.IfRemoveNode(b.Id).Count(b => b != -1) - 1);
     }
 
     private (List<Brick>, Graph) Initialize(string input)
@@ -47,7 +48,7 @@ public class Puzzle22Solver : PuzzleSolver
             brick.Fall(fallAmount);
 
             if (brick.Point1.Z < 1)
-                throw new Exception("Fell too far");
+                throw new SolutionNotFoundException("Fell too far");
 
             foreach (var p in brick.AllCubes)
             {

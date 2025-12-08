@@ -1,12 +1,13 @@
 ﻿using AdventOfCode.Core.Geometry;
 using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers.Common;
 
 namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle17Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input) => Solve(new CharacterMatrix(input), 1, 3).ToString();
-    public override string SolvePartTwo(string input) => Solve(new CharacterMatrix(input), 4, 10).ToString();
+    public override object SolvePartOne(string input) => Solve(new CharacterMatrix(input), 1, 3);
+    public override object SolvePartTwo(string input) => Solve(new CharacterMatrix(input), 4, 10);
 
     private static int Solve(CharacterMatrix matrix, int minSteps, int maxSteps)
     {
@@ -49,7 +50,7 @@ public class Puzzle17Solver : PuzzleSolver
             }
         }
 
-        throw new Exception("Couldn't complete execution.");
+        throw new SolutionNotFoundException("Couldn't complete execution.");
     }
 
     private class State(int heat, Coord location, Direction direction)

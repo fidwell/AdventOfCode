@@ -1,14 +1,15 @@
 ﻿using System.Text.RegularExpressions;
 using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers.Common;
 
 namespace AdventOfCode.Solvers._2016;
 
 public partial class Puzzle11Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input) => Solve(input, false);
-    public override string SolvePartTwo(string input) => Solve(input, true);
+    public override object SolvePartOne(string input) => Solve(input, false);
+    public override object SolvePartTwo(string input) => Solve(input, true);
 
-    private static string Solve(string input, bool isPartTwo)
+    private static object Solve(string input, bool isPartTwo)
     {
         var initialState = GetInitialState(input, isPartTwo);
         var queue = new PriorityQueue<PuzzleState, int>();
@@ -21,7 +22,7 @@ public partial class Puzzle11Solver : PuzzleSolver
             var thisState = queue.Dequeue();
 
             if (thisState.IsFinalState())
-                return thisState.StepsFromStart.ToString();
+                return thisState.StepsFromStart;
 
             visitedStates.Add(thisState.Hash);
 
@@ -34,7 +35,7 @@ public partial class Puzzle11Solver : PuzzleSolver
             }
         }
 
-        throw new Exception("Couldn't find end state");
+        throw new SolutionNotFoundException("Couldn't find end state");
     }
 
     private static PuzzleState GetInitialState(string input, bool isPartTwo)

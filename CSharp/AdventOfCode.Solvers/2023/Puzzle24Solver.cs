@@ -1,13 +1,13 @@
 ﻿using AdventOfCode.Core.MathUtilities;
 using AdventOfCode.Core.StringUtilities;
-
+using AdventOfCode.Solvers.Common;
 using Point = AdventOfCode.Core.MathUtilities.Point3d<double>;
 
 namespace AdventOfCode.Solvers._2023;
 
 public partial class Puzzle24Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override object SolvePartOne(string input)
     {
         var lines = input.SplitByNewline();
 
@@ -30,10 +30,10 @@ public partial class Puzzle24Solver : PuzzleSolver
             }
         }
 
-        return count.ToString();
+        return count;
     }
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         var lines = input.SplitByNewline();
         var hailstones = lines
@@ -48,7 +48,7 @@ public partial class Puzzle24Solver : PuzzleSolver
 
         var (velocity, position) = Solve2(hailstones, maxVelocity);
         var stone = new Ray3d(position, velocity);
-        return (stone.Position0.X + stone.Position0.Y + stone.Position0.Z).ToString();
+        return (stone.Position0.X + stone.Position0.Y + stone.Position0.Z);
     }
 
     private static (Point, Point) Solve2(List<Ray3d> hailstones, int maxVelocity)
@@ -111,6 +111,6 @@ public partial class Puzzle24Solver : PuzzleSolver
             }
         }
 
-        throw new Exception("No point found");
+        throw new SolutionNotFoundException("No point found");
     }
 }

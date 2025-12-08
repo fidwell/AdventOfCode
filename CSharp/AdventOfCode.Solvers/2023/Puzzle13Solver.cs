@@ -1,20 +1,19 @@
 ﻿using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers.Common;
 
 namespace AdventOfCode.Solvers._2023;
 
 public class Puzzle13Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input) =>
+    public override object SolvePartOne(string input) =>
         GetMatrixes(input)
         .Select(m => ValueOf(m, 0))
-        .Sum()
-        .ToString();
+        .Sum();
 
-    public override string SolvePartTwo(string input) =>
+    public override object SolvePartTwo(string input) =>
         GetMatrixes(input)
         .Select(m => ValueOf(m, 1))
-        .Sum()
-        .ToString();
+        .Sum();
 
     private static IEnumerable<CharacterMatrix> GetMatrixes(string input) =>
         input.Chunk().Select(c => new CharacterMatrix(string.Join(Environment.NewLine, c)));
@@ -39,7 +38,7 @@ public class Puzzle13Solver : PuzzleSolver
             }
         }
 
-        throw new Exception("Zero reflections found");
+        throw new SolutionNotFoundException("Zero reflections found");
     }
 
     private static bool IsColumnReflectionAt(CharacterMatrix matrix, int firstIndex, int differencesRequired) =>

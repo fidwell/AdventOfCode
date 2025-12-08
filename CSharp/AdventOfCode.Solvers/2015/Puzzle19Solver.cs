@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers.Common;
 
 namespace AdventOfCode.Solvers._2015;
 
@@ -9,7 +10,7 @@ public partial class Puzzle19Solver : PuzzleSolver
     private string Target = "";
     private readonly Random Random = new();
 
-    public override string SolvePartOne(string input)
+    public override object SolvePartOne(string input)
     {
         ParseInput(input);
         var targetSplit = TargetMoleculePattern().Match(Target).Groups[1].Captures.Select(c => c.Value).ToArray();
@@ -25,19 +26,19 @@ public partial class Puzzle19Solver : PuzzleSolver
                 distinctMolecules.Add(string.Join("", newMoleculeArray));
             }
         }
-        return distinctMolecules.Count.ToString();
+        return distinctMolecules.Count;
     }
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         ParseInput(input);
         for (var attempts = 0; attempts < 100; attempts++)
         {
             var result = MaybeSolvePartTwo();
             if (result >= 0)
-                return result.ToString();
+                return result;
         }
-        throw new Exception("No solution found");
+        throw new SolutionNotFoundException();
     }
 
     public int MaybeSolvePartTwo()

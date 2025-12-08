@@ -1,7 +1,6 @@
 ﻿using AdventOfCode.Core.Sets;
 using AdventOfCode.Core.StringUtilities;
 using AdventOfCode.Solvers.Common;
-
 using Point = AdventOfCode.Core.MathUtilities.Point3d<long>;
 
 namespace AdventOfCode.Solvers._2025;

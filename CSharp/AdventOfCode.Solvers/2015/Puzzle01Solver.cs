@@ -1,11 +1,13 @@
-﻿namespace AdventOfCode.Solvers._2015;
+﻿using AdventOfCode.Solvers.Common;
+
+namespace AdventOfCode.Solvers._2015;
 
 public class Puzzle01Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input) =>
-        (2 * input.Count(c => c == '(') - input.Length).ToString();
+    public override object SolvePartOne(string input) =>
+        2 * input.Count(c => c == '(') - input.Length;
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         var floor = 0;
 
@@ -13,9 +15,9 @@ public class Puzzle01Solver : PuzzleSolver
         {
             floor += input[i] == '(' ? 1 : -1;
             if (floor == -1)
-                return (i + 1).ToString();
+                return i + 1;
         }
 
-        throw new Exception("Couldn't find the answer");
+        throw new SolutionNotFoundException();
     }
 }
