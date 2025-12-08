@@ -1,12 +1,13 @@
 ﻿using System.Text.RegularExpressions;
 using AdventOfCode.Core.MathUtilities;
 using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers.Common;
 
 namespace AdventOfCode.Solvers._2025;
 
 public partial class Puzzle08Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override object SolvePartOne(string input)
     {
         // ----- STEP 1: Create input data structure
         var (boxes, sortedDistances) = SetUp(input);
@@ -28,10 +29,10 @@ public partial class Puzzle08Solver : PuzzleSolver
         // ----- STEP 3: Find graphs
         var disconnectedGraphs = AsDisconnectedGroups(graph);
         var groupSizes = disconnectedGraphs.Select(g => g.Count);
-        return groupSizes.OrderByDescending(g => g).Take(3).Aggregate(1, (a, b) => a * b).ToString();
+        return groupSizes.OrderByDescending(g => g).Take(3).Aggregate(1, (a, b) => a * b);
     }
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         // ----- STEP 1: Create input data structure
         var (boxes, sortedDistances) = SetUp(input);
@@ -48,14 +49,12 @@ public partial class Puzzle08Solver : PuzzleSolver
             disconnectedGroups = AsDisconnectedGroups(graph).Count
                 + boxes.Where(b => graph.All(g => g.Item1 != b.Id && g.Item2 != b.Id)).Count();
             if (disconnectedGroups == 1)
-            {
-                return (boxes[nextDistance.Key.Item1].Coordinate.X * boxes[nextDistance.Key.Item2].Coordinate.X).ToString();
-            }
+                return boxes[nextDistance.Key.Item1].Coordinate.X * boxes[nextDistance.Key.Item2].Coordinate.X;
 
             nextConnectionIndex++;
         } while (disconnectedGroups > 1);
 
-        return "Couldn't find a solution";
+        throw new SolutionNotFoundException();
     }
 
     private static (List<JunctionBox>, List<KeyValuePair<(int, int), double>>) SetUp(string input)

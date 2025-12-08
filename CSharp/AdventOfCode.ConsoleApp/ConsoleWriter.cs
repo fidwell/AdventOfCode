@@ -8,7 +8,7 @@ internal static class ConsoleWriter
 
     internal static void Info(string message) => Write(message, ConsoleColor.Cyan);
 
-    internal static void Answer(int part, string answer, TimeSpan duration)
+    internal static void Answer(int part, object answer, TimeSpan duration)
     {
         Console.Write($"Part {part} answer: ");
         Console.ForegroundColor = ConsoleColor.White;

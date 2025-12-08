@@ -129,7 +129,7 @@ internal static class Benchmarker
         Console.WriteLine(" │");
     }
 
-    private static Aggregate AggregateSolves(int day, int part, Func<string> action)
+    private static Aggregate AggregateSolves(int day, int part, Func<object> action)
     {
         var results = new List<TimeSpan>();
 
@@ -157,7 +157,7 @@ internal static class Benchmarker
             results.Max());
     }
 
-    private static TimeSpan SolvePart(Func<string> action)
+    private static TimeSpan SolvePart(Func<object> action)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
