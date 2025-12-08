@@ -9,7 +9,57 @@ public partial class Puzzle08Solver : PuzzleSolver
     public override string SolvePartOne(string input)
     {
         // ----- STEP 1: Create input data structure
+        var (boxes, sortedDistances) = SetUp(input);
+        var graph = new List<(int, int)>();
 
+        // ----- STEP 2: Connect boxes
+
+        // example has 20 boxes
+        // input has 1000 boxes
+        var connectionsToMake = boxes.Count < 100 ? 10 : 1000;
+
+        for (var i = 0; i < connectionsToMake; i++)
+        {
+            var nextDistance = sortedDistances[i];
+            // assuming index == id; clean up later
+            graph.Add((nextDistance.Key.Item1, nextDistance.Key.Item2));
+        }
+
+        // ----- STEP 3: Find graphs
+        var disconnectedGraphs = AsDisconnectedGroups(graph);
+        var groupSizes = disconnectedGraphs.Select(g => g.Count);
+        return groupSizes.OrderByDescending(g => g).Take(3).Aggregate(1, (a, b) => a * b).ToString();
+    }
+
+    public override string SolvePartTwo(string input)
+    {
+        // ----- STEP 1: Create input data structure
+        var (boxes, sortedDistances) = SetUp(input);
+        var graph = new List<(int, int)>();
+        var nextConnectionIndex = 0;
+
+        var disconnectedGroups = -1;
+        do
+        {
+            var nextDistance = sortedDistances[nextConnectionIndex];
+            // assuming index == id; clean up later
+            graph.Add((nextDistance.Key.Item1, nextDistance.Key.Item2));
+
+            disconnectedGroups = AsDisconnectedGroups(graph).Count
+                + boxes.Where(b => graph.All(g => g.Item1 != b.Id && g.Item2 != b.Id)).Count();
+            if (disconnectedGroups == 1)
+            {
+                return (boxes[nextDistance.Key.Item1].Coordinate.X * boxes[nextDistance.Key.Item2].Coordinate.X).ToString();
+            }
+
+            nextConnectionIndex++;
+        } while (disconnectedGroups > 1);
+
+        return "Couldn't find a solution";
+    }
+
+    private static (List<JunctionBox>, List<KeyValuePair<(int, int), double>>) SetUp(string input)
+    {
         var coordRegex = Point3dRegex();
         var boxes = input.SplitByNewline().Select((l, i) => new JunctionBox(i, l))
             //.OrderBy(c => c.X).ThenBy(c => c.Y).ThenBy(c => c.Z)
@@ -26,29 +76,11 @@ public partial class Puzzle08Solver : PuzzleSolver
         }
 
         var sortedDistances = distances.OrderBy(d => d.Value).ToList();
-        var graph = new List<(int, int)>();
+        return (boxes, sortedDistances);
+    }
 
-        // ----- STEP 2: Connect boxes
-
-        // example has 20 boxes
-        // input has 1000 boxes
-        var connectionsToMake = boxes.Count < 100 ? 10 : 1000;
-        var connectionsMade = 0;
-        var testIndex = 0;
-
-        while (connectionsMade < connectionsToMake)
-        {
-            var nextDistance = sortedDistances[testIndex];
-            // assuming index == id
-            var box1 = boxes[nextDistance.Key.Item1];
-            var box2 = boxes[nextDistance.Key.Item2];
-
-            graph.Add((nextDistance.Key.Item1, nextDistance.Key.Item2));
-            connectionsMade++;
-            testIndex++;
-        }
-
-        // ----- STEP 3: Find graphs
+    private static List<List<int>> AsDisconnectedGroups(List<(int, int)> graph)
+    {
         var disconnectedGraphs = new List<List<int>>();
         foreach (var edge in graph)
         {
@@ -81,14 +113,7 @@ public partial class Puzzle08Solver : PuzzleSolver
                 disconnectedGraphs.Add([.. groupA, .. groupB]);
             }
         }
-
-        var groupSizes = disconnectedGraphs.Select(g => g.Count);
-        return groupSizes.OrderByDescending(g => g).Take(3).Aggregate(1, (a, b) => a * b).ToString();
-    }
-
-    public override string SolvePartTwo(string input)
-    {
-        throw new NotImplementedException();
+        return disconnectedGraphs;
     }
 
     [GeneratedRegex(@"(\d+),(\d+),(\d+)")]
