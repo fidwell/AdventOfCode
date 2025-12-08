@@ -4,8 +4,8 @@ namespace AdventOfCode.Solvers._2025;
 
 public class Puzzle01Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input) => Solve(input, false).ToString();
-    public override string SolvePartTwo(string input) => Solve(input, true).ToString();
+    public override object SolvePartOne(string input) => Solve(input, false);
+    public override object SolvePartTwo(string input) => Solve(input, true);
 
     public static int Solve(string input, bool countPasses)
     {

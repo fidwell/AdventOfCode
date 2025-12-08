@@ -4,16 +4,15 @@ namespace AdventOfCode.Solvers._2025;
 
 public class Puzzle04Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override object SolvePartOne(string input)
     {
         var grid = new CharacterMatrix(input);
         return grid
             .FindAllCharacters('@')
-            .Count(c => CanBeRemoved(grid, c))
-            .ToString();
+            .Count(c => CanBeRemoved(grid, c));
     }
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         var grid = new CharacterMatrix(input);
         var queue = new Queue<Coord>(grid.FindAllCharacters('@')
@@ -36,7 +35,7 @@ public class Puzzle04Solver : PuzzleSolver
             }
         }
 
-        return count.ToString();
+        return count;
     }
 
     private static bool CanBeRemoved(CharacterMatrix grid, Coord coord) =>

@@ -5,7 +5,7 @@ namespace AdventOfCode.Solvers._2025;
 
 public class Puzzle07Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override object SolvePartOne(string input)
     {
         var grid = new CharacterMatrix(input);
 
@@ -35,13 +35,13 @@ public class Puzzle07Solver : PuzzleSolver
             beams = nextBeams;
         }
 
-        return splits.ToString();
+        return splits;
     }
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         var grid = new CharacterMatrix(input);
-        return PossibleStatesAfter(grid, grid.SingleMatch('S')).ToString();
+        return PossibleStatesAfter(grid, grid.SingleMatch('S'));
     }
 
     public static long PossibleStatesAfter(CharacterMatrix grid, Coord beam) =>

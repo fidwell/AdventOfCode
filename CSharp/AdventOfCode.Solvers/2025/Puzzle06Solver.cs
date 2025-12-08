@@ -5,7 +5,7 @@ namespace AdventOfCode.Solvers._2025;
 
 public partial class Puzzle06Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override object SolvePartOne(string input)
     {
         var lines = input.SplitByNewline();
         var operands = lines.Take(lines.Length - 1)
@@ -19,10 +19,10 @@ public partial class Puzzle06Solver : PuzzleSolver
             total += Operate(operands.Select(line => line[i]), operations[i][0]);
         }
 
-        return total.ToString();
+        return total;
     }
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         var lines = input.SplitByNewline(options: StringSplitOptions.RemoveEmptyEntries);
         var operandLine = lines.Length - 1;
@@ -41,7 +41,7 @@ public partial class Puzzle06Solver : PuzzleSolver
             total += result;
         }
 
-        return total.ToString();
+        return total;
     }
 
     private static int ReadNumberAt(string[] input, int col) =>

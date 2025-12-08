@@ -5,16 +5,16 @@ namespace AdventOfCode.Solvers._2025;
 
 public partial class Puzzle05Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override object SolvePartOne(string input)
     {
         (List<RangeLong> ranges, List<long> ingredients) = ParseInput(input);
-        return ingredients.Count(i => ranges.Any(r => r.ContainsInclusive(i))).ToString();
+        return ingredients.Count(i => ranges.Any(r => r.ContainsInclusive(i)));
     }
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         (List<RangeLong> ranges, _) = ParseInput(input);
-        return ranges.Simplify().Sum(r => r.Length).ToString();
+        return ranges.Simplify().Sum(r => r.Length);
     }
 
     private static (List<RangeLong>, List<long>) ParseInput(string input)

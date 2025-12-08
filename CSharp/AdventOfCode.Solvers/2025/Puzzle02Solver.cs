@@ -2,8 +2,8 @@
 
 public class Puzzle02Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input) => Solve(input, true).ToString();
-    public override string SolvePartTwo(string input) => Solve(input, false).ToString();
+    public override object SolvePartOne(string input) => Solve(input, true);
+    public override object SolvePartTwo(string input) => Solve(input, false);
 
     private static long Solve(string input, bool isPartOne)
     {

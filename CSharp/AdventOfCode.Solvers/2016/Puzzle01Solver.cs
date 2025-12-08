@@ -1,12 +1,13 @@
 ﻿using AdventOfCode.Core.Geometry;
 using AdventOfCode.Core.MathUtilities;
 using AdventOfCode.Core.StringUtilities;
+using AdventOfCode.Solvers.Common;
 
 namespace AdventOfCode.Solvers._2016;
 
 public class Puzzle01Solver : PuzzleSolver
 {
-    public override string SolvePartOne(string input)
+    public override object SolvePartOne(string input)
     {
         var pose = new Pose((0, 0), Direction.Up);
 
@@ -20,10 +21,10 @@ public class Puzzle01Solver : PuzzleSolver
             pose.Location = pose.Location.Go(pose.Direction, amount);
         }
 
-        return pose.Location.ManhattanDistance((0, 0)).ToString();
+        return pose.Location.ManhattanDistance((0, 0));
     }
 
-    public override string SolvePartTwo(string input)
+    public override object SolvePartTwo(string input)
     {
         var pose = new Pose((0, 0), Direction.Up);
         var visited = new HashSet<Coord>();
@@ -42,7 +43,7 @@ public class Puzzle01Solver : PuzzleSolver
                 var subLocation = pose.Location.Go(pose.Direction, i);
                 if (visited.Contains(subLocation))
                 {
-                    return subLocation.ManhattanDistance((0, 0)).ToString();
+                    return subLocation.ManhattanDistance((0, 0));
                 }
                 visited.Add(subLocation);
             }
@@ -50,6 +51,6 @@ public class Puzzle01Solver : PuzzleSolver
             pose.Location = pose.Location.Go(pose.Direction, amount);
         }
 
-        return "Could not solve";
+        throw new SolutionNotFoundException();
     }
 }
