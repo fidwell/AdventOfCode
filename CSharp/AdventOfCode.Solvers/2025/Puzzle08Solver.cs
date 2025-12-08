@@ -10,7 +10,7 @@ public partial class Puzzle08Solver : PuzzleSolver
 {
     public override object SolvePartOne(string input)
     {
-        var (boxes, sortedDistances) = SetUp(input);
+        var (boxes, distances) = SetUp(input);
         var disjointedSets = new DisjointSet(boxes.Count);
 
         // example has 20 boxes
@@ -18,7 +18,7 @@ public partial class Puzzle08Solver : PuzzleSolver
         var connectionsToMake = boxes.Count < 100 ? 10 : 1000;
         for (var i = 0; i < connectionsToMake; i++)
         {
-            var nextDistance = sortedDistances[i];
+            var nextDistance = distances.Dequeue();
             disjointedSets.Connect(nextDistance.Item1, nextDistance.Item2);
         }
 
@@ -28,37 +28,33 @@ public partial class Puzzle08Solver : PuzzleSolver
 
     public override object SolvePartTwo(string input)
     {
-        var (boxes, sortedDistances) = SetUp(input);
+        var (boxes, distances) = SetUp(input);
         var disjointedSets = new DisjointSet(boxes.Count);
 
-        var nextConnectionIndex = 0;
         do
         {
-            var nextDistance = sortedDistances[nextConnectionIndex];
+            var nextDistance = distances.Dequeue();
             disjointedSets.Connect(nextDistance.Item1, nextDistance.Item2);
 
             if (disjointedSets.Sets.Count == 1)
                 return boxes[nextDistance.Item1].X * boxes[nextDistance.Item2].X;
-
-            nextConnectionIndex++;
         } while (disjointedSets.Sets.Count > 1);
 
         throw new SolutionNotFoundException();
     }
 
-    private static (List<Point>, List<(int, int)>) SetUp(string input)
+    private static (List<Point>, PriorityQueue<(int, int), long>) SetUp(string input)
     {
         var boxes = input.SplitByNewline().Select(l => new Point(l)).ToList();
-        var distances = new Dictionary<(int, int), long>();
+        var distances = new PriorityQueue<(int, int), long>();
 
         for (var i = 0; i < boxes.Count - 1; i++)
         {
             for (var j = i + 1; j < boxes.Count; j++)
             {
-                distances[(i, j)] = Point.SquareDistanceBetween(boxes[i], boxes[j]);
+                distances.Enqueue((i, j), Point.SquareDistanceBetween(boxes[i], boxes[j]));
             }
         }
-        var sortedDistances = distances.OrderBy(d => d.Value).Select(d => d.Key).ToList();
-        return (boxes, sortedDistances);
+        return (boxes, distances);
     }
 }
