@@ -74,7 +74,7 @@ public class SolutionVerifier2025() : SolutionVerifier(2025)
     [DataRow(1, true, 50, DisplayName = "2025.09.1-example")]
     [DataRow(1, false, 4763509452, DisplayName = "2025.09.1-problem")]
     [DataRow(2, true, 24, DisplayName = "2025.09.2-example")]
-    [DataRow(2, false, 0, DisplayName = "2025.09.2-problem")]
+    [DataRow(2, false, 1516897893, DisplayName = "2025.09.2-problem")]
     public void Solve_2025_09(int part, bool useExample, object expected) =>
         Solve(new Puzzle09Solver(), 9, part, useExample, expected);
 }
