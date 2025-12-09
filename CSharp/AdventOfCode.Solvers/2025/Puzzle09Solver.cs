@@ -80,16 +80,8 @@ public partial class Puzzle09Solver : PuzzleSolver
                 var maxY = Math.Max(item1.Item2, item2.Item2);
 
                 var rectArea = (long)(maxX - minX + 1) * (maxY - minY + 1);
-                if (rectArea < largestArea)
-                    continue;
-
-                var center = ((minX + maxX) / 2, (maxY + minY) / 2);
-                var anyIntersect = edgeDefinitions.Any(e => DoesEdgeIntersectWithRectangle(item1, item2, e));
-                if (anyIntersect)
-                    continue;
-
-                var centerIsInsidePolygon = IsInsidePolygon(allTiles, center, biggestX);
-                if (centerIsInsidePolygon)
+                if (rectArea > largestArea &&
+                    !edgeDefinitions.Any(e => DoesEdgeIntersectWithRectangle(item1, item2, e)))
                 {
                     largestArea = rectArea;
                 }
@@ -115,41 +107,5 @@ public partial class Puzzle09Solver : PuzzleSolver
         return edge.Item1.Item2 == edge.Item2.Item2
             ? edge.Item1.Item2 > minY && edge.Item1.Item2 < maxY && edge.Item2.Item1 > minX && edge.Item1.Item1 < maxX
             : edge.Item1.Item1 > minX && edge.Item1.Item1 < maxX && edge.Item2.Item2 > minY && edge.Item1.Item2 < maxY;
-    }
-
-    private static bool IsInsidePolygon(HashSet<Coord> boundaryPoints, Coord pointToTest, int maxX)
-    {
-        if (boundaryPoints.Contains(pointToTest))
-            return true;
-
-        // Raycast to find if it's in the polygon
-        var boundariesHit = 0;
-        var xr = pointToTest.Item1;
-        while (xr <= maxX + 1)
-        {
-            var currentPoint = (xr, pointToTest.Item2);
-
-            if (boundaryPoints.Contains(currentPoint))
-            {
-                // Check if this is part of a horizontal edge
-                if (boundaryPoints.Contains((xr - 1, pointToTest.Item2)) ||
-                    boundaryPoints.Contains((xr + 1, pointToTest.Item2)))
-                {
-                    // Skip the entire edge
-                    while (xr <= maxX + 1 && boundaryPoints.Contains((xr, pointToTest.Item2)))
-                    {
-                        xr++;
-                    }
-                    continue;
-                }
-
-                // Vertical edge
-                boundariesHit++;
-            }
-
-            xr++;
-        }
-
-        return boundariesHit % 2 == 1;
     }
 }
