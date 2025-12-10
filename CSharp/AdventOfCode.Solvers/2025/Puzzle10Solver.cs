@@ -31,6 +31,8 @@ public class Puzzle10Solver : PuzzleSolver
         public int[][] ButtonWiringSchematics;
         public int[] JoltageRequirements;
 
+        public int TargetIndicatorLightsValue;
+        public int[] ButtonWiringSchematicsValues;
         public bool[] CurrentIndicatorLights;
         public int[] CurrentJoltages;
 
@@ -42,33 +44,32 @@ public class Puzzle10Solver : PuzzleSolver
             JoltageRequirements = [.. chunks[^1][1..^1].Split(',').Select(int.Parse)];
             CurrentIndicatorLights = new bool[TargetIndicatorLights.Length];
             CurrentJoltages = new int[JoltageRequirements.Length];
+
+            TargetIndicatorLightsValue = TargetIndicatorLights.Select((b, i) => (b, i)).Sum(p => p.b ? (int)Math.Pow(2, p.i) : 0);
+            ButtonWiringSchematicsValues = [.. ButtonWiringSchematics.Select(bws => (int)bws.Sum(b => Math.Pow(2, b)))];
         }
 
         public int FewestPressesToActivate()
         {
-            var queue = new PriorityQueue<MachineActivationState, int>();
-            queue.Enqueue(new MachineActivationState(new bool[TargetIndicatorLights.Length], 0), 0);
-
-            while (queue.Count > 0)
+            var numOptions = Math.Pow(2, ButtonWiringSchematicsValues.Length);
+            var min = 65535;
+            for (var x = 1; x < numOptions; x++)
             {
-                var thisState = queue.Dequeue();
-                if (Enumerable.SequenceEqual(thisState.Lights, TargetIndicatorLights))
-                    return thisState.TotalPresses;
-
-                // Generate next states
-                foreach (var schematic in ButtonWiringSchematics)
+                var total = 0;
+                var bUsed = 0;
+                for (var b = 0; b < ButtonWiringSchematicsValues.Length; b++)
                 {
-                    var beforePressing = thisState.Lights.ToArray();
-                    foreach (var button in schematic)
+                    var useButton = (x >> b) % 2 == 1;
+                    if (useButton)
                     {
-                        beforePressing[button] = !beforePressing[button];
+                        total ^= ButtonWiringSchematicsValues[b];
+                        bUsed++;
                     }
-                    var nextState = new MachineActivationState(beforePressing, thisState.TotalPresses + 1);
-                    queue.Enqueue(nextState, thisState.TotalPresses + 1);
                 }
+                if (total == TargetIndicatorLightsValue && bUsed < min)
+                    min = bUsed;
             }
-
-            throw new SolutionNotFoundException();
+            return min;
         }
 
         public int FewestPressesToConfigureJoltage()
