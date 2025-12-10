@@ -1,7 +1,12 @@
-﻿<Solution>
+<Solution>
   <Configuration>
     <Platform Name="x64" />
   </Configuration>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".runsettings" />
+    <File Path="README.md" />
+  </Folder>
   <Project Path="AdventOfCode.ConsoleApp/AdventOfCode.ConsoleApp.csproj" />
   <Project Path="AdventOfCode.Core/AdventOfCode.Core.csproj" />
   <Project Path="AdventOfCode.Solvers/AdventOfCode.Solvers.csproj" />
