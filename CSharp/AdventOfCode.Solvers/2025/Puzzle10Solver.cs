@@ -33,7 +33,6 @@ public class Puzzle10Solver : PuzzleSolver
 
         public int TargetIndicatorLightsValue;
         public int[] ButtonWiringSchematicsValues;
-        public bool[] CurrentIndicatorLights;
         public int[] CurrentJoltages;
 
         public Machine(string input)
@@ -42,7 +41,6 @@ public class Puzzle10Solver : PuzzleSolver
             TargetIndicatorLights = [.. chunks[0][1..^1].Select(c => c == '#')];
             ButtonWiringSchematics = [.. chunks[1..^1].Select(ch => ch[1..^1].Split(',').Select(int.Parse).ToArray())];
             JoltageRequirements = [.. chunks[^1][1..^1].Split(',').Select(int.Parse)];
-            CurrentIndicatorLights = new bool[TargetIndicatorLights.Length];
             CurrentJoltages = new int[JoltageRequirements.Length];
 
             TargetIndicatorLightsValue = TargetIndicatorLights.Select((b, i) => (b, i)).Sum(p => p.b ? (int)Math.Pow(2, p.i) : 0);
@@ -123,7 +121,6 @@ public class Puzzle10Solver : PuzzleSolver
             return result;
         }
 
-        private record struct MachineActivationState(bool[] Lights, int TotalPresses);
         private record struct JoltageState(int[] Joltages, int TotalPresses);
     }
 }
