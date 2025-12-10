@@ -1,4 +1,4 @@
-﻿using Google.OrTools.LinearSolver;
+﻿using Microsoft.Z3;
 
 namespace AdventOfCode.Core.Matrixes;
 
@@ -6,45 +6,50 @@ public class MatrixExtensions
 {
     public static int[] SolveSystemOfLinearEquations(int[,] coefficients, int[] solutions)
     {
+        var context = new Context();
+
         var equationCount = coefficients.GetLength(0);
         var variableCount = coefficients.GetLength(1);
 
-        double[] solutionsAsDouble = [.. solutions.Select(s => (double)s)];
-
-        var solver = Solver.CreateSolver("SCIP");
-
-        var solverVariables = new Variable[variableCount];
+        // Create variables
+        var solverVariables = new IntExpr[variableCount];
         for (var i = 0; i < variableCount; i++)
         {
-            solverVariables[i] = solver.MakeIntVar(0, int.MaxValue, $"p_{i}");
+            solverVariables[i] = context.MkIntConst($"p_{i}");
         }
 
-        for (var solution = 0; solution < equationCount; solution++)
+        // Add non-negative constraints
+        var optimize = context.MkOptimize();
+        for (var i = 0; i < variableCount; i++)
         {
-            var constraint = solver.MakeConstraint(solutions[solution], solutions[solution], $"J_{solution}");
+            optimize.Assert(context.MkGe(solverVariables[i], context.MkInt(0)));
+        }
+
+        for (var equation = 0; equation < equationCount; equation++)
+        {
+            ArithExpr sum = context.MkInt(0);
             for (var variable = 0; variable < variableCount; variable++)
             {
-                constraint.SetCoefficient(solverVariables[variable], coefficients[solution, variable]);
+                sum = context.MkAdd(sum, context.MkMul(context.MkInt(coefficients[equation, variable]), solverVariables[variable]));
             }
+            optimize.Assert(context.MkEq(sum, context.MkInt(solutions[equation])));
         }
 
-        var objective = solver.Objective();
+        // Set objective: minimize result
+        ArithExpr objective = context.MkInt(0);
         for (int i = 0; i < variableCount; i++)
         {
-            objective.SetCoefficient(solverVariables[i], 1);
+            objective = context.MkAdd(objective, solverVariables[i]);
         }
-        objective.SetMinimization();
+        optimize.MkMinimize(objective);
 
-        var resultStatus = solver.Solve();
-        if (resultStatus == Solver.ResultStatus.OPTIMAL)
-        {
-            var objectiveValue = solver.Objective().Value();
-            return [.. solverVariables.Select(v => (int)v.SolutionValue())];
-        }
-        else
-        {
-            // No solution found
-            return [];
-        }
+        // Solve
+        Status status = optimize.Check();
+
+        if (status == Status.SATISFIABLE)
+            return [.. solverVariables.Select(v => ((IntNum)optimize.Model.Evaluate(v)).Int)];
+
+        // No solution found
+        return [];
     }
 }
