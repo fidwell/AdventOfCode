@@ -11,6 +11,10 @@ internal static class Benchmarker
     {
         Console.WriteLine($"Running benchmarks for year {year}...");
 
+#if DEBUG
+        ConsoleWriter.Error($"WARNING: Running benchmarks in debug mode.");
+#endif
+
         var solvers = typeof(PuzzleSolver).Assembly.GetTypes()
             .Where(t => t.Namespace == $"AdventOfCode.Solvers._{year}" && typeof(PuzzleSolver).IsAssignableFrom(t))
             .Where(t => !day.HasValue || t.Name.Contains(day.Value.ToString("00")))
@@ -22,8 +26,8 @@ internal static class Benchmarker
             return;
         }
 
-        ConsoleWriter.Write("┌─────┬──────┬─────────────┬─────────────┬─────────────┬─────────────┐");
-        ConsoleWriter.Write("│ Day │ Part │ Mean time   │ Mode time   │ Min time    │ Max time    │");
+        ConsoleWriter.Write("┌─────┬──────┬────┬─────────────┬─────────────┬─────────────┬─────────────┐");
+        ConsoleWriter.Write("│ Day │ Part │  n │ Mean time   │ Mode time   │ Min time    │ Max time    │");
 
         var aggregates = new List<Aggregate>();
 
@@ -48,13 +52,13 @@ internal static class Benchmarker
                 }
                 catch
                 {
-                    ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
-                    ConsoleWriter.Write($"│  {dayNum,2} │ Could not run: no input file found.                          │");
+                    ConsoleWriter.Write("├─────┼──────┼────┼─────────────┼─────────────┼─────────────┼─────────────┤");
+                    ConsoleWriter.Write($"│  {dayNum,2} │ Could not run: no input file found.                               │");
                     continue;
                 }
             }
 
-            ConsoleWriter.Write("├─────┼──────┼─────────────┼─────────────┼─────────────┼─────────────┤");
+            ConsoleWriter.Write("├─────┼──────┼────┼─────────────┼─────────────┼─────────────┼─────────────┤");
 
             var partOne = AggregateSolves(dayNum, 1, () => solver.SolvePartOne(input));
             aggregates.AddRange(partOne);
@@ -67,7 +71,7 @@ internal static class Benchmarker
                 WritePartLine(dayNum, 2, partTwo);
             }
         }
-        ConsoleWriter.Write("└─────┴──────┴─────────────┴─────────────┴─────────────┴─────────────┘");
+        ConsoleWriter.Write("└─────┴──────┴────┴─────────────┴─────────────┴─────────────┴─────────────┘");
 
         aggregates = [.. aggregates.Where(a => a.Count > 0)];
 
@@ -170,11 +174,11 @@ internal static class Benchmarker
     {
         if (aggregate.Count == 0)
         {
-            ConsoleWriter.Write($"│  {day,2} │ Could not run: solver not implemented.                       │");
+            ConsoleWriter.Write($"│  {day,2} │ Could not run: solver not implemented.                            │");
             return;
         }
 
-        Console.Write($"│  {day,2} │    {part} │ ");
+        Console.Write($"│  {day,2} │    {part} │ {aggregate.Count,2} │ ");
         ConsoleWriter.WriteTime(aggregate.Mean);
         Console.Write(" │ ");
         ConsoleWriter.WriteTime(aggregate.Mode);
