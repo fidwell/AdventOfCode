@@ -1,0 +1,9 @@
+﻿<Solution>
+  <Configuration>
+    <Platform Name="x64" />
+  </Configuration>
+  <Project Path="AdventOfCode.ConsoleApp/AdventOfCode.ConsoleApp.csproj" />
+  <Project Path="AdventOfCode.Core/AdventOfCode.Core.csproj" />
+  <Project Path="AdventOfCode.Solvers/AdventOfCode.Solvers.csproj" />
+  <Project Path="AdventOfCode.Tests/AdventOfCode.Tests.csproj" />
+</Solution>
