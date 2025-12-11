@@ -5,31 +5,31 @@ namespace AdventOfCode.Solvers._2025;
 public class Puzzle11Solver : PuzzleSolver
 {
     public override object SolvePartOne(string input) =>
-        FindAllPaths(ParseInput(input), "you", "out").Count;
+        DepthFirstSearch(ParseInput(input), "you", "out");
 
     public override object SolvePartTwo(string input)
     {
         Cache.Clear();
         var map = ParseInput(input);
-        var fromSvrToFft = FindAllPaths(map, "svr", "fft");
-        var fromSvrToDac = FindAllPaths(map, "svr", "dac");
+        var fromSvrToFft = DepthFirstSearch(map, "svr", "fft");
+        var fromSvrToDac = DepthFirstSearch(map, "svr", "dac");
         Cache.Clear();
-        var fromDacToFft = FindAllPaths(map, "dac", "fft");
+        var fromDacToFft = DepthFirstSearch(map, "dac", "fft");
         Cache.Clear();
-        var fromFftToDac = FindAllPaths(map, "fft", "dac");
+        var fromFftToDac = DepthFirstSearch(map, "fft", "dac");
         Cache.Clear();
 
-        if (fromDacToFft.Count > 0)
+        if (fromDacToFft > 0)
         {
             // svr -> dac -> fft -> out
-            var fromFftToOut = FindAllPaths(map, "fft", "out");
-            return (long)fromSvrToDac.Count * fromDacToFft.Count * fromFftToOut.Count;
+            var fromFftToOut = DepthFirstSearch(map, "fft", "out");
+            return (long)fromSvrToDac * fromDacToFft * fromFftToOut;
         }
         else
         {
             // svr -> fft -> dac -> out
-            var fromDacToOut = FindAllPaths(map, "dac", "out");
-            return (long)fromSvrToFft.Count * fromFftToDac.Count * fromDacToOut.Count;
+            var fromDacToOut = DepthFirstSearch(map, "dac", "out");
+            return (long)fromSvrToFft * fromFftToDac * fromDacToOut;
         }
     }
 
@@ -43,23 +43,18 @@ public class Puzzle11Solver : PuzzleSolver
         return map;
     }
 
-    private List<string[]> FindAllPaths(List<Node> map, string start, string end) =>
-        [.. DepthFirstSearch(map, [], start, end)];
+    private readonly Dictionary<string, int> Cache = [];
 
-    private readonly Dictionary<string, List<string[]>> Cache = [];
-
-    private List<string[]> DepthFirstSearch(List<Node> map, string[] pathSoFar, string startNodeId, string endNodeId)
+    private int DepthFirstSearch(List<Node> map, string startNodeId, string endNodeId, int pathSoFar = 0)
     {
-        if (Cache.TryGetValue(startNodeId, out var paths))
-            return paths;
+        if (Cache.TryGetValue(startNodeId, out var pathLength))
+            return pathLength;
 
         var thisNode = map.Single(n => n.Id == startNodeId);
-        string[] thisPath = [.. pathSoFar, thisNode.Id];
-
         if (thisNode.Id == endNodeId)
-            return [thisPath];
+            return 1;
 
-        var result = thisNode.Outputs.SelectMany(n => DepthFirstSearch(map, thisPath, n, endNodeId)).ToList();
+        var result = thisNode.Outputs.Sum(n => DepthFirstSearch(map, n, endNodeId, pathSoFar + 1));
         Cache.Add(startNodeId, result);
         return result;
     }
