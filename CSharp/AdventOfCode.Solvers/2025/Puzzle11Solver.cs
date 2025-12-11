@@ -9,6 +9,7 @@ public class Puzzle11Solver : PuzzleSolver
 
     public override object SolvePartTwo(string input)
     {
+        Cache.Clear();
         var map = ParseInput(input);
         var fromSvrToFft = FindAllPaths(map, "svr", "fft");
         var fromSvrToDac = FindAllPaths(map, "svr", "dac");
