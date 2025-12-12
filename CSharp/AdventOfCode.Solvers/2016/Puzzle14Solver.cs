@@ -49,18 +49,16 @@ public class Puzzle14Solver : PuzzleSolver
         if (Hashes.TryGetValue(index, out string? hash))
             return hash;
 
-        hash = Hash($"{salt}{index}");
+        hash = Md5Hasher.HashToString($"{salt}{index}");
         if (keyStretch)
         {
             for (var i = 0; i < 2016; i++)
             {
-                hash = Hash(hash);
+                hash = Md5Hasher.HashToString(hash);
             }
         }
 
         Hashes.Add(index, hash);
         return hash;
     }
-
-    private static string Hash(string input) => Convert.ToHexString(Md5Hasher.Hash(input)).ToLower();
 }
