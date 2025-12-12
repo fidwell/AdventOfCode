@@ -96,9 +96,7 @@ public class SolutionVerifier2025() : SolutionVerifier(2025)
 
     [TestMethod, Timeout(Timeout)]
     [DataRow(1, true, 2, DisplayName = "2025.12.1-example")]
-    [DataRow(1, false, 0, DisplayName = "2025.12.1-problem")]
-    [DataRow(2, true, 0, DisplayName = "2025.12.2-example")]
-    [DataRow(2, false, 0, DisplayName = "2025.12.2-problem")]
+    [DataRow(1, false, 476, DisplayName = "2025.12.1-problem")]
     public void Solve_2025_12(int part, bool useExample, object expected) =>
         Solve(new Puzzle12Solver(), 12, part, useExample, expected);
 }
