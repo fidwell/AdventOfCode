@@ -15,6 +15,8 @@ export abstract class Year {
 
   load(): void {
     clearDayList();
+    let firstDay: number;
+
     for (let i = 0; i < this.days.length; i++) {
       const func = this.days[i];
       if (func !== null) {
@@ -27,8 +29,15 @@ export abstract class Year {
         });
         link.innerText = `[${i + 1}]`;
         appendToDayList(link);
+
+        if (firstDay == null) {
+           firstDay = i;
+        }
       }
     }
+
+    selectDay(firstDay);
+    this.visualize(firstDay);
   }
 
   visualize(day: number): void {
