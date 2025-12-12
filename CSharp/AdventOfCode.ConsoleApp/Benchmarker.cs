@@ -64,7 +64,10 @@ internal static class Benchmarker
             aggregates.AddRange(partOne);
             WritePartLine(dayNum, 1, partOne);
 
-            if (dayNum != 25)
+            var hasPartTwo =
+                (year < 2025 && dayNum < 25) ||
+                dayNum < 12;
+            if (hasPartTwo)
             {
                 var partTwo = AggregateSolves(dayNum, 2, () => solver.SolvePartTwo(input));
                 aggregates.AddRange(partTwo);
