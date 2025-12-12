@@ -1,0 +1,43 @@
+:root {
+  --background-color: #0f0f23;
+  --text-color: #cccccc;
+  --link-color: #009900;
+  --link-emph: #99ff99;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: "Source Code Pro", monospace;
+  font-weight: 300;
+  font-size: 14pt;
+  min-width: 60em;
+}
+
+h1, h2 {
+  font-size: 1em;
+  font-weight: normal;
+}
+
+a {
+  text-decoration: none;
+  color: var(--link-color);
+}
+
+a:hover, a:focus {
+  text-decoration: none;
+  color: var(--link-color);
+}
+
+.selected {
+  border-bottom: 2px dotted var(--link-emph);
+}
+
+canvas {
+  border: 2px dotted var(--link-color);
+  margin-top: 10px;;
+}

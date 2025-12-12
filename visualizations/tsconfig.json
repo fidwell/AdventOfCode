@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "declaration": true,
+    "importHelpers": true,
+    "lib": [ "ES2024", "DOM" ],
+    "sourceMap": false,
+    "noImplicitAny": true,
+    "module": "ES6",
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "target": "ES2024",
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
