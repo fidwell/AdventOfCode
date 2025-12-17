@@ -9,6 +9,9 @@ public class Matrix<T> : IEquatable<Matrix<T>>
     private readonly T[,] values;
     private readonly int rows, columns;
 
+    public int Height => rows;
+    public int Width => columns;
+
     private Matrix(T[,] input)
     {
         values = input;
@@ -82,15 +85,37 @@ public class Matrix<T> : IEquatable<Matrix<T>>
         }
     }
 
+    public bool IsInRowEchelonForm()
+    {
+        var pivotsPerRow = Enumerable.Range(0, rows).Select(y =>
+        {
+            var nonZeroColumns = Enumerable.Range(0, columns)
+                .Select((x, i) => (x, i)).Where(x => values[y, x.x] != T.Zero).Select(x => x.i);
+            return nonZeroColumns.Any() ? nonZeroColumns.First() : -1;
+        }).Where(p => p >= 0).ToArray();
+        // Assert pivots are in ascending order
+        for (var i = 0; i < pivotsPerRow.Length - 1; i++)
+        {
+            if (pivotsPerRow[i] > pivotsPerRow[i + 1])
+                return false;
+        }
+        return true;
+    }
+
     public T this[int y, int x]
     {
         get
         {
-            if (y < 0 || y > rows || x < 0 || x > columns)
+            if (y < 0 || y >= rows || x < 0 || x >= columns)
                 throw new IndexOutOfRangeException();
             return values[y, x];
         }
-        set => throw new NotImplementedException();
+        set
+        {
+            if (y < 0 || y >= rows || x < 0 || x >= columns)
+                throw new IndexOutOfRangeException();
+            values[y, x] = value;
+        }
     }
 
     public bool Equals(Matrix<T>? other)
@@ -112,10 +137,11 @@ public class Matrix<T> : IEquatable<Matrix<T>>
         return true;
     }
 
-    public string Print(int columnWidth = 6, bool withSeparator = false)
+    public string Print(int columnWidth = 7, bool withSeparator = false)
     {
         if (rows == 0 || columns == 0)
             return "[]";
+        var valueWidth = columnWidth - 2;
 
         var sb = new StringBuilder();
         for (var y = 0; y < rows; y++)
@@ -125,10 +151,13 @@ public class Matrix<T> : IEquatable<Matrix<T>>
             {
                 if (withSeparator && x == columns - 1)
                 {
-                    sb.Append(" |");
+                    sb.Append('|');
                 }
 
-                sb.Append((values[y, x].ToString() ?? "").PadLeft(columnWidth));
+                var asString = values[y, x].ToString() ?? string.Empty;
+                asString = asString[..Math.Min(asString.Length, valueWidth)];
+                asString = $" {asString.PadLeft(valueWidth)} ";
+                sb.Append(asString);
             }
             sb.AppendLine("]");
         }
@@ -149,4 +178,6 @@ public class Matrix<T> : IEquatable<Matrix<T>>
         }
         return c;
     }
+
+    public override string ToString() => Print();
 }
